@@ -1,0 +1,40 @@
+# =============================================================================
+# Plantilla de config.yaml para SillyTavern
+# Objetivo: acceso desde el celular por RED LOCAL con AUTH BÁSICA.
+#
+# Cómo usar:
+#   1. Cerrá SillyTavern.
+#   2. Abrí el config.yaml REAL de tu instalación (raíz del proyecto o data/).
+#   3. Copiá/ajustá los valores de abajo. NO hace falta reemplazar el archivo
+#      entero: alcanza con editar estos campos clave.
+#   4. Cambiá username y password por los tuyos.
+#   5. Guardá y reiniciá SillyTavern.
+#
+# ⚠️ Auth básica protege tu RED LOCAL. NO expongas este puerto a internet.
+# =============================================================================
+
+# --- Red ---------------------------------------------------------------------
+# Escuchar en todas las interfaces para que el celu pueda entrar por la LAN.
+listen: true
+
+# Puerto donde sirve SillyTavern.
+port: 8000
+
+# --- Control de acceso -------------------------------------------------------
+# whitelistMode: false  -> cualquier IP de la red puede intentar entrar,
+# pero se lo frena la auth básica. Es la opción cómoda para casa.
+# (Alternativa más estricta: dejarlo en true y sumar la IP del celu a whitelist.)
+whitelistMode: false
+whitelist:
+  - ::1
+  - 127.0.0.1
+
+# --- Auth básica (usuario + contraseña) --------------------------------------
+basicAuthMode: true
+basicAuthUser:
+  username: cambiame_usuario
+  password: cambiame_por_una_contraseña_larga_y_unica
+
+# --- Extras útiles -----------------------------------------------------------
+# Si algún día usás un proxy/reverse-proxy, esto respeta el IP reenviado.
+enableForwardedWhitelist: true
