@@ -144,8 +144,7 @@ if (window.L && document.getElementById("map")) {
     };
   }
 
-  map.on("click", (e) => {
-    const punto = { lat: e.latlng.lat, lng: e.latlng.lng };
+  function evaluarPunto(punto, centrar) {
     const { sucursal, km } = sucursalMasCercana(punto);
 
     // Tiempo estimado: 15 min de preparación + trayecto a ~40 km/h
@@ -181,7 +180,38 @@ if (window.L && document.getElementById("map")) {
       `Plan: ${encodeURIComponent(plan.nombre)}%0A` +
       `Ubicación: https://maps.google.com/?q=${punto.lat.toFixed(5)},${punto.lng.toFixed(5)}`;
     rWa.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${texto}`;
-  });
+
+    if (centrar) map.setView([punto.lat, punto.lng], Math.max(map.getZoom(), 11));
+  }
+
+  // Clic en el mapa
+  map.on("click", (e) => evaluarPunto({ lat: e.latlng.lat, lng: e.latlng.lng }, false));
+
+  // Botón "usar mi ubicación"
+  const geoBtn = document.getElementById("geo-btn");
+  if (geoBtn) {
+    geoBtn.addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        alert("Tu navegador no permite geolocalización. Toca el mapa manualmente.");
+        return;
+      }
+      const original = geoBtn.textContent;
+      geoBtn.textContent = "📍 Buscando…";
+      geoBtn.disabled = true;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          evaluarPunto({ lat: pos.coords.latitude, lng: pos.coords.longitude }, true);
+          geoBtn.textContent = original;
+          geoBtn.disabled = false;
+        },
+        () => {
+          alert("No pudimos obtener tu ubicación. Puedes tocar el mapa manualmente.");
+          geoBtn.textContent = original;
+          geoBtn.disabled = false;
+        }
+      );
+    });
+  }
 
   // Recalcula el tamaño del mapa cuando entra en pantalla (evita el gris)
   const mapObserver = new IntersectionObserver((entries) => {

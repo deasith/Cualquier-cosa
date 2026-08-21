@@ -47,9 +47,17 @@ cercana**:
 
 ## Producto (ilustración interactiva)
 
-La sección **"Producto"** muestra el purificador en vista de corte (con patas y
-componentes internos). Al pasar el cursor o tocar cada pieza —ventilador,
-lámpara UV-C, carbón activado, filtro HEPA y pre-filtro— se resalta en el dibujo
-y se explica qué hace.
+La sección **"Producto"** muestra el purificador **horizontal** en vista de corte
+(con patas y componentes internos). El aire entra por la izquierda y sale limpio
+por la derecha, pasando por: 1) pre-filtro, 2) filtro HEPA, 3) carbón activado,
+4) lámpara UV-C y 5) ventilador. Al pasar el cursor o tocar cada pieza (o su
+botón) se resalta en el dibujo y se explica qué hace.
+
+## Otras funciones
+
+- **Usar mi ubicación:** botón en el mapa que usa la geolocalización del
+  navegador para ubicarte automáticamente (requiere HTTPS, p. ej. GitHub Pages).
+- **Preguntas frecuentes:** sección con acordeón.
+- Animaciones al hacer scroll y menú responsivo para el celular.
 
 > Nota: el mapa necesita conexión a internet para cargar Leaflet y las calles.
