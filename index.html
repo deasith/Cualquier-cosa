@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -30,6 +31,7 @@
         <a href="#servicio">Servicio</a>
         <a href="#proceso">Cómo funciona</a>
         <a href="#producto">Producto</a>
+        <a href="#mapa">Mapa</a>
         <a href="#zonas">Zonas y precios</a>
         <a href="#contacto">Contacto</a>
       </nav>
@@ -265,6 +267,52 @@
     </div>
   </section>
 
+  <!-- ===== MAPA INTERACTIVO ===== -->
+  <section class="section section--alt" id="mapa">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Calcula tu visita</span>
+        <h2>Haz clic en tu ubicación en el mapa</h2>
+        <p>Toca el punto donde estás y te decimos al instante cuánto nos demoramos y qué plan te corresponde.</p>
+      </div>
+
+      <div class="mapwrap">
+        <div id="map" class="map" role="application" aria-label="Mapa interactivo para elegir tu ubicación"></div>
+
+        <aside class="mapinfo" aria-live="polite">
+          <div class="mapinfo__empty" id="map-empty">
+            <div class="mapinfo__pin" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </div>
+            <p>Haz clic en el mapa para calcular tu visita.</p>
+          </div>
+
+          <div class="mapinfo__result" id="map-result" hidden>
+            <div class="mapinfo__row">
+              <span class="mapinfo__label">Distancia aprox.</span>
+              <strong id="r-distance">—</strong>
+            </div>
+            <div class="mapinfo__row">
+              <span class="mapinfo__label">Tiempo estimado</span>
+              <strong id="r-time">—</strong>
+            </div>
+            <div class="mapinfo__row mapinfo__row--plan">
+              <span class="mapinfo__label">Plan sugerido</span>
+              <span class="planbadge" id="r-plan">—</span>
+            </div>
+            <p class="mapinfo__desc" id="r-desc"></p>
+            <a class="btn btn--wa btn--lg mapinfo__cta" id="r-wa" href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.3-.9-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.2.2-.3.4-.1.6.5.8 1 1.3 1.7 1.8.6.4.9.5 1.1.6.2 0 .3 0 .5-.2l.6-.7c.2-.3.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.2.1.6-.1 1.1Z"/></svg>
+              Solicitar esta visita
+            </a>
+          </div>
+
+          <p class="mapinfo__hint">📍 El marcador azul es nuestra base. La estimación es referencial; el precio final se confirma por WhatsApp.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== CONTACTO ===== -->
   <section class="section" id="contacto">
     <div class="container contact">
@@ -331,6 +379,7 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="script.js"></script>
 </body>
 </html>

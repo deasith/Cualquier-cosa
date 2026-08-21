@@ -29,3 +29,17 @@ Abre `index.html` en cualquier navegador (doble clic). No necesita instalación.
    - `index.html` → enlace `https://wa.me/000000000000...` en la sección de contacto.
 2. **Datos de contacto:** teléfono, correo y horario en la sección "Contacto".
 3. **Precios:** ajusta los textos de la sección "Zonas y precios" si quieres montos concretos.
+4. **Ubicación de la base (mapa):** en `script.js`, cambia la constante `BASE`
+   (`lat`, `lng`) por las coordenadas reales desde donde sale Air Box. El mapa
+   calcula la distancia, el tiempo estimado y el plan desde ese punto.
+
+## Mapa interactivo
+
+La sección **"Mapa"** usa [Leaflet](https://leafletjs.com/) con OpenStreetMap.
+Al hacer clic en cualquier punto, calcula:
+
+- **Distancia** desde la base (fórmula de Haversine).
+- **Tiempo estimado** (15 min de preparación + trayecto a ~30 km/h).
+- **Plan sugerido:** ≤5 km estándar, ≤15 km intermedia, más lejos difícil acceso.
+
+> Nota: el mapa necesita conexión a internet para cargar Leaflet y las calles.
