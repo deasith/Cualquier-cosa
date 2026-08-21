@@ -262,34 +262,34 @@
           <rect x="60" y="100" width="250" height="120" rx="16" fill="none" stroke="#38b6ff" stroke-width="2" stroke-dasharray="5 5"/>
 
           <!-- Flujo: aire sucio entra por la izquierda -->
-          <g stroke="#8aa0b3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".9">
+          <g class="flow flow--in" stroke="#8aa0b3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".9">
             <path d="M40 148 h16"/><path d="M50 143 l6 5 l-6 5"/>
             <path d="M40 176 h16"/><path d="M50 171 l6 5 l-6 5"/>
           </g>
 
           <!-- 1 · Pre-filtro -->
-          <g class="comp" data-comp="prefiltro">
+          <g class="comp" data-comp="prefiltro" tabindex="0" role="button" aria-label="Pre-filtro">
             <rect x="72" y="110" width="40" height="100" rx="6" fill="url(#mesh)" stroke="#b7cadb"/>
             <circle cx="92" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
             <text x="92" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">1</text>
           </g>
 
           <!-- 2 · HEPA -->
-          <g class="comp" data-comp="hepa">
+          <g class="comp" data-comp="hepa" tabindex="0" role="button" aria-label="Filtro HEPA">
             <rect x="118" y="110" width="48" height="100" rx="6" fill="url(#pleat)" stroke="#8ec3e8"/>
             <circle cx="142" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
             <text x="142" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">2</text>
           </g>
 
           <!-- 3 · Carbón activado -->
-          <g class="comp" data-comp="carbon">
+          <g class="comp" data-comp="carbon" tabindex="0" role="button" aria-label="Carbón activado">
             <rect x="172" y="110" width="40" height="100" rx="6" fill="url(#granule)" stroke="#3a4f63"/>
             <circle cx="192" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
             <text x="192" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">3</text>
           </g>
 
           <!-- 4 · Lámpara UV-C -->
-          <g class="comp" data-comp="uv">
+          <g class="comp" data-comp="uv" tabindex="0" role="button" aria-label="Lámpara UV-C">
             <ellipse cx="234" cy="160" rx="16" ry="52" fill="#7b46c9" opacity=".45" filter="url(#glow)"/>
             <rect x="228" y="112" width="12" height="96" rx="6" fill="url(#uvGrad)"/>
             <text x="234" y="163" text-anchor="middle" transform="rotate(-90 234 160)" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="#fff" letter-spacing="1">UV-C</text>
@@ -298,9 +298,9 @@
           </g>
 
           <!-- 5 · Ventilador -->
-          <g class="comp" data-comp="fan">
+          <g class="comp" data-comp="fan" tabindex="0" role="button" aria-label="Ventilador">
             <circle cx="277" cy="160" r="28" fill="#12405f" stroke="#2f6f96" stroke-width="2"/>
-            <g fill="#6fe3e1">
+            <g class="fan-blades" fill="#6fe3e1">
               <path d="M277 160 q14 -20 20 -6 q-8 10 -20 6Z"/>
               <path d="M277 160 q20 14 6 20 q-10 -8 -6 -20Z"/>
               <path d="M277 160 q-14 20 -20 6 q8 -10 20 -6Z"/>
@@ -312,11 +312,14 @@
           </g>
 
           <!-- Flujo: aire limpio sale por la derecha -->
-          <g stroke="#38b6ff" stroke-width="3" stroke-linecap="round" fill="none">
+          <g class="flow flow--out" stroke="#38b6ff" stroke-width="3" stroke-linecap="round" fill="none">
             <path d="M314 150 h20"/><path d="M328 145 l6 5 l-6 5"/>
             <path d="M314 172 h20"/><path d="M328 167 l6 5 l-6 5"/>
           </g>
         </svg>
+        <button type="button" class="power-btn" id="power-btn" aria-pressed="false">
+          <span class="power-btn__dot"></span> <span class="power-btn__txt">Encender</span>
+        </button>
       </div>
 
       <div class="product__text">
@@ -335,8 +338,14 @@
           <li><button type="button" class="comp-item" data-comp="uv"><span class="comp-item__n">4</span> Lámpara UV-C</button></li>
           <li><button type="button" class="comp-item" data-comp="fan"><span class="comp-item__n">5</span> Ventilador</button></li>
         </ul>
-        <p class="comp-desc" id="comp-desc">Pasa el cursor (o toca) un componente para ver qué hace.</p>
         <p class="comp-flow">Flujo del aire: entra por la izquierda → 1 → 2 → 3 → 4 → 5 → sale limpio por la derecha.</p>
+
+        <div class="comp-detail" id="comp-detail" aria-live="polite">
+          <div class="comp-detail__empty">
+            <span aria-hidden="true">👆</span>
+            <p>Haz clic en un componente del purificador (o en un botón de arriba) para ver su información en detalle.</p>
+          </div>
+        </div>
 
         <ul class="checklist">
           <li>Equipo purificador de aire Air Box con patas.</li>
@@ -359,7 +368,7 @@
       </div>
 
       <div class="plans">
-        <article class="plan">
+        <article class="plan" data-tier="estandar">
           <h3>Zona estándar</h3>
           <p class="plan__price">Precio base</p>
           <p class="plan__desc">Hasta ~12 km de una sucursal. Zonas urbanas de fácil acceso.</p>
@@ -371,7 +380,7 @@
           <a href="#contacto" class="btn btn--ghost">Solicitar</a>
         </article>
 
-        <article class="plan plan--featured">
+        <article class="plan plan--featured" data-tier="intermedia">
           <span class="plan__badge">Más solicitado</span>
           <h3>Zona intermedia</h3>
           <p class="plan__price">Precio base + traslado</p>
@@ -384,7 +393,7 @@
           <a href="#contacto" class="btn btn--primary">Solicitar</a>
         </article>
 
-        <article class="plan">
+        <article class="plan" data-tier="dificil">
           <h3>Zona de difícil acceso</h3>
           <p class="plan__price">Cotización especial</p>
           <p class="plan__desc">A más de ~40 km de toda sucursal o de acceso complicado.</p>

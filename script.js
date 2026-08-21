@@ -171,6 +171,11 @@ if (window.L && document.getElementById("map")) {
     rPlan.setAttribute("data-tier", plan.tier);
     rDesc.textContent = plan.desc + " Te atiende la sucursal de " + sucursal.nombre + ".";
 
+    // Resalta la tarjeta de plan correspondiente en "Zonas y precios"
+    document.querySelectorAll(".plan").forEach((p) =>
+      p.classList.toggle("is-highlight", p.dataset.tier === plan.tier)
+    );
+
     // Botón de WhatsApp con los datos
     const texto =
       `Hola Air Box, quiero solicitar una visita.%0A` +
@@ -225,36 +230,110 @@ if (window.L && document.getElementById("map")) {
 // ===== Explorador de componentes del purificador =====
 (function () {
   const svg = document.querySelector(".purifier");
-  const desc = document.getElementById("comp-desc");
-  if (!svg || !desc) return;
+  const detail = document.getElementById("comp-detail");
+  if (!svg || !detail) return;
 
-  const items = document.querySelectorAll(".comp-item");
-  const groups = svg.querySelectorAll(".comp");
-  const textos = {
-    fan: "Ventilador — aspira el aire de la sala y lo hace circular por todos los filtros.",
-    uv: "Lámpara UV-C — elimina bacterias, virus y hongos con luz ultravioleta.",
-    carbon: "Carbón activado — atrapa olores, humo y gases del ambiente.",
-    hepa: "Filtro HEPA — retiene hasta el 99,97% del polvo, polen y partículas finas.",
-    prefiltro: "Pre-filtro — detiene el polvo grueso, los pelos y las pelusas más grandes.",
+  const items = Array.from(document.querySelectorAll(".comp-item"));
+  const groups = Array.from(svg.querySelectorAll(".comp"));
+  const powerBtn = document.getElementById("power-btn");
+
+  // Información detallada de cada componente
+  const DATOS = {
+    prefiltro: {
+      n: 1, nombre: "Pre-filtro", tag: "Primera barrera",
+      desc: "Es la primera malla por la que pasa el aire. Detiene las partículas más grandes para que los filtros finos no se saturen y duren más.",
+      hace: ["Atrapa polvo grueso y tierra", "Retiene pelos y pelusas", "Protege al filtro HEPA"],
+      eficiencia: "Partículas mayores a 10 micras",
+      mantenimiento: "Lavable: enjuágalo cada 2 semanas",
+    },
+    hepa: {
+      n: 2, nombre: "Filtro HEPA", tag: "El corazón del equipo",
+      desc: "Filtro plegado de alta eficiencia. Sus miles de fibras retienen las partículas finas que flotan en el aire y que no se ven a simple vista.",
+      hace: ["Polvo fino y polen", "Ácaros y caspa de mascotas", "Esporas de moho y humo fino"],
+      eficiencia: "Hasta 99,97% de partículas de 0,3 micras",
+      mantenimiento: "Reemplazar cada 6 a 12 meses",
+    },
+    carbon: {
+      n: 3, nombre: "Carbón activado", tag: "Adiós a los olores",
+      desc: "Capa de carbón con millones de poros microscópicos que absorben los gases y olores. Es lo que deja el ambiente con sensación de limpio.",
+      hace: ["Olores de cocina y mascotas", "Humo de cigarro", "Gases y compuestos (VOC)"],
+      eficiencia: "Absorbe gases y malos olores",
+      mantenimiento: "Reemplazar cada 6 meses aprox.",
+    },
+    uv: {
+      n: 4, nombre: "Lámpara UV-C", tag: "Desinfección",
+      desc: "Luz ultravioleta germicida que actúa sobre los microorganismos que pasan por el equipo, inactivándolos para que no se reproduzcan.",
+      hace: ["Bacterias", "Virus", "Hongos y moho"],
+      eficiencia: "Luz UV-C germicida (254 nm)",
+      mantenimiento: "Cambiar la lámpara cada ~1 año",
+    },
+    fan: {
+      n: 5, nombre: "Ventilador", tag: "El motor del aire",
+      desc: "Aspira el aire de la sala y lo empuja a través de todas las capas de filtros. Su velocidad define cuánto aire se limpia por hora.",
+      hace: ["Hace circular el aire de la sala", "Varias velocidades", "Distribuye el aire ya limpio"],
+      eficiencia: "Hasta ~3 renovaciones de aire por hora",
+      mantenimiento: "Sin mantenimiento; solo mantener limpio",
+    },
   };
-  const base = "Pasa el cursor (o toca) un componente para ver qué hace.";
 
-  function activar(comp) {
+  let selected = null;
+
+  function highlight(comp) {
     svg.classList.toggle("has-active", !!comp);
     groups.forEach((g) => g.classList.toggle("is-on", g.dataset.comp === comp));
     items.forEach((it) => it.classList.toggle("is-on", it.dataset.comp === comp));
-    desc.textContent = comp ? textos[comp] : base;
+  }
+
+  function renderDetail(comp) {
+    const d = DATOS[comp];
+    const lista = d.hace.map((t) => `<li>${t}</li>`).join("");
+    detail.innerHTML =
+      '<div class="comp-card">' +
+        '<div class="comp-card__head">' +
+          '<span class="comp-card__n">' + d.n + "</span>" +
+          "<div><h3>" + d.nombre + '</h3><span class="comp-card__tag">' + d.tag + "</span></div>" +
+        "</div>" +
+        '<p class="comp-card__desc">' + d.desc + "</p>" +
+        '<p class="comp-card__label">Qué elimina / hace</p>' +
+        '<ul class="comp-card__list">' + lista + "</ul>" +
+        '<div class="comp-card__stats">' +
+          '<div class="comp-stat"><span>Eficiencia</span><strong>' + d.eficiencia + "</strong></div>" +
+          '<div class="comp-stat"><span>Mantenimiento</span><strong>' + d.mantenimiento + "</strong></div>" +
+        "</div>" +
+      "</div>";
+  }
+
+  function select(comp) {
+    selected = comp;
+    highlight(comp);
+    renderDetail(comp);
+    items.forEach((it) => it.classList.toggle("is-selected", it.dataset.comp === comp));
+    groups.forEach((g) => g.classList.toggle("is-selected", g.dataset.comp === comp));
   }
 
   function bind(el) {
     const comp = el.dataset.comp;
-    el.addEventListener("mouseenter", () => activar(comp));
-    el.addEventListener("click", () => activar(comp));
-    el.addEventListener("focus", () => activar(comp));
+    el.addEventListener("mouseenter", () => highlight(comp));
+    el.addEventListener("click", () => select(comp));
+    el.addEventListener("focus", () => highlight(comp));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(comp); }
+    });
   }
   items.forEach(bind);
   groups.forEach(bind);
-  svg.addEventListener("mouseleave", () => activar(null));
+  svg.addEventListener("mouseleave", () => highlight(selected));
+
+  // Botón encender / apagar (anima ventilador y flujo de aire)
+  if (powerBtn) {
+    const txt = powerBtn.querySelector(".power-btn__txt");
+    powerBtn.addEventListener("click", () => {
+      const on = svg.classList.toggle("running");
+      powerBtn.setAttribute("aria-pressed", String(on));
+      powerBtn.classList.toggle("is-on", on);
+      if (txt) txt.textContent = on ? "Apagar" : "Encender";
+    });
+  }
 })();
 
 // ===== Animaciones de aparición al hacer scroll =====

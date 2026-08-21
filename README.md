@@ -50,8 +50,12 @@ cercana**:
 La sección **"Producto"** muestra el purificador **horizontal** en vista de corte
 (con patas y componentes internos). El aire entra por la izquierda y sale limpio
 por la derecha, pasando por: 1) pre-filtro, 2) filtro HEPA, 3) carbón activado,
-4) lámpara UV-C y 5) ventilador. Al pasar el cursor o tocar cada pieza (o su
-botón) se resalta en el dibujo y se explica qué hace.
+4) lámpara UV-C y 5) ventilador. Al pasar el cursor se resalta la pieza y, al
+**hacer clic** en un componente (en el dibujo o en su botón), se abre una
+**ficha detallada** con su descripción, qué elimina, su eficiencia y su
+mantenimiento. El botón **Encender** anima el ventilador y el flujo de aire.
+Además, al calcular una visita en el mapa se **resalta la tarjeta del plan**
+correspondiente en "Zonas y precios".
 
 ## Otras funciones
 
