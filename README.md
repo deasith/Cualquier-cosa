@@ -29,17 +29,27 @@ Abre `index.html` en cualquier navegador (doble clic). No necesita instalación.
    - `index.html` → enlace `https://wa.me/000000000000...` en la sección de contacto.
 2. **Datos de contacto:** teléfono, correo y horario en la sección "Contacto".
 3. **Precios:** ajusta los textos de la sección "Zonas y precios" si quieres montos concretos.
-4. **Ubicación de la base (mapa):** en `script.js`, cambia la constante `BASE`
-   (`lat`, `lng`) por las coordenadas reales desde donde sale Air Box. El mapa
-   calcula la distancia, el tiempo estimado y el plan desde ese punto.
+4. **Sucursales (mapa):** en `script.js`, edita la lista `SUCURSALES` (nombre,
+   `lat`, `lng`) para añadir, quitar o mover sucursales. La casa matriz lleva
+   `base: true`. El mapa calcula todo respecto a la sucursal más cercana.
 
 ## Mapa interactivo
 
 La sección **"Mapa"** usa [Leaflet](https://leafletjs.com/) con OpenStreetMap.
-Al hacer clic en cualquier punto, calcula:
+Hay sucursales en zonas estratégicas de Chile (Antofagasta, La Serena,
+Valparaíso, Santiago, **Penco/Concepción** como casa matriz, Temuco y Puerto
+Montt). Al hacer clic en cualquier punto, calcula respecto a la **sucursal más
+cercana**:
 
-- **Distancia** desde la base (fórmula de Haversine).
-- **Tiempo estimado** (15 min de preparación + trayecto a ~30 km/h).
-- **Plan sugerido:** ≤5 km estándar, ≤15 km intermedia, más lejos difícil acceso.
+- **Distancia** (fórmula de Haversine).
+- **Tiempo estimado** (15 min de preparación + trayecto a ~40 km/h).
+- **Plan sugerido:** ≤12 km estándar, ≤40 km intermedia, más lejos difícil acceso.
+
+## Producto (ilustración interactiva)
+
+La sección **"Producto"** muestra el purificador en vista de corte (con patas y
+componentes internos). Al pasar el cursor o tocar cada pieza —ventilador,
+lámpara UV-C, carbón activado, filtro HEPA y pre-filtro— se resalta en el dibujo
+y se explica qué hace.
 
 > Nota: el mapa necesita conexión a internet para cargar Leaflet y las calles.

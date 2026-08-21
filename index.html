@@ -181,34 +181,166 @@
   <!-- ===== PRODUCTO ===== -->
   <section class="section" id="producto">
     <div class="container product">
-      <div class="product__art" aria-hidden="true">
-        <div class="box">
-          <div class="box__lid"></div>
-          <div class="box__front">
-            <span class="box__brand">AIR&nbsp;BOX</span>
-            <span class="box__tag">Kit purificador</span>
-          </div>
-        </div>
-        <div class="manual">
-          <span class="manual__line"></span>
-          <span class="manual__line"></span>
-          <span class="manual__line short"></span>
-          <span class="manual__title">Instrucciones</span>
-        </div>
+      <div class="product__art">
+        <svg class="purifier" viewBox="0 0 400 470" role="img" aria-label="Purificador de aire Air Box con vista de corte de sus componentes internos">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#d9e6f1"/>
+            </linearGradient>
+            <linearGradient id="legGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#c2d1de"/>
+              <stop offset="1" stop-color="#8ba0b2"/>
+            </linearGradient>
+            <radialGradient id="uvGrad" cx="0.5" cy="0.5" r="0.6">
+              <stop offset="0" stop-color="#d7b6ff"/>
+              <stop offset="1" stop-color="#8a4be0"/>
+            </radialGradient>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="mesh" width="8" height="8" patternUnits="userSpaceOnUse">
+              <rect width="8" height="8" fill="#e6edf3"/>
+              <path d="M0 8 L8 0 M-2 2 L2 -2 M6 10 L10 6" stroke="#9fb6c8" stroke-width="1"/>
+            </pattern>
+            <pattern id="pleat" width="9" height="36" patternUnits="userSpaceOnUse">
+              <rect width="9" height="36" fill="#d6ebfa"/>
+              <line x1="4" y1="0" x2="4" y2="36" stroke="#2a93cf" stroke-width="1.6"/>
+            </pattern>
+            <pattern id="granule" width="12" height="12" patternUnits="userSpaceOnUse">
+              <rect width="12" height="12" fill="#26384c"/>
+              <circle cx="3" cy="4" r="1.7" fill="#4a637c"/>
+              <circle cx="9" cy="9" r="1.7" fill="#5b7690"/>
+              <circle cx="9" cy="3" r="1.4" fill="#3d566e"/>
+              <circle cx="4" cy="10" r="1.4" fill="#54708a"/>
+            </pattern>
+          </defs>
+
+          <!-- Sombra -->
+          <ellipse cx="200" cy="446" rx="120" ry="14" fill="rgba(11,42,74,.12)"/>
+
+          <!-- Patas -->
+          <g>
+            <rect x="112" y="402" width="30" height="26" rx="7" fill="url(#legGrad)" transform="rotate(-8 127 415)"/>
+            <rect x="258" y="402" width="30" height="26" rx="7" fill="url(#legGrad)" transform="rotate(8 273 415)"/>
+          </g>
+
+          <!-- Cuerpo -->
+          <rect x="80" y="44" width="240" height="366" rx="42" fill="url(#bodyGrad)" stroke="#d3e2ef" stroke-width="2"/>
+          <!-- Rejilla superior -->
+          <rect x="98" y="56" width="204" height="24" rx="12" fill="#eef5fb" stroke="#dbe8f2"/>
+          <g stroke="#c9dced" stroke-width="1.4">
+            <line x1="118" y1="61" x2="118" y2="75"/><line x1="140" y1="61" x2="140" y2="75"/>
+            <line x1="162" y1="61" x2="162" y2="75"/><line x1="184" y1="61" x2="184" y2="75"/>
+            <line x1="216" y1="61" x2="216" y2="75"/><line x1="238" y1="61" x2="238" y2="75"/>
+            <line x1="260" y1="61" x2="260" y2="75"/><line x1="282" y1="61" x2="282" y2="75"/>
+          </g>
+
+          <!-- Panel de control -->
+          <text x="288" y="100" text-anchor="end" font-family="Poppins, sans-serif" font-size="7" letter-spacing="1" fill="#7c93a8">POWER · UV-C · TIMER</text>
+          <g fill="none" stroke="#8aa2b6" stroke-width="1.6" stroke-linecap="round">
+            <rect x="230" y="106" width="20" height="20" rx="6"/>
+            <path d="M240 111 v5 M236.5 112.5 a5 5 0 1 0 7 0" stroke-width="1.4"/>
+            <rect x="256" y="106" width="20" height="20" rx="6"/>
+            <path d="M266 116 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M266 112 v-0.1 M266 120 v.1 M262 116 h-.1 M270 116 h.1" stroke-width="1.2"/>
+            <rect x="282" y="106" width="20" height="20" rx="6"/>
+            <circle cx="292" cy="116" r="5"/><path d="M292 113 v3 l2 2"/>
+          </g>
+
+          <!-- Rejilla lateral -->
+          <rect x="299" y="150" width="14" height="176" rx="7" fill="#c6d5e2"/>
+          <g stroke="#aec1d1" stroke-width="1.3">
+            <line x1="303" y1="160" x2="309" y2="160"/><line x1="303" y1="176" x2="309" y2="176"/>
+            <line x1="303" y1="192" x2="309" y2="192"/><line x1="303" y1="208" x2="309" y2="208"/>
+            <line x1="303" y1="224" x2="309" y2="224"/><line x1="303" y1="240" x2="309" y2="240"/>
+            <line x1="303" y1="256" x2="309" y2="256"/><line x1="303" y1="272" x2="309" y2="272"/>
+            <line x1="303" y1="288" x2="309" y2="288"/><line x1="303" y1="304" x2="309" y2="304"/>
+          </g>
+
+          <!-- Logo -->
+          <text x="200" y="392" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="800" font-size="20" letter-spacing="1" fill="#0b2a4a">AIR<tspan fill="#1f8ecf">BOX</tspan></text>
+
+          <!-- ===== Ventana de corte (vista interior) ===== -->
+          <rect x="104" y="116" width="152" height="250" rx="18" fill="#0b2a4a"/>
+          <rect x="104" y="116" width="152" height="250" rx="18" fill="none" stroke="#38b6ff" stroke-width="2" stroke-dasharray="5 5"/>
+
+          <!-- Flujo: aire sucio entra abajo -->
+          <g stroke="#8aa0b3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".9">
+            <path d="M150 374 v-16"/><path d="M145 363 l5 -6 l5 6"/>
+            <path d="M205 374 v-16"/><path d="M200 363 l5 -6 l5 6"/>
+          </g>
+
+          <!-- 5 · Pre-filtro -->
+          <g class="comp" data-comp="prefiltro">
+            <rect x="116" y="322" width="126" height="30" rx="6" fill="url(#mesh)" stroke="#b7cadb"/>
+            <g><circle cx="92" cy="337" r="11" fill="#1f8ecf"/><text x="92" y="341" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#fff">5</text><line x1="103" y1="337" x2="116" y2="337" stroke="#1f8ecf" stroke-width="1.6"/></g>
+          </g>
+
+          <!-- 4 · HEPA -->
+          <g class="comp" data-comp="hepa">
+            <rect x="116" y="280" width="126" height="36" rx="6" fill="url(#pleat)" stroke="#8ec3e8"/>
+            <g><circle cx="92" cy="298" r="11" fill="#1f8ecf"/><text x="92" y="302" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#fff">4</text><line x1="103" y1="298" x2="116" y2="298" stroke="#1f8ecf" stroke-width="1.6"/></g>
+          </g>
+
+          <!-- 3 · Carbón activado -->
+          <g class="comp" data-comp="carbon">
+            <rect x="116" y="244" width="126" height="30" rx="6" fill="url(#granule)" stroke="#3a4f63"/>
+            <g><circle cx="92" cy="259" r="11" fill="#1f8ecf"/><text x="92" y="263" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#fff">3</text><line x1="103" y1="259" x2="116" y2="259" stroke="#1f8ecf" stroke-width="1.6"/></g>
+          </g>
+
+          <!-- 2 · Lámpara UV-C -->
+          <g class="comp" data-comp="uv">
+            <ellipse cx="179" cy="222" rx="60" ry="14" fill="#7b46c9" opacity=".45" filter="url(#glow)"/>
+            <rect x="122" y="215" width="114" height="14" rx="7" fill="url(#uvGrad)"/>
+            <text x="179" y="225" text-anchor="middle" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="#fff" letter-spacing="1">UV-C</text>
+            <g><circle cx="92" cy="222" r="11" fill="#1f8ecf"/><text x="92" y="226" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#fff">2</text><line x1="103" y1="222" x2="122" y2="222" stroke="#1f8ecf" stroke-width="1.6"/></g>
+          </g>
+
+          <!-- 1 · Ventilador -->
+          <g class="comp" data-comp="fan">
+            <circle cx="180" cy="172" r="28" fill="#12405f" stroke="#2f6f96" stroke-width="2"/>
+            <g fill="#6fe3e1">
+              <path d="M180 172 q14 -20 20 -6 q-8 10 -20 6Z"/>
+              <path d="M180 172 q20 14 6 20 q-10 -8 -6 -20Z"/>
+              <path d="M180 172 q-14 20 -20 6 q8 -10 20 -6Z"/>
+              <path d="M180 172 q-20 -14 -6 -20 q10 8 6 20Z"/>
+            </g>
+            <circle cx="180" cy="172" r="5" fill="#eaf6ff"/>
+            <g><circle cx="92" cy="172" r="11" fill="#1f8ecf"/><text x="92" y="176" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="700" fill="#fff">1</text><line x1="103" y1="172" x2="152" y2="172" stroke="#1f8ecf" stroke-width="1.6"/></g>
+          </g>
+
+          <!-- Flujo: aire limpio sale arriba -->
+          <g stroke="#38b6ff" stroke-width="3" stroke-linecap="round" fill="none">
+            <path d="M166 146 v-16"/><path d="M161 135 l5 -6 l5 6"/>
+            <path d="M194 146 v-16"/><path d="M189 135 l5 -6 l5 6"/>
+          </g>
+        </svg>
       </div>
 
       <div class="product__text">
         <span class="pill pill--soft">El producto</span>
-        <h2>Tu kit Air Box para seguir respirando limpio</h2>
+        <h2>Conoce por dentro tu purificador Air Box</h2>
         <p>
-          Además del servicio a domicilio, te ofrecemos nuestro producto: el equipo
-          purificador junto con un instructivo claro de cómo funciona y cómo usarlo
-          en tu día a día.
+          Además del servicio a domicilio, te llevamos el equipo purificador con su
+          instructivo. Toca cada componente para ver cómo el aire pasa por todos los
+          filtros hasta salir limpio.
         </p>
+
+        <ul class="comp-explorer">
+          <li><button type="button" class="comp-item" data-comp="fan"><span class="comp-item__n">1</span> Ventilador</button></li>
+          <li><button type="button" class="comp-item" data-comp="uv"><span class="comp-item__n">2</span> Lámpara UV-C</button></li>
+          <li><button type="button" class="comp-item" data-comp="carbon"><span class="comp-item__n">3</span> Carbón activado</button></li>
+          <li><button type="button" class="comp-item" data-comp="hepa"><span class="comp-item__n">4</span> Filtro HEPA</button></li>
+          <li><button type="button" class="comp-item" data-comp="prefiltro"><span class="comp-item__n">5</span> Pre-filtro</button></li>
+        </ul>
+        <p class="comp-desc" id="comp-desc">Pasa el cursor (o toca) un componente para ver qué hace.</p>
+        <p class="comp-flow">Flujo del aire: entra por abajo → 5 → 4 → 3 → 2 → 1 → sale limpio por arriba.</p>
+
         <ul class="checklist">
-          <li>Equipo purificador de aire Air Box.</li>
+          <li>Equipo purificador de aire Air Box con patas.</li>
           <li>Instrucciones fáciles de cómo funciona el producto.</li>
-          <li>Guía de mantenimiento para prolongar su vida útil.</li>
+          <li>Guía de mantenimiento y cambio de filtros.</li>
           <li>Soporte por WhatsApp ante cualquier duda.</li>
         </ul>
         <a href="#contacto" class="btn btn--primary btn--lg">Quiero mi kit</a>
@@ -229,7 +361,7 @@
         <article class="plan">
           <h3>Zona estándar</h3>
           <p class="plan__price">Precio base</p>
-          <p class="plan__desc">Zonas urbanas de fácil acceso dentro de la ciudad.</p>
+          <p class="plan__desc">Hasta ~12 km de una sucursal. Zonas urbanas de fácil acceso.</p>
           <ul class="checklist">
             <li>Visita a domicilio</li>
             <li>Proceso de purificación</li>
@@ -242,7 +374,7 @@
           <span class="plan__badge">Más solicitado</span>
           <h3>Zona intermedia</h3>
           <p class="plan__price">Precio base + traslado</p>
-          <p class="plan__desc">Zonas algo más alejadas o con acceso limitado.</p>
+          <p class="plan__desc">Entre ~12 y ~40 km de una sucursal, o con acceso limitado.</p>
           <ul class="checklist">
             <li>Todo lo de la zona estándar</li>
             <li>Ajuste por distancia</li>
@@ -254,7 +386,7 @@
         <article class="plan">
           <h3>Zona de difícil acceso</h3>
           <p class="plan__price">Cotización especial</p>
-          <p class="plan__desc">Lugares apartados o de acceso complicado.</p>
+          <p class="plan__desc">A más de ~40 km de toda sucursal o de acceso complicado.</p>
           <ul class="checklist">
             <li>Todo lo anterior</li>
             <li>Costo ajustado por acceso</li>
@@ -307,7 +439,7 @@
             </a>
           </div>
 
-          <p class="mapinfo__hint">📍 El marcador azul es nuestra base. La estimación es referencial; el precio final se confirma por WhatsApp.</p>
+          <p class="mapinfo__hint">📍 El punto azul grande es la casa matriz (Penco). Los puntos celestes son sucursales. La estimación es referencial; el precio final se confirma por WhatsApp.</p>
         </aside>
       </div>
     </div>

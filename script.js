@@ -50,23 +50,41 @@ form.addEventListener("submit", (e) => {
 });
 
 // ===== Mapa interactivo (Leaflet) =====
-// Cambia BASE por la ubicación real de Air Box [latitud, longitud].
-const BASE = { lat: -12.0464, lng: -77.0428, nombre: "Base Air Box" }; // Ej.: Lima, Perú
+// Sucursales de Air Box en zonas estratégicas de Chile.
+// La casa matriz está en Penco (Concepción, Región del Biobío).
+const SUCURSALES = [
+  { nombre: "Antofagasta", lat: -23.6509, lng: -70.3975 },
+  { nombre: "La Serena", lat: -29.9027, lng: -71.2519 },
+  { nombre: "Valparaíso", lat: -33.0472, lng: -71.6127 },
+  { nombre: "Santiago", lat: -33.4489, lng: -70.6693 },
+  { nombre: "Penco · Casa matriz", lat: -36.7402, lng: -72.9954, base: true },
+  { nombre: "Temuco", lat: -38.7359, lng: -72.5904 },
+  { nombre: "Puerto Montt", lat: -41.4693, lng: -72.9424 },
+];
 
 if (window.L && document.getElementById("map")) {
-  const map = L.map("map").setView([BASE.lat, BASE.lng], 12);
+  const map = L.map("map", { scrollWheelZoom: false });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap",
     maxZoom: 19,
   }).addTo(map);
 
-  // Marcador de la base
-  L.circleMarker([BASE.lat, BASE.lng], {
-    radius: 9, color: "#0f4c81", fillColor: "#38b6ff", fillOpacity: 1, weight: 3,
-  })
-    .addTo(map)
-    .bindPopup("<b>" + BASE.nombre + "</b><br>Salimos desde aquí");
+  // Marcadores de las sucursales
+  const puntosMapa = [];
+  SUCURSALES.forEach((s) => {
+    puntosMapa.push([s.lat, s.lng]);
+    L.circleMarker([s.lat, s.lng], {
+      radius: s.base ? 10 : 7,
+      color: s.base ? "#0b2a4a" : "#0f4c81",
+      fillColor: s.base ? "#38b6ff" : "#6fe3e1",
+      fillOpacity: 1,
+      weight: 3,
+    })
+      .addTo(map)
+      .bindPopup("<b>Air Box " + s.nombre + "</b>");
+  });
+  map.fitBounds(L.latLngBounds(puntosMapa).pad(0.12));
 
   let clienteMarker = null;
   let lineaRuta = null;
@@ -92,45 +110,56 @@ if (window.L && document.getElementById("map")) {
     return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
   }
 
-  // Define plan según la distancia
+  // Encuentra la sucursal más cercana al punto
+  function sucursalMasCercana(punto) {
+    let best = SUCURSALES[0];
+    let min = Infinity;
+    SUCURSALES.forEach((s) => {
+      const d = distanciaKm(s, punto);
+      if (d < min) { min = d; best = s; }
+    });
+    return { sucursal: best, km: min };
+  }
+
+  // Define plan según la distancia a la sucursal más cercana
   function calcularPlan(km) {
-    if (km <= 5) {
+    if (km <= 12) {
       return {
         tier: "estandar",
         nombre: "Zona estándar",
-        desc: "Zona de fácil acceso. Se aplica el precio base.",
+        desc: "Estás cerca de una sucursal. Se aplica el precio base.",
       };
     }
-    if (km <= 15) {
+    if (km <= 40) {
       return {
         tier: "intermedia",
         nombre: "Zona intermedia",
-        desc: "Un poco más lejos. Precio base + un ajuste por traslado.",
+        desc: "Un poco más lejos de la sucursal: precio base + un ajuste por traslado.",
       };
     }
     return {
       tier: "dificil",
       nombre: "Zona de difícil acceso",
-      desc: "Zona apartada. El costo se ajusta por el acceso (cotización especial).",
+      desc: "Zona apartada de toda sucursal. El costo se ajusta por el acceso (cotización especial).",
     };
   }
 
   map.on("click", (e) => {
     const punto = { lat: e.latlng.lat, lng: e.latlng.lng };
-    const km = distanciaKm(BASE, punto);
+    const { sucursal, km } = sucursalMasCercana(punto);
 
-    // Tiempo estimado: 15 min de preparación + trayecto a ~30 km/h
-    const minutos = Math.round(15 + (km / 30) * 60);
+    // Tiempo estimado: 15 min de preparación + trayecto a ~40 km/h
+    const minutos = Math.round(15 + (km / 40) * 60);
     const plan = calcularPlan(km);
 
     // Marcador del cliente
     if (clienteMarker) map.removeLayer(clienteMarker);
     clienteMarker = L.marker([punto.lat, punto.lng]).addTo(map).bindPopup("Tu ubicación").openPopup();
 
-    // Línea entre base y cliente
+    // Línea entre la sucursal más cercana y el cliente
     if (lineaRuta) map.removeLayer(lineaRuta);
     lineaRuta = L.polyline(
-      [[BASE.lat, BASE.lng], [punto.lat, punto.lng]],
+      [[sucursal.lat, sucursal.lng], [punto.lat, punto.lng]],
       { color: "#1f8ecf", weight: 3, dashArray: "6 8" }
     ).addTo(map);
 
@@ -141,11 +170,12 @@ if (window.L && document.getElementById("map")) {
     rTime.textContent = "~" + minutos + " min";
     rPlan.textContent = plan.nombre;
     rPlan.setAttribute("data-tier", plan.tier);
-    rDesc.textContent = plan.desc;
+    rDesc.textContent = plan.desc + " Te atiende la sucursal de " + sucursal.nombre + ".";
 
     // Botón de WhatsApp con los datos
     const texto =
       `Hola Air Box, quiero solicitar una visita.%0A` +
+      `Sucursal más cercana: ${encodeURIComponent(sucursal.nombre)}%0A` +
       `Distancia aprox.: ${km.toFixed(1)} km%0A` +
       `Tiempo estimado: ~${minutos} min%0A` +
       `Plan: ${encodeURIComponent(plan.nombre)}%0A` +
@@ -161,6 +191,41 @@ if (window.L && document.getElementById("map")) {
   });
   mapObserver.observe(document.getElementById("map"));
 }
+
+// ===== Explorador de componentes del purificador =====
+(function () {
+  const svg = document.querySelector(".purifier");
+  const desc = document.getElementById("comp-desc");
+  if (!svg || !desc) return;
+
+  const items = document.querySelectorAll(".comp-item");
+  const groups = svg.querySelectorAll(".comp");
+  const textos = {
+    fan: "Ventilador — aspira el aire de la sala y lo hace circular por todos los filtros.",
+    uv: "Lámpara UV-C — elimina bacterias, virus y hongos con luz ultravioleta.",
+    carbon: "Carbón activado — atrapa olores, humo y gases del ambiente.",
+    hepa: "Filtro HEPA — retiene hasta el 99,97% del polvo, polen y partículas finas.",
+    prefiltro: "Pre-filtro — detiene el polvo grueso, los pelos y las pelusas más grandes.",
+  };
+  const base = "Pasa el cursor (o toca) un componente para ver qué hace.";
+
+  function activar(comp) {
+    svg.classList.toggle("has-active", !!comp);
+    groups.forEach((g) => g.classList.toggle("is-on", g.dataset.comp === comp));
+    items.forEach((it) => it.classList.toggle("is-on", it.dataset.comp === comp));
+    desc.textContent = comp ? textos[comp] : base;
+  }
+
+  function bind(el) {
+    const comp = el.dataset.comp;
+    el.addEventListener("mouseenter", () => activar(comp));
+    el.addEventListener("click", () => activar(comp));
+    el.addEventListener("focus", () => activar(comp));
+  }
+  items.forEach(bind);
+  groups.forEach(bind);
+  svg.addEventListener("mouseleave", () => activar(null));
+})();
 
 // ===== Animaciones de aparición al hacer scroll =====
 const revealEls = document.querySelectorAll(
