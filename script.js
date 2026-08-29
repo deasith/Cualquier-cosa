@@ -338,7 +338,7 @@ if (window.L && document.getElementById("map")) {
 
 // ===== Animaciones de aparición al hacer scroll =====
 const revealEls = document.querySelectorAll(
-  ".card, .timeline__item, .plan, .section__head, .product__text, .product__art, .contact__form, .mapinfo"
+  ".card, .timeline__item, .plan, .section__head, .product__text, .product__art, .contact__form, .mapinfo, .vs__card, .sim, .ba"
 );
 revealEls.forEach((el) => el.classList.add("reveal"));
 
@@ -383,3 +383,120 @@ const observer = new IntersectionObserver(
 );
 
 sections.forEach((s) => observer.observe(s));
+
+// ===== Partículas del hero =====
+(function () {
+  const canvas = document.querySelector(".hero__particles");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w = 0, h = 0, particles = [];
+  const mouse = { x: -9999, y: -9999 };
+
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+    const count = Math.min(70, Math.floor(w / 16));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2.5 + 1,
+      vy: -(Math.random() * 0.4 + 0.1),
+      vx: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.5 + 0.2,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach((p) => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(180, 230, 255," + p.a + ")";
+      ctx.fill();
+    });
+  }
+
+  function tick() {
+    particles.forEach((p) => {
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 6400) {
+        const dist = Math.sqrt(d2) + 1;
+        const f = ((6400 - d2) / 6400) * 0.8;
+        p.x += (dx / dist) * f;
+        p.y += (dy / dist) * f;
+      }
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+    });
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  const hero = canvas.closest(".hero");
+  if (hero) {
+    hero.addEventListener("pointermove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener("pointerleave", () => { mouse.x = -9999; mouse.y = -9999; });
+  }
+  if (reduce) draw();
+  else tick();
+})();
+
+// ===== Antes y después (comparador) =====
+(function () {
+  const range = document.getElementById("ba-range");
+  const before = document.getElementById("ba-before");
+  const divider = document.getElementById("ba-divider");
+  if (!range || !before || !divider) return;
+  function update() {
+    const v = range.value;
+    before.style.width = v + "%";
+    divider.style.left = v + "%";
+  }
+  range.addEventListener("input", update);
+  update();
+})();
+
+// ===== Simulador de purificación =====
+(function () {
+  const m2 = document.getElementById("sim-m2");
+  if (!m2) return;
+  const m2out = document.getElementById("sim-m2out");
+  const spds = Array.from(document.querySelectorAll(".sim__spd"));
+  const outVol = document.getElementById("sim-vol");
+  const outAch = document.getElementById("sim-ach");
+  const outTime = document.getElementById("sim-time");
+  let cadr = 220; // capacidad del equipo en m³/h
+
+  function calc() {
+    const area = Number(m2.value);
+    const vol = area * 2.5;                       // volumen de aire (altura 2,5 m)
+    const ach = cadr / vol;                       // renovaciones de aire por hora
+    const minutos = Math.round((3 / ach) * 60);   // 3 renovaciones = purificación completa
+    m2out.textContent = area + " m²";
+    outVol.textContent = Math.round(vol) + " m³";
+    outAch.textContent = ach.toFixed(1) + " /h";
+    outTime.textContent = "≈ " + minutos + " min";
+  }
+
+  m2.addEventListener("input", calc);
+  spds.forEach((b) =>
+    b.addEventListener("click", () => {
+      spds.forEach((x) => x.classList.remove("is-active"));
+      b.classList.add("is-active");
+      cadr = Number(b.dataset.cadr);
+      calc();
+    })
+  );
+  calc();
+})();

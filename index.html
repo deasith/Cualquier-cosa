@@ -31,10 +31,12 @@
 
       <nav class="nav__links" aria-label="Navegación principal">
         <a href="#servicio">Servicio</a>
-        <a href="#proceso">Cómo funciona</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#beneficios">Beneficios</a>
         <a href="#producto">Producto</a>
         <a href="#mapa">Mapa</a>
-        <a href="#zonas">Zonas y precios</a>
+        <a href="#zonas">Zonas</a>
+        <a href="#simulador">Simulador</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contacto</a>
       </nav>
@@ -52,6 +54,7 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero">
+    <canvas class="hero__particles" aria-hidden="true"></canvas>
     <div class="container hero__inner">
       <div class="hero__text">
         <span class="pill">Aire limpio a domicilio</span>
@@ -178,6 +181,50 @@
           </div>
         </li>
       </ol>
+    </div>
+  </section>
+
+  <!-- ===== BENEFICIOS ===== -->
+  <section class="section" id="beneficios">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Beneficios</span>
+        <h2>Un aire limpio se nota en tu salud</h2>
+        <p>Respirar aire purificado todos los días trae ventajas reales para ti y tu familia.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 8a4 4 0 0 0-4 4M12 8a4 4 0 0 1 4 4M8 12H4M20 12h-4M12 12v10"/><circle cx="12" cy="12" r="1.5"/></svg></div>
+          <h3>Menos alergias</h3>
+          <p>Reduce el polen, el polvo y los ácaros que provocan estornudos y picazón.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></div>
+          <h3>Mejor sueño</h3>
+          <p>Un ambiente limpio ayuda a dormir más profundo y descansar mejor.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Menos gérmenes</h3>
+          <p>La lámpara UV-C ayuda a inactivar bacterias, virus y hongos del aire.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2 2 0 1 0-2-2M3 12h15a2 2 0 1 1-2 2M3 16h9a2 2 0 1 1-2 2"/></svg></div>
+          <h3>Sin malos olores</h3>
+          <p>El carbón activado elimina olores de cocina, humo y mascotas.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+          <h3>Ideal para niños y mayores</h3>
+          <p>Cuida a quienes son más sensibles a la contaminación del aire.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14a5 5 0 1 0-6 0 3 3 0 0 1 1 2v1h4v-1a3 3 0 0 1 1-2Z"/><path d="M10 21h4"/></svg></div>
+          <h3>Más concentración</h3>
+          <p>Un aire más puro mejora la energía y el rendimiento en casa o el trabajo.</p>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -409,6 +456,67 @@
     </div>
   </section>
 
+  <!-- ===== ANTES Y DESPUÉS ===== -->
+  <section class="section section--alt" id="antes-despues">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <span class="pill pill--soft">Antes y después</span>
+        <h2>Mira la diferencia</h2>
+        <p>Desliza el control para comparar el aire de un ambiente antes y después de Air Box.</p>
+      </div>
+
+      <div class="ba" id="ba">
+        <div class="ba__scene ba__after">
+          <span class="ba__emoji" aria-hidden="true">😀</span>
+          <span class="ba__label ba__label--after">Después · aire limpio</span>
+        </div>
+        <div class="ba__scene ba__before" id="ba-before">
+          <span class="ba__emoji" aria-hidden="true">😷</span>
+          <span class="ba__label ba__label--before">Antes · aire contaminado</span>
+        </div>
+        <div class="ba__divider" id="ba-divider"><span class="ba__grip" aria-hidden="true">⇔</span></div>
+        <input type="range" class="ba__range" id="ba-range" min="0" max="100" value="50" aria-label="Comparar antes y después" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPARACIÓN ===== -->
+  <section class="section" id="comparacion">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Comparación</span>
+        <h2>Con Air Box vs. sin Air Box</h2>
+        <p>Esta es la diferencia en el día a día de tu hogar o negocio.</p>
+      </div>
+
+      <div class="vs">
+        <article class="vs__card vs__card--bad">
+          <h3>😕 Sin Air Box</h3>
+          <ul class="vs__list vs__list--bad">
+            <li>Polvo y ácaros en el ambiente</li>
+            <li>Malos olores que se quedan</li>
+            <li>Más estornudos y alergias</li>
+            <li>Bacterias y virus en el aire</li>
+            <li>Sensación de aire pesado</li>
+          </ul>
+        </article>
+
+        <div class="vs__mid" aria-hidden="true">VS</div>
+
+        <article class="vs__card vs__card--good">
+          <h3>😃 Con Air Box</h3>
+          <ul class="vs__list vs__list--good">
+            <li>Aire filtrado y libre de polvo</li>
+            <li>Ambiente con olor a limpio</li>
+            <li>Menos alergias y estornudos</li>
+            <li>Gérmenes reducidos con UV-C</li>
+            <li>Aire fresco y ligero</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== MAPA INTERACTIVO ===== -->
   <section class="section section--alt" id="mapa">
     <div class="container">
@@ -454,6 +562,40 @@
 
           <p class="mapinfo__hint">📍 El punto azul grande es la casa matriz (Penco). Los puntos celestes son sucursales. La estimación es referencial; el precio final se confirma por WhatsApp.</p>
         </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SIMULADOR ===== -->
+  <section class="section section--alt" id="simulador">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <span class="pill pill--soft">Simulador</span>
+        <h2>¿Cuánto demora en purificar tu sala?</h2>
+        <p>Elige el tamaño de tu espacio y la velocidad del equipo para estimar el tiempo.</p>
+      </div>
+
+      <div class="sim">
+        <div class="sim__controls">
+          <label class="sim__field">
+            <span>Tamaño de la sala: <strong id="sim-m2out">25 m²</strong></span>
+            <input type="range" id="sim-m2" min="6" max="80" value="25" />
+          </label>
+
+          <div class="sim__speed" role="group" aria-label="Velocidad del equipo">
+            <span class="sim__speed-label">Velocidad:</span>
+            <button type="button" class="sim__spd" data-cadr="120">Baja</button>
+            <button type="button" class="sim__spd is-active" data-cadr="220">Media</button>
+            <button type="button" class="sim__spd" data-cadr="320">Alta</button>
+          </div>
+        </div>
+
+        <div class="sim__result">
+          <div class="sim__stat"><span>Volumen de aire</span><strong id="sim-vol">—</strong></div>
+          <div class="sim__stat"><span>Renovaciones por hora</span><strong id="sim-ach">—</strong></div>
+          <div class="sim__stat sim__stat--main"><span>Purificación completa</span><strong id="sim-time">—</strong></div>
+        </div>
+        <p class="note">Estimación referencial (altura de sala: 2,5 m; “purificación completa” ≈ 3 renovaciones de aire).</p>
       </div>
     </div>
   </section>

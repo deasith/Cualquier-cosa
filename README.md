@@ -62,6 +62,12 @@ correspondiente en "Zonas y precios".
 - **Usar mi ubicación:** botón en el mapa que usa la geolocalización del
   navegador para ubicarte automáticamente (requiere HTTPS, p. ej. GitHub Pages).
 - **Preguntas frecuentes:** sección con acordeón.
+- **Partículas animadas** en el inicio (reaccionan al cursor).
+- **Beneficios para la salud:** tarjetas con íconos.
+- **Antes y después:** comparador deslizable del aire.
+- **Comparación** con Air Box vs. sin Air Box.
+- **Simulador:** calcula el tiempo de purificación según el tamaño de la sala y la
+  velocidad del equipo.
 - Animaciones al hacer scroll y menú responsivo para el celular.
 
 > Nota: el mapa necesita conexión a internet para cargar Leaflet y las calles.
