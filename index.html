@@ -466,14 +466,67 @@
       </div>
 
       <div class="ba" id="ba">
+        <!-- Escena base (aire limpio) -->
         <div class="ba__scene ba__after">
-          <span class="ba__emoji" aria-hidden="true">😀</span>
-          <span class="ba__label ba__label--after">Después · aire limpio</span>
+          <svg class="ba__room" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Sala de estar con aire limpio">
+            <defs>
+              <linearGradient id="baFloor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#d6b17e"/><stop offset="1" stop-color="#b98f57"/>
+              </linearGradient>
+              <linearGradient id="baSky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#cfeafe"/><stop offset="1" stop-color="#eaf7ff"/>
+              </linearGradient>
+            </defs>
+            <!-- Pared y piso -->
+            <rect x="0" y="0" width="400" height="212" fill="#eaeff4"/>
+            <rect x="0" y="205" width="400" height="8" fill="#dfe5ec"/>
+            <rect x="0" y="212" width="400" height="88" fill="url(#baFloor)"/>
+            <g stroke="#a9834f" stroke-width="1.5" opacity=".5">
+              <line x1="70" y1="212" x2="55" y2="300"/><line x1="150" y1="212" x2="145" y2="300"/>
+              <line x1="235" y1="212" x2="245" y2="300"/><line x1="320" y1="212" x2="340" y2="300"/>
+            </g>
+            <ellipse cx="205" cy="272" rx="150" ry="24" fill="#e7dcc8" stroke="#d6c7ab" stroke-width="2"/>
+            <!-- Ventana -->
+            <rect x="36" y="50" width="120" height="116" rx="5" fill="#ffffff"/>
+            <rect x="44" y="58" width="104" height="100" fill="url(#baSky)"/>
+            <circle cx="128" cy="86" r="13" fill="#ffe08a"/>
+            <g fill="#ffffff" opacity=".92">
+              <ellipse cx="72" cy="104" rx="18" ry="9"/><ellipse cx="86" cy="99" rx="13" ry="8"/><ellipse cx="60" cy="99" rx="11" ry="7"/>
+            </g>
+            <rect x="94" y="58" width="4" height="100" fill="#ffffff"/>
+            <rect x="44" y="106" width="104" height="4" fill="#ffffff"/>
+            <rect x="30" y="166" width="132" height="8" rx="2" fill="#e1e7ee"/>
+            <!-- Cuadro -->
+            <rect x="250" y="62" width="78" height="56" rx="3" fill="#ffffff"/>
+            <rect x="256" y="68" width="66" height="44" fill="#d6effb"/>
+            <path d="M256 112 L280 88 L296 104 L312 84 L322 112 Z" fill="#8fd0a0"/>
+            <circle cx="308" cy="80" r="6" fill="#ffd66b"/>
+            <!-- Planta -->
+            <path d="M170 178 h30 l-4 30 h-22 Z" fill="#c9743f"/>
+            <g fill="#4f9d5d">
+              <path d="M185 178 C170 150 176 140 186 132 C190 150 192 164 185 178 Z"/>
+              <path d="M185 178 C200 150 196 138 188 130 C182 150 180 164 185 178 Z"/>
+              <path d="M185 178 C168 168 160 158 158 148 C176 152 184 162 185 178 Z"/>
+            </g>
+            <!-- Sofá -->
+            <rect x="206" y="150" width="152" height="42" rx="12" fill="#88abc2"/>
+            <rect x="200" y="160" width="22" height="58" rx="10" fill="#7c9db4"/>
+            <rect x="340" y="160" width="22" height="58" rx="10" fill="#7c9db4"/>
+            <rect x="204" y="176" width="156" height="42" rx="12" fill="#96b5ca"/>
+            <rect x="216" y="170" width="64" height="20" rx="8" fill="#a9c4d6"/>
+            <rect x="284" y="170" width="64" height="20" rx="8" fill="#a9c4d6"/>
+            <rect x="224" y="150" width="26" height="26" rx="6" fill="#f0a97c" transform="rotate(-8 237 163)"/>
+            <rect x="316" y="150" width="26" height="26" rx="6" fill="#6fe3e1" transform="rotate(8 329 163)"/>
+          </svg>
+          <span class="ba__label ba__label--after">☀️ Después · aire limpio</span>
         </div>
+
+        <!-- Capa "antes": neblina + polvo sobre la misma sala -->
         <div class="ba__scene ba__before" id="ba-before">
-          <span class="ba__emoji" aria-hidden="true">😷</span>
-          <span class="ba__label ba__label--before">Antes · aire contaminado</span>
+          <div class="ba__dust" aria-hidden="true"></div>
+          <span class="ba__label ba__label--before">🌫️ Antes · aire contaminado</span>
         </div>
+
         <div class="ba__divider" id="ba-divider"><span class="ba__grip" aria-hidden="true">⇔</span></div>
         <input type="range" class="ba__range" id="ba-range" min="0" max="100" value="50" aria-label="Comparar antes y después" />
       </div>
