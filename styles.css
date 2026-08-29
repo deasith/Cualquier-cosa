@@ -252,7 +252,7 @@ a { color: inherit; text-decoration: none; }
 }
 .plan.is-highlight { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgba(31, 142, 207, .4), var(--shadow); transform: translateY(-4px); }
 .plan--featured.is-highlight { box-shadow: 0 0 0 3px rgba(111, 227, 225, .7), var(--shadow); }
-.section--alt .plan { background: var(--bg); }
+.section--alt .plan:not(.plan--featured) { background: var(--bg); }
 .plan--featured {
   background: linear-gradient(160deg, var(--blue-700), var(--blue-900));
   color: #eaf6ff; border-color: transparent; transform: translateY(-8px);
