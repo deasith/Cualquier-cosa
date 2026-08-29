@@ -29,10 +29,17 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   aguantan, disparan y se repliegan tras un tiempo. Ni rotos ni inútiles.
 - **Escuadra que se apoya** — tus compañeros tienen personalidad, usan sus propios estims para curarse y te
   cubren cuando flaqueas, con mensajes de radio contextuales durante la batalla.
-- **Mapa jugable top-down** — arena en canvas con cámara que te sigue, coberturas y oleadas. Te mueves y
-  disparas en tiempo real.
-- **Personajes que aparecen** — tu token (con corona) y **compañeros de escuadra con IA** que te siguen,
-  disparan y pueden **morir de forma permanente**.
+- **Mapa galáctico estilo Helldivers 2** — el Frente es un disco radial con estrella central (Solmyr), telaraña
+  de anillos y radios, **territorios de facción** en celdas de colores, planetas-nodo con anillos de control y
+  líneas de suministro, y planetas neutrales dispersos. Ratón para inspeccionar, clic para desplegar.
+- **Biomas de combate variados** — cada sector tiene su escenario propio: Campos de Sangre, Osario de Vhal,
+  Ciudadela del Trono, la Grieta Volcánica (lava y brasas), Costa Helada de Ael (nieve) y Forja Caída — cada
+  uno con su paleta, props, partículas ambientales y disposición de cobertura variable (dispersa, fortaleza,
+  pasillos o anillo).
+- **Personajes bien diseñados** — jugador, compañeros y SEAF se dibujan como **soldados con casco, visor,
+  hombreras, mochila y arma** (con emblema del héroe); cada tipo de enemigo tiene su **silueta propia**
+  (espinas, fauces, placas y cuernos, pústulas, humanoides). Los compañeros con IA te siguen, disparan y
+  pueden **morir de forma permanente**.
 - **Enemigos con comportamientos** — Esporling (enjambre), Escupidor (bombardeo a distancia), Bruto
   (acorazado), Reventón (explota al morir) e Infectado (hostigador que dispara en ráfagas).
 - **Sistema de armas** — 6 armas con daño, cadencia, dispersión, munición y recarga reales: Fusil de Cadena,
