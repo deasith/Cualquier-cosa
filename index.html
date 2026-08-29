@@ -155,6 +155,47 @@
   .fire{position:absolute;bottom:22px;right:20px;width:96px;height:96px;border-radius:50%;border:1px solid var(--crimson);background:rgba(120,20,18,.35);color:var(--parch);font-family:var(--mono);font-size:12px;letter-spacing:.1em;pointer-events:auto;z-index:4}
   .swapbtn{position:absolute;bottom:130px;right:34px;width:64px;height:64px;border-radius:50%;border:1px solid var(--gold-dim);background:rgba(40,30,14,.4);color:var(--gold);font-family:var(--mono);font-size:11px;pointer-events:auto;z-index:4}
 
+  /* ============ LOBBY / PUENTE ============ */
+  .hub-wrap{position:relative;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 0%,#141a22 0%,#0a0b0f 55%,#080606 100%);overflow:hidden;touch-action:none;user-select:none;box-shadow:inset 0 0 120px rgba(0,0,0,.6)}
+  #hub{display:block;width:100%;height:auto}
+  .hub-banner{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;pointer-events:none;gap:10px}
+  .hub-name{font-family:var(--display);font-weight:900;font-size:clamp(15px,2.4vw,20px);color:var(--gold);letter-spacing:.06em;text-shadow:0 0 16px #000}
+  .hub-name small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--gold-dim);font-weight:400;margin-top:2px}
+  .hub-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ash);pointer-events:none;text-shadow:0 0 8px #000}
+  .prompt{position:absolute;transform:translate(-50%,-100%);background:rgba(8,6,6,.9);border:1px solid var(--gold-dim);padding:6px 12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--gold);white-space:nowrap;pointer-events:none;box-shadow:0 0 18px -6px var(--gold);opacity:0;transition:opacity .12s}
+  .prompt.show{opacity:1}
+  .prompt b{color:var(--parch)}
+
+  /* NPC dialogue modal */
+  .dialog{position:absolute;inset:0;background:rgba(6,5,7,.82);display:grid;place-items:end center;padding:0 0 4%;z-index:6;animation:fade .2s}
+  .dialog .box{width:min(680px,92%);background:linear-gradient(180deg,#161018,#0c0910);border:1px solid var(--line);padding:0;box-shadow:0 20px 60px -20px #000}
+  .dialog .top{display:flex;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,rgba(201,162,75,.06),transparent)}
+  .dialog .who .nm{font-family:var(--display);font-weight:700;font-size:18px;color:var(--parch)}
+  .dialog .who .rl{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-dim);margin-top:2px}
+  .dialog .line{padding:18px;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--parch);line-height:1.6}
+  .dialog .line::before{content:"“";color:var(--gold-dim);font-size:22px;margin-right:2px}
+  .dialog .acts{display:flex;gap:10px;flex-wrap:wrap;padding:0 18px 18px}
+  .portrait{width:60px;height:60px;flex:none;border:1px solid var(--line);background:#0b0807;border-radius:2px}
+
+  /* Estims HUD */
+  .stim-tray{display:flex;gap:6px;background:rgba(8,6,6,.72);border:1px solid var(--line-soft);padding:6px 8px}
+  .stim-pip{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--mono);min-width:30px}
+  .stim-pip .ic{font-size:15px;line-height:1}
+  .stim-pip .cg{font-size:10px;color:var(--parch-dim)}
+  .stim-pip .kb{font-size:8.5px;color:var(--ash);letter-spacing:.04em}
+  .stim-pip.empty{opacity:.32}
+  .reinf-box{background:rgba(8,6,6,.72);border:1px solid var(--line-soft);padding:6px 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--parch-dim);text-align:center}
+  .reinf-box b{color:var(--gold)} .reinf-box.ready b{color:var(--plague)}
+  .hud-mid{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:8px;align-items:flex-end;pointer-events:none;flex-wrap:wrap;justify-content:center;max-width:96%}
+
+  /* Radio feed */
+  .radio{position:absolute;left:12px;bottom:64px;width:min(320px,54%);display:flex;flex-direction:column;gap:4px;pointer-events:none}
+  .radio .msg{font-family:var(--mono);font-size:11px;letter-spacing:.02em;background:rgba(8,6,6,.7);border-left:2px solid var(--gold-dim);padding:4px 8px;color:var(--parch-dim);animation:fade .2s}
+  .radio .msg b{font-weight:400}
+
+  .stimbtn{position:absolute;bottom:130px;right:110px;width:60px;height:60px;border-radius:50%;border:1px solid var(--ok);background:rgba(30,60,30,.4);color:var(--ok);font-family:var(--mono);font-size:11px;pointer-events:auto;z-index:4}
+  .reinfbtn{position:absolute;bottom:200px;right:34px;width:60px;height:60px;border-radius:50%;border:1px solid var(--plague-dim);background:rgba(20,50,44,.4);color:var(--plague);font-family:var(--mono);font-size:10px;pointer-events:auto;z-index:4}
+
   @media(max-width:720px){ .hud{grid-template-columns:1fr} .g2,.g3{grid-template-columns:1fr} .oath{display:none} }
   @media(prefers-reduced-motion:reduce){ *{animation-duration:.001ms!important} .ticker .run{animation:none} }
 </style>
@@ -230,6 +271,61 @@ const ENEMIES={
 /* ---------- JEFE ---------- */
 const BOSS={ nm:"La Reina de la Plaga", r:58, hp:1500, speed:70, col:"#8f1a16", core:"#4fd6b8", glory:20 };
 
+/* ---------- Personalidad de cada base (voz + frases) ---------- */
+const VOICE={
+  centinela:{persona:"Firme y paternal", motto:"Formad conmigo. Hoy no caemos.",
+    quotes:["La Corona ve cada acto. Que valga la pena.","Aguantad la línea, hermanos.","Nadie se queda atrás. Nadie."]},
+  rompemuros:{persona:"Terco como la roca", motto:"Que vengan. Los romperé a todos.",
+    quotes:["La piedra no retrocede.","Dos pasos más y os aplasto.","Mi placa ha visto peores días."]},
+  cazador:{persona:"Frío y afilado", motto:"Ya estáis muertos. Solo no lo sabéis.",
+    quotes:["Un disparo basta.","No me veréis venir.","Silencio. Después, el gatillo."]},
+  coloso:{persona:"Lento pero imparable", motto:"Grande. Fuerte. Aquí.",
+    quotes:["No… paso… atrás.","Aplastar.","Yo soy el muro."]},
+  marcado:{persona:"Amargo y sardónico", motto:"¿Me teméis a mí, o a ellos?",
+    quotes:["Su sangre ya es mía.","Útil hoy, quemado mañana. Como siempre.","La Plaga y yo somos viejos conocidos."]},
+  automata:{persona:"Preciso y sin emoción", motto:"Objetivo adquirido. Procesando.",
+    quotes:["El miedo es una variable que no tengo.","Munición suficiente. Continuando.","Cálculo: victoria probable."]},
+};
+const SQUAD_PERSONA=["Bocazas","Silencioso","Novato asustado","Veterana curtida","Creyente fervoroso","Bromista","Profesional frío","Superviviente"];
+
+/* ---------- Estimulantes ---------- */
+const STIMS={
+  combate:{nm:"Estim de Combate", ico:"✚", key:"1", col:"#7fb069", dur:0, charges:3, desc:"Sella heridas al instante: recupera el 40% de tu Vida."},
+  furia:{nm:"Estim de Furia", ico:"⚔", key:"2", col:"#e0554a", dur:8, charges:2, desc:"Sobrecarga de agresión: +40% daño y +30% cadencia durante 8 s."},
+  vigor:{nm:"Estim de Vigor", ico:"➶", key:"3", col:"#4fd6b8", dur:8, charges:2, desc:"Reflejos acelerados: +45% velocidad y esquiva ágil durante 8 s."},
+  coraza:{nm:"Estim de Coraza", ico:"⛨", key:"4", col:"#c9a24b", dur:8, charges:2, desc:"Endurece los tejidos: −50% daño recibido durante 8 s."},
+};
+const STIM_ORDER=["combate","furia","vigor","coraza"];
+
+/* ---------- Refuerzos SEAF (Ejército del Trono) ---------- */
+const SEAF={ nm:"SEAF", hp:95, speed:172, dmgMult:.62, col:"#9db0c9", cd:26, count:2, life:34 };
+
+/* ---------- Radio / mensajes ---------- */
+const RADIO={
+  deploy:["Cápsula en tierra. Bienvenidos al infierno.","Sector caliente, proceded con cautela.","Que la Corona os cubra ahí abajo."],
+  wave:["¡Ahí vienen otra vez!","Nueva oleada en el sensor.","¡Manteneos juntos!"],
+  low:["¡Estás sangrando, usa un estim!","¡Cúbrete, jefe!","¡Aguanta, voy contigo!"],
+  boss:["¡Firma masiva! ¡Es la Reina!","Dioses… mirad el tamaño de eso.","¡Ese es el objetivo! ¡A por ella!"],
+  reinf:["SEAF desplegándose. ¡Refuerzos en camino!","¡Cápsula SEAF entrante!","La Corona nos manda manos extra."],
+  clear:["¡Zona despejada! Respirad.","Oleada contenida. No os relajéis.","La línea aguanta."],
+  banter:["¿Cuántos llevamos ya?","Mi familia verá esto en las noticias.","Odio este planeta.","Cuando acabe, me tomo una semana.","Por la Corona… y por sobrevivir."],
+  stim:["¡Estim aplicado!","¡Aguanta, te cubro!","¡Arriba esos ánimos!"],
+};
+
+/* ---------- NPCs del Puente (La Supertierra) ---------- */
+const NPCS=[
+  {id:"deploy", nm:"Comandante Valen", role:"Mando Central", col:"#c9a24b", x:.50,y:.30, face:"helm",
+    line:"El frente no espera, Vindicado. Dime dónde caes y la galaxia lo recordará.", action:"Abrir mapa de despliegue ▸", go:"frente"},
+  {id:"armeria", nm:"Intendenta Roska", role:"Armería & Estims", col:"#b98a3a", x:.20,y:.56, face:"visor",
+    line:"Balas, estims y algo para el dolor. Todo tuyo. No lo desperdicies ahí abajo.", action:"Ver armería y estims ▸", go:"armeria"},
+  {id:"roster", nm:"Sargento Kell", role:"Sala de héroes", col:"#a9c98a", x:.80,y:.56, face:"scar",
+    line:"¿Cambiar de campeón? Los héroes se hacen y se rompen. Elige con cabeza.", action:"Cambiar de Vindicado ▸", go:"roster"},
+  {id:"noticias", nm:"Oficial Wren", role:"Comunicaciones", col:"#4fd6b8", x:.32,y:.80, face:"headset",
+    line:"Partes del frente y edictos del Trono. La verdad, tal como conviene contarla.", action:"Leer las noticias ▸", go:"noticias"},
+  {id:"bestiario", nm:"Archivista Sib", role:"Archivo de la Plaga", col:"#c76b52", x:.68,y:.80, face:"hood",
+    line:"Conoce a lo que te devora. He catalogado cada horror. Léelo, y vive un día más.", action:"Abrir el bestiario ▸", go:"bestiario"},
+];
+
 /* ---------- Mundo / guerra ---------- */
 function freshWar(){
   return { sectors:[
@@ -248,14 +344,14 @@ function seedNews(){ return [
 
 let GAME = load() || { screen:"intro", tab:"frente", character:null, war:freshWar(), news:seedNews(), pickBase:null, brief:null };
 
-function save(){ try{ const clone={...GAME}; delete clone._arena; localStorage.setItem("corona-estelar-v2",JSON.stringify(clone)); }catch(e){} }
-function load(){ try{ const s=localStorage.getItem("corona-estelar-v2"); return s?JSON.parse(s):null; }catch(e){ return null; } }
-function wipe(){ try{ localStorage.removeItem("corona-estelar-v2"); }catch(e){} GAME={screen:"intro",tab:"frente",character:null,war:freshWar(),news:seedNews(),pickBase:null,brief:null}; render(); }
+function save(){ try{ const clone={...GAME}; delete clone._arena; localStorage.setItem("corona-estelar-v3",JSON.stringify(clone)); }catch(e){} }
+function load(){ try{ const s=localStorage.getItem("corona-estelar-v3"); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function wipe(){ try{ localStorage.removeItem("corona-estelar-v3"); }catch(e){} GAME={screen:"intro",tab:"frente",character:null,war:freshWar(),news:seedNews(),pickBase:null,brief:null}; render(); }
 
 /* ---------- Crear personaje desde una base ---------- */
 const NAMES=["Bram","Kesh","Ylva","Doran","Mira","Torv","Sela","Rook","Fenn","Ada","Cael","Nyx","Hald","Verel","Sib","Oren"];
 const ROLES=["Fusilero","Zapador","Médica","Explorador","Artillero","Portaestandarte"];
-function makeSquad(n){ const used=new Set(), sq=[]; for(let i=0;i<n;i++){ let nm; do{nm=pick(NAMES);}while(used.has(nm)); used.add(nm); sq.push({name:nm,role:pick(ROLES),alive:true}); } return sq; }
+function makeSquad(n){ const used=new Set(), sq=[]; for(let i=0;i<n;i++){ let nm; do{nm=pick(NAMES);}while(used.has(nm)); used.add(nm); sq.push({name:nm,role:pick(ROLES),alive:true,persona:pick(SQUAD_PERSONA)}); } return sq; }
 
 function finalizeCharacter(baseKey,name,secondary){
   const b=BASES[baseKey];
@@ -275,6 +371,7 @@ function sigilSVG(){return `<svg class="sigil" viewBox="0 0 48 48" fill="none" a
 function header(){return `<header class="top"><div class="brand">${sigilSVG()}<div><h1>Corona Estelar</h1><div class="sub">El Frente Eterno</div></div></div><div class="oath">"POR LA CORONA. POR LA GALAXIA.<br>NI UN PASO ATRÁS."</div></header>`;}
 function tabs(){const c=GAME.character,on=t=>GAME.tab===t?'aria-current="true"':'',dis=c?'':'disabled';
   return `<nav class="tabs">
+    <button onclick="enterHub()" ${dis}>⌂ Puente</button>
     <button ${on('frente')} onclick="go('frente')" ${dis}>◈ Frente</button>
     <button ${on('personaje')} onclick="go('personaje')" ${dis}>❖ Escuadrón</button>
     <button ${on('armeria')} onclick="go('armeria')">▮ Armería</button>
@@ -301,14 +398,14 @@ function viewIntro(){const hasF=GAME.war.fallen.length>0;
     <p class="lede" style="margin:16px auto 0">Toma el mando de un <b class="gold">Vindicado</b> ya forjado, desciende a un sector infestado y <b>muévelo tú mismo</b> por el campo de batalla contra los enjambres de <b class="crimson">la Plaga</b>. Cada bala cuenta. Cada compañero que cae, cae para siempre.</p>
     ${hasF?`<div class="muted-box" style="margin:22px auto 0;max-width:480px">La galaxia recuerda a ${GAME.war.fallen.length} caído(s). Presión de la Plaga: ${GAME.war.plaga}%.</div>`:''}
     <div class="btnrow" style="justify-content:center;margin-top:26px">
-      <button class="btn primary" onclick="go('roster')">Elegir campeón ▸</button>
+      ${GAME.character?`<button class="btn primary" onclick="enterHub()">Subir a La Supertierra ▸</button>`:`<button class="btn primary" onclick="go('roster')">Elegir campeón ▸</button>`}
       ${hasF?`<button class="btn danger" onclick="wipe()">Borrar la crónica</button>`:''}
     </div></div>
     <hr class="rule">
     <div class="grid g3">
-      ${feat("♟","Muévete y dispara","Top-down real: WASD para moverte, ratón para apuntar, o joystick táctil.")}
+      ${feat("⌂","Puente vivo","Camina por La Supertierra, habla con el mando y tu tripulación entre despliegues.")}
+      ${feat("✚","Estims & refuerzos","Cúrate, sobrecárgate y llama a los SEAF cuando la marea aprieta.")}
       ${feat("☣","Enemigos con carácter","Enjambres, escupidores, brutos, reventones… y jefes de la Plaga con fases.")}
-      ${feat("▮","Arsenal con peso","Seis armas, munición y recarga reales. Elige cómo matar.")}
     </div></section>`;}
 function feat(i,t,d){return `<div class="card pad"><div style="font-size:24px;color:var(--gold)">${i}</div><h3 style="font-size:16px;margin:8px 0 4px">${t}</h3><p style="font-size:13.5px;color:var(--parch-dim);margin:0">${d}</p></div>`;}
 
@@ -331,6 +428,7 @@ function viewRoster(){
           <div class="desc">${bs.lore}</div>
           <div class="stats">VIDA ${bs.hp} · VEL ${Math.round(bs.speed/10)} · ARMA ${WEAPONS[bs.primary].nm}</div>
           <div class="stats" style="color:var(--parch-dim)">Rasgo — ${bs.passive.nm}: ${bs.passive.txt}</div>
+          <div class="stats" style="color:${bs.col};font-style:italic">${VOICE[k].persona} — “${VOICE[k].motto}”</div>
         </div>`).join("")}
     </div>
     ${b?`<hr class="rule">
@@ -357,8 +455,8 @@ function commitCharacter(){
   GAME.character=finalizeCharacter(pickState.base,pickState.name,pickState.secondary);
   GAME.character.rank=rankFor(0);
   recomputeLiberation();
-  GAME.news.unshift({kind:"decree",src:"REGISTRO DE ALISTAMIENTO",time:`CICLO ${GAME.war.missions}`,hl:`${GAME.character.name} toma el mando`,bd:`Un ${BASES[GAME.character.base].nm} desciende al frente. Que la Corona guíe su mano.`});
-  GAME.screen="game"; GAME.tab="frente"; save(); render();
+  GAME.news.unshift({kind:"decree",src:"REGISTRO DE ALISTAMIENTO",time:`CICLO ${GAME.war.missions}`,hl:`${GAME.character.name} toma el mando`,bd:`Un ${BASES[GAME.character.base].nm} sube a bordo de La Supertierra. Que la Corona guíe su mano.`});
+  GAME.tab="frente"; enterHub(); save();
 }
 
 /* ----- Frente (mapa de campaña) ----- */
@@ -395,7 +493,11 @@ function viewBriefing(){
       <div>
         <div class="label" style="margin-bottom:8px">Arsenal cargado</div>
         <div class="chips">${c.weapons.map(w=>`<span class="chip medal">${WEAPONS[w].ico} ${WEAPONS[w].nm}</span>`).join("")}</div>
-        <p class="label" style="margin-top:14px;color:var(--parch-dim)">Controles: <span class="desktop-only">WASD moverse · ratón apuntar · clic disparar · Q cambiar arma · R recargar · ESPACIO esquivar</span><span class="touch-only">joystick + botón de fuego (auto-apuntado)</span></p>
+        <div class="label" style="margin:14px 0 8px">Estims (teclas 1-4)</div>
+        <div class="chips">${STIM_ORDER.map(k=>`<span class="chip" style="border-color:${STIMS[k].col};color:${STIMS[k].col}">${STIMS[k].ico} ${STIMS[k].nm.replace('Estim de ','')} ×${STIMS[k].charges}</span>`).join("")}</div>
+        <div class="label" style="margin:14px 0 8px">Apoyo</div>
+        <div class="chips"><span class="chip" style="border-color:var(--plague-dim);color:var(--plague)">⛨ Refuerzos SEAF (tecla C)</span><span class="chip">Tu escuadra se cura y te cubre</span></div>
+        <p class="label" style="margin-top:14px;color:var(--parch-dim)">Controles: <span class="desktop-only">WASD · ratón apuntar · clic disparar · Q arma · R recargar · ESPACIO esquiva · 1-4 estims · C refuerzos</span><span class="touch-only">joystick + fuego (auto-apuntado) + botones de estim y SEAF</span></p>
       </div>
     </div>
     <div class="muted-box" style="margin-top:18px;text-align:left"><b class="gold">Recuerda:</b> si tu Vida llega a 0, tu Vindicado muere para siempre y entra en la lista de honor. Los compañeros caídos no vuelven.</div>
@@ -418,6 +520,9 @@ function viewPersonaje(){const c=GAME.character;if(!c)return viewIntro();const b
         <div class="label" style="margin:16px 0 8px">Rasgo de base</div>
         <div style="font-family:var(--display);color:var(--gold)">${b.passive.nm}</div>
         <p style="font-size:13.5px;color:var(--parch-dim);margin:4px 0 0">${b.passive.txt}</p>
+        <div class="label" style="margin:16px 0 8px">Temperamento</div>
+        <div style="color:${c.col};font-style:italic">${VOICE[c.base].persona}</div>
+        <p style="font-size:13.5px;color:var(--parch-dim);margin:4px 0 0;font-style:italic">“${VOICE[c.base].motto}”</p>
         <div class="label" style="margin:16px 0 8px">Rango · Gloria ${c.glory}</div>
         <div class="gold" style="font-family:var(--display);font-size:18px">${c.rank}</div>
       </div>
@@ -432,7 +537,8 @@ function viewPersonaje(){const c=GAME.character;if(!c)return viewIntro();const b
     </div>
     <hr class="rule">
     <div class="card pad"><div class="label" style="margin-bottom:10px">Escuadra (los caídos no vuelven)</div>
-      <div class="squad">${c.squad.map(t=>`<div class="trooper ${t.alive?'':'dead'}"><div class="tn">${t.name}</div><div class="tr">${t.alive?t.role:'Caído'}</div></div>`).join("")}</div>
+      <div class="squad">${c.squad.map(t=>`<div class="trooper ${t.alive?'':'dead'}"><div class="tn">${t.name}</div><div class="tr">${t.alive?t.role:'Caído'}</div>${t.persona?`<div class="tr" style="color:var(--gold-dim)">${t.persona}</div>`:''}</div>`).join("")}</div>
+      <p class="label" style="margin-top:12px;color:var(--parch-dim)">En combate se curan con sus propios estims y te cubren cuando flaqueas.</p>
     </div>
   </section>`;}
 
@@ -450,7 +556,20 @@ function viewArmeria(){
         ${w.pierce?`<span class="chip">Perforante</span>`:''}
         ${w.plagueBonus?`<span class="chip" style="border-color:var(--plague-dim);color:var(--plague)">+Plaga</span>`:''}
         <span class="chip">Recarga ${w.reload}s</span>
-      </div></div>`).join("")}</div></section>`;
+      </div></div>`).join("")}</div>
+    <hr class="rule">
+    <div class="eyebrow">Botiquín de campaña</div><h2 class="title">Estimulantes</h2>
+    <p class="lede">Cargas limitadas por despliegue. Un pinchazo a tiempo cambia una batalla. Tus compañeros llevan los suyos y se cubren entre sí.</p>
+    <div class="grid g2" style="margin-top:14px">${STIM_ORDER.map(k=>{const s=STIMS[k];return `<div class="card pad">
+      <div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="color:${s.col}">${s.ico}</div>
+        <div><div style="font-family:var(--display);font-weight:700;font-size:16px">${s.nm}</div><div class="label">Tecla ${s.key} · ${s.charges} cargas${s.dur?` · ${s.dur}s`:''}</div></div></div>
+      <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 0">${s.desc}</p></div>`;}).join("")}
+      <div class="card pad" style="border-color:var(--plague-dim)">
+        <div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="color:${SEAF.col};border-color:var(--plague-dim)">⛨</div>
+          <div><div style="font-family:var(--display);font-weight:700;font-size:16px;color:var(--plague)">Refuerzos SEAF</div><div class="label">Tecla C · enfriamiento ${SEAF.cd}s</div></div></div>
+        <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 0">Llama a ${SEAF.count} soldados del Ejército del Trono. Ni rotos ni inútiles: aguantan, disparan y, tras un tiempo, se repliegan. No cuentan como tu escuadra permanente.</p>
+      </div>
+    </div></section>`;
 }
 /* ----- Bestiario ----- */
 function viewBestiario(){
@@ -484,7 +603,10 @@ function viewNoticias(){const w=GAME.war;
   </section>`;}
 
 /* ---------- Navegación ---------- */
+function enterHub(){ if(!GAME.character){ go("roster"); return; } if(typeof Arena!=="undefined")Arena.stop(); GAME.screen="hub"; save(); Hub.mount(); }
 function go(tab){
+  if(typeof Hub!=="undefined")Hub.stop();
+  if(tab==="hub"){ enterHub(); return; }
   if(tab==="roster"){ pickState={base:null,name:"",secondary:null}; GAME.screen="roster"; save(); render(); return; }
   if(tab==="intro"){ GAME.screen="intro"; render(); return; }
   GAME.tab=tab;
@@ -498,7 +620,7 @@ function bodyForTab(){
 function shell(inner,noHud){return header()+tabs()+((GAME.character&&!noHud)?hud():'')+inner+`<footer class="foot"><span>CORONA ESTELAR · EL FRENTE ETERNO</span><span>Ciclo ${GAME.war.missions} · Plaga ${GAME.war.plaga}% · Caídos ${GAME.war.fallen.length}</span></footer>`;}
 
 function render(){
-  if(GAME.screen==="arena") return; // la arena se dibuja en canvas, no re-renderiza el DOM
+  if(GAME.screen==="arena"||GAME.screen==="hub") return; // se dibujan en canvas, no re-renderizan el DOM
   let inner;
   switch(GAME.screen){
     case"intro": inner=shell(GAME.tab==="armeria"?viewArmeria():GAME.tab==="bestiario"?viewBestiario():viewIntro()); break;
@@ -531,8 +653,9 @@ const Arena = (()=>{
   let cam={x:0,y:0};
   let keys={}, mouse={x:0,y:0,down:false}, aim={x:1,y:0};
   let sector, waveDefs, waveIdx, spawnQueue, spawnTimer, bossActive, boss, state, outcome;
-  let toastEl, hud={};
+  let toastEl, hud={}, radioEl;
   let touchMove={x:0,y:0,active:false}, touchFire=false;
+  let stims, buffs, stimGcd, reinfCd, seafN, chatterT, lowWarn, radioMsgs, floats, prevBoss;
 
   function reset(sec){
     sector=sec;
@@ -540,8 +663,12 @@ const Arena = (()=>{
     const wpDefs=c.weapons.map(k=>({key:k,ammo:WEAPONS[k].mag,reloading:0}));
     player={x:W/2,y:H/2,r:16,hp:c.hp,hpMax:c.hpMax,speed:c.speed,
       wIdx:0,weapons:wpDefs,fireCd:0,dashCd:0,dashT:0,iframe:0,col:c.col,dmgMult:c.dmgMult,base:c.base,revives:(c.base==="centinela"?1:0)};
-    allies=c.squad.filter(t=>t.alive).map((t,i)=>({name:t.name,ref:t,x:W/2+ (i?60:-60),y:H/2+70,r:12,hp:70,hpMax:70,fireCd:rr(0,.4),alive:true,col:"#e0cf9a"}));
-    enemies=[];pbullets=[];ebullets=[];particles=[];pickups=[];
+    allies=c.squad.filter(t=>t.alive).map((t,i)=>({name:t.name,ref:t,persona:t.persona||"Soldado",x:W/2+(i?60:-60),y:H/2+70,r:12,hp:78,hpMax:78,fireCd:rr(0,.4),alive:true,col:"#e0cf9a",label:t.name,
+      barkCd:rr(4,10),supportCd:rr(6,12),stimCd:0,stims:1}));
+    enemies=[];pbullets=[];ebullets=[];particles=[];pickups=[];floats=[];
+    // estims, buffs y refuerzos por despliegue
+    stims={}; for(const k of STIM_ORDER) stims[k]=STIMS[k].charges;
+    buffs={furia:0,vigor:0,coraza:0}; stimGcd=0; reinfCd=8; seafN=0; chatterT=rr(3,6); lowWarn=false; radioMsgs=[]; prevBoss=false;
     // muros/cobertura
     walls=[]; for(let i=0;i<7;i++){ const w=rr(90,220),h=rr(60,160); walls.push({x:rr(180,W-180-w),y:rr(180,H-180-h),w,h}); }
     cam={x:player.x-VW/2,y:player.y-VH/2};
@@ -550,6 +677,7 @@ const Arena = (()=>{
     waveIdx=-1; spawnQueue=[]; spawnTimer=0; bossActive=false; boss=null; outcome=null;
     state="playing";
     nextWave();
+    radio("MANDO", pick(RADIO.deploy), "#c9a24b");
   }
   function buildWave(i,total,sec){
     const diff = (sec.threat==="crítica"?1.5:sec.threat==="alta"?1.25:sec.threat==="media"?1:.8) * (1+i*.35);
@@ -575,6 +703,7 @@ const Arena = (()=>{
     const a=Math.random()*6.28, R=Math.min(W,H)/2-140;
     boss={x:W/2+Math.cos(a)*R,y:H/2+Math.sin(a)*R,r:BOSS.r,hp:BOSS.hp,hpMax:BOSS.hp,phase:1,atkCd:2,chargeT:0,vx:0,vy:0,summonCd:4};
     toast("LA REINA DE LA PLAGA");
+    radio("MANDO", pick(RADIO.boss), "#e0554a");
     if(hud.boss) hud.boss.style.display="block";
   }
 
@@ -607,6 +736,8 @@ const Arena = (()=>{
     if(k==="q") swapWeapon();
     if(k==="r") startReload();
     if(k===" ") tryDash();
+    if("1234".includes(k)) useStim(STIM_ORDER[parseInt(k,10)-1]);
+    if(k==="c") callReinforcements();
     if(k==="escape"||k==="p") togglePause();
   }
   function onKeyUp(e){ keys[e.key.toLowerCase()]=false; }
@@ -618,6 +749,44 @@ const Arena = (()=>{
   function startReload(){ const w=player.weapons[player.wIdx],def=WEAPONS[w.key]; if(w.reloading>0||w.ammo>=def.mag)return; w.reloading=def.reload*(player.base==="automata"?.75:1); }
   function tryDash(){ if(player.dashCd>0)return; const dashOK=player.base==="cazador"; player.dashT=.16; player.iframe=.22; player.dashCd=dashOK?.9:1.6; player._dashPow=dashOK?720:520; }
   function togglePause(){ if(state==="playing"){state="paused";} else if(state==="paused"){state="playing";lastT=performance.now();} }
+
+  /* ---------- estims ---------- */
+  function useStim(key){
+    if(state!=="playing"||!stims||!key) return;
+    if(stimGcd>0) return;
+    if(!(key in stims) || stims[key]<=0){ toast("SIN "+STIMS[key].nm.toUpperCase()); return; }
+    const s=STIMS[key]; stims[key]--; stimGcd=.5;
+    if(key==="combate"){ player.hp=Math.min(player.hpMax, player.hp+Math.round(player.hpMax*.4)); floatText(player.x,player.y-22,"+VIDA",s.col); }
+    else { buffs[key]=s.dur; floatText(player.x,player.y-22,s.nm.split(" ").pop().toUpperCase(),s.col); }
+    radio(GAME.character.name, pick(RADIO.stim), GAME.character.col);
+    shake=Math.min(shake+2,8);
+  }
+  /* ---------- refuerzos SEAF ---------- */
+  function callReinforcements(){
+    if(state!=="playing") return;
+    if(reinfCd>0){ toast(`SEAF EN ${Math.ceil(reinfCd)}s`); return; }
+    reinfCd=SEAF.cd;
+    radio("MANDO", pick(RADIO.reinf), SEAF.col); toast("¡REFUERZOS SEAF!");
+    for(let i=0;i<SEAF.count;i++){
+      seafN++;
+      const a=Math.random()*6.28, d=rr(46,92);
+      const x=clamp(player.x+Math.cos(a)*d,40,W-40), y=clamp(player.y+Math.sin(a)*d,40,H-40);
+      boom(x,y,40,SEAF.col);
+      allies.push({name:"SEAF-"+seafN, ref:null, seaf:true, persona:"SEAF", x,y, r:12, hp:SEAF.hp, hpMax:SEAF.hp,
+        fireCd:rr(0,.3), alive:true, col:SEAF.col, label:"SEAF-"+seafN, life:SEAF.life, barkCd:rr(8,16), supportCd:99, stimCd:99, stims:0, dmgMult:SEAF.dmgMult});
+    }
+  }
+  /* ---------- radio / mensajes ---------- */
+  function radio(who,text,col){ if(!radioMsgs)return; radioMsgs.push({who,text,col:col||"#c9a24b",t:performance.now()}); if(radioMsgs.length>4)radioMsgs.shift(); renderRadio(); }
+  function renderRadio(){ if(!radioEl)return; radioEl.innerHTML=radioMsgs.map(m=>`<div class="msg" style="border-color:${m.col}"><b style="color:${m.col}">${esc(m.who)}:</b> ${esc(m.text)}</div>`).join(""); }
+  function radioChatter(){
+    let cat="banter";
+    if(bossActive)cat=Math.random()<.5?"boss":"banter";
+    const alive=allies.filter(a=>a.alive);
+    if(alive.length && Math.random()<.7){ const spk=pick(alive); radio(spk.name, pick(RADIO[cat]||RADIO.banter), spk.col); }
+    else radio("MANDO", pick(RADIO.banter), "#c9a24b");
+  }
+  function floatText(x,y,txt,col){ if(floats)floats.push({x,y,txt,col:col||"#e8dcc4",life:1.1}); }
 
   /* ---------- bucle ---------- */
   function loop(t){
@@ -641,11 +810,19 @@ const Arena = (()=>{
     const c=GAME.character;
     // ---- jugador ----
     const mv=moveVec();
-    let sp=player.speed;
+    let sp=player.speed*(buffs.vigor>0?1.45:1);
     if(player.dashT>0){ player.dashT-=dt; sp=player._dashPow; }
     player.x=clamp(player.x+mv.x*sp*dt,20,W-20); player.y=clamp(player.y+mv.y*sp*dt,20,H-20);
     resolveWalls(player);
     player.fireCd-=dt; player.dashCd-=dt; player.iframe-=dt;
+    // temporizadores globales + radio
+    if(stimGcd>0)stimGcd-=dt;
+    if(reinfCd>0)reinfCd-=dt;
+    for(const k in buffs){ if(buffs[k]>0)buffs[k]-=dt; }
+    chatterT-=dt; if(chatterT<=0){ radioChatter(); chatterT=rr(9,15); }
+    if(player.hp/player.hpMax<.3){ if(!lowWarn){ lowWarn=true; const av=allies.filter(a=>a.alive); radio(av.length?pick(av).name:"MANDO", pick(RADIO.low), "#e0554a"); } }
+    else if(player.hp/player.hpMax>.5) lowWarn=false;
+    if(radioMsgs.length){ const bN=radioMsgs.length; radioMsgs=radioMsgs.filter(m=>performance.now()-m.t<6500); if(radioMsgs.length!==bN)renderRadio(); }
     // apuntado
     if(touchMove.active||isTouch){ // auto-aim al más cercano
       const tgt=nearestEnemy(player.x,player.y); if(tgt){aim.x=tgt.x-player.x;aim.y=tgt.y-player.y;const m=Math.hypot(aim.x,aim.y)||1;aim.x/=m;aim.y/=m;}
@@ -659,19 +836,26 @@ const Arena = (()=>{
     const firing = mouse.down || touchFire || keys["j"];
     if(firing && player.fireCd<=0 && w.reloading<=0){
       if(w.ammo<=0){ startReload(); }
-      else { fireWeapon(player,def,aim,player.dmgMult,true); w.ammo--; player.fireCd=def.cd; if(w.ammo<=0)startReload(); }
+      else { fireWeapon(player,def,aim,player.dmgMult*(buffs.furia>0?1.4:1),true); w.ammo--; player.fireCd=def.cd*(buffs.furia>0?.7:1); if(w.ammo<=0)startReload(); }
     }
-    // ---- aliados ----
+    // ---- aliados (escuadra + SEAF) ----
     for(const al of allies){ if(!al.alive)continue;
+      if(al.seaf){ al.life-=dt; if(al.life<=0){ al.alive=false; boom(al.x,al.y,24,al.col); radio(al.name,"Extracción. Ha sido un honor.",al.col); continue; } }
       const follow=dist(al.x,al.y,player.x,player.y);
-      const tgt=nearestEnemy(al.x,al.y,520);
-      // moverse: seguir al jugador manteniendo hueco, o reposicionar
+      const tgt=nearestEnemy(al.x,al.y,540);
       let dx=player.x-al.x, dy=player.y-al.y, dm=Math.hypot(dx,dy)||1;
-      if(follow>120){ al.x+=dx/dm*175*dt; al.y+=dy/dm*175*dt; }
+      if(follow>130){ al.x+=dx/dm*180*dt; al.y+=dy/dm*180*dt; }
       resolveWalls(al);
-      al.fireCd-=dt;
+      al.fireCd-=dt; al.barkCd-=dt; al.supportCd-=dt; al.stimCd-=dt;
+      const mult=(al.dmgMult||.7);
       if(tgt&&al.fireCd<=0){ const a={x:tgt.x-al.x,y:tgt.y-al.y}; const m=Math.hypot(a.x,a.y)||1;a.x/=m;a.y/=m;
-        fireWeapon(al,WEAPONS.fusil,a,.7,true); al.fireCd=.28; }
+        fireWeapon(al,WEAPONS.fusil,a,mult,true); al.fireCd=.30; }
+      // apoyo con estims entre la escuadra propia
+      if(!al.seaf && al.stimCd<=0 && al.stims>0){
+        if(al.hp/al.hpMax<.45){ al.stims--; al.hp=Math.min(al.hpMax,al.hp+al.hpMax*.5); al.stimCd=9; floatText(al.x,al.y-16,"+","#7fb069"); radio(al.name,"Me curo, aguantad.",al.col); }
+        else if(player.hp/player.hpMax<.35 && follow<170){ al.stims--; player.hp=Math.min(player.hpMax,player.hp+Math.round(player.hpMax*.22)); al.stimCd=11; floatText(player.x,player.y-16,"+","#7fb069"); radio(al.name,"¡Aguanta, te cubro!",al.col); }
+      }
+      if(al.barkCd<=0){ al.barkCd=rr(12,22); if(Math.random()<.45) radio(al.name, pick(RADIO.banter), al.col); }
     }
     // ---- spawn de oleada ----
     if(!bossActive){
@@ -709,6 +893,8 @@ const Arena = (()=>{
     // ---- partículas ----
     for(const p of particles){ p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=.92; p.vy*=.92; p.life-=dt; }
     particles=particles.filter(p=>p.life>0);
+    // ---- textos flotantes ----
+    if(floats){ for(const f of floats){ f.y-=30*dt; f.life-=dt; } floats=floats.filter(f=>f.life>0); }
     // ---- pickups ----
     for(const p of pickups){ if(dist(p.x,p.y,player.x,player.y)<player.r+14){ grab(p); p.dead=true; } }
     pickups=pickups.filter(p=>!p.dead);
@@ -840,6 +1026,7 @@ const Arena = (()=>{
   function hurtPlayer(dmg){
     if(player.iframe>0)return;
     if(player.base==="rompemuros")dmg*=.7;
+    if(buffs.coraza>0)dmg*=.5;
     player.hp-=dmg; shake=Math.min(shake+dmg*.25,10);
   }
   function hurtAlly(al,dmg){ al.hp-=dmg; if(al.hp<=0&&al.alive){ al.alive=false; boom(al.x,al.y,26,"#e0cf9a");
@@ -886,14 +1073,18 @@ const Arena = (()=>{
      ? `<div><div class="eyebrow" style="color:var(--gold-dim)">Sector ${s.status==="liberado"?"liberado":"asegurado"}</div>
         <h2>VICTORIA</h2>
         <p>La Reina ha caído en <b>${s.nm}</b>. Control imperial al <b class="gold">${s.ctl}%</b>. Presión de la Plaga: <b class="crimson">${GAME.war.plaga}%</b>. Gloria total: <b class="gold">${GAME.character.glory}</b>.</p>
-        <div class="btnrow" style="justify-content:center"><button class="btn" onclick="Arena.exit('noticias')">Leer los partes ▸</button><button class="btn primary" onclick="Arena.exit('frente')">Volver al frente ▸</button></div></div>`
+        <div class="btnrow" style="justify-content:center"><button class="btn" onclick="Arena.exit('noticias')">Leer los partes ▸</button><button class="btn primary" onclick="Arena.exit('hub')">Volver al puente ▸</button></div></div>`
      : `<div><div class="eyebrow" style="color:var(--crimson)">La lista de honor se alarga</div>
         <h2>HÉROE CAÍDO</h2>
         <p><b>${dead?esc(dead.name):"Tu Vindicado"}</b> ha muerto en <b>${s.nm}</b>. La muerte en el frente es permanente — pero la galaxia no se detiene por un solo héroe.</p>
-        <div class="btnrow" style="justify-content:center"><button class="btn primary" onclick="Arena.exit('roster')">Alistar un nuevo Vindicado ▸</button><button class="btn" onclick="Arena.exit('frente')">Ver el frente ▸</button></div></div>`;
+        <div class="btnrow" style="justify-content:center"><button class="btn primary" onclick="Arena.exit('roster')">Alistar un nuevo Vindicado ▸</button><button class="btn" onclick="Arena.exit('intro')">Volver al inicio ▸</button></div></div>`;
     $("#arenaWrap").appendChild(box);
   }
-  function exit(where){ GAME.screen = GAME.character? "game":"intro"; if(GAME.character)GAME.tab=where==="roster"?"frente":where; render(); if(where==="roster"&&!GAME.character){ go("roster"); } else if(!GAME.character){ GAME.screen="intro"; render(); } save(); }
+  function exit(where){
+    if(!GAME.character){ if(where==="roster"){ go("roster"); } else { GAME.screen="intro"; render(); } save(); return; }
+    if(where==="hub"){ enterHub(); save(); return; }
+    GAME.screen="game"; GAME.tab=where; render(); save();
+  }
 
   /* ---------- dibujo ---------- */
   function draw(){
@@ -934,6 +1125,9 @@ const Arena = (()=>{
     // balas jugador
     for(const b of pbullets){ ctx.fillStyle=b.col; ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.28);ctx.fill();
       ctx.strokeStyle="rgba(255,255,255,.5)";ctx.lineWidth=1;ctx.stroke(); }
+    // textos flotantes (estims, curas)
+    if(floats){ ctx.textAlign="center"; ctx.font="700 13px 'Share Tech Mono',monospace";
+      for(const f of floats){ ctx.globalAlpha=Math.max(0,Math.min(1,f.life)); ctx.fillStyle=f.col; ctx.fillText(f.txt,f.x,f.y); } ctx.globalAlpha=1; }
     ctx.restore();
     if(state==="paused"){ ctx.fillStyle="rgba(6,4,4,.7)";ctx.fillRect(0,0,VW,VH); ctx.fillStyle="#c9a24b";ctx.font="700 30px Cinzel, serif";ctx.textAlign="center";ctx.fillText("EN PAUSA",VW/2,VH/2-6); ctx.fillStyle="#b6a888";ctx.font="12px monospace";ctx.fillText("P / ESC para continuar",VW/2,VH/2+22); }
   }
@@ -978,6 +1172,9 @@ const Arena = (()=>{
     const p=player;
     // sombra dash
     if(p.iframe>0){ ctx.globalAlpha=.3; ctx.fillStyle=p.col; ctx.beginPath();ctx.arc(p.x,p.y,p.r+4,0,6.28);ctx.fill(); ctx.globalAlpha=1; }
+    // aura de estim activo
+    const bc = buffs.furia>0?"#e0554a": buffs.vigor>0?"#4fd6b8": buffs.coraza>0?"#c9a24b": null;
+    if(bc){ ctx.globalAlpha=.55; ctx.strokeStyle=bc; ctx.lineWidth=2; ctx.beginPath();ctx.arc(p.x,p.y,p.r+5+(REDUCE?0:Math.sin(performance.now()/120)*1.5),0,6.28);ctx.stroke(); ctx.globalAlpha=1; }
     ctx.save();
     ctx.fillStyle=p.col; ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fill();
     ctx.strokeStyle="#0b0807";ctx.lineWidth=2.5;ctx.stroke();
@@ -1003,6 +1200,9 @@ const Arena = (()=>{
     if(w.reloading>0){ hud.wa.textContent="RECARGANDO…"; hud.wa.classList.add("reloading"); }
     else { hud.wa.textContent=`Munición ${w.ammo}/${def.mag}`+(p.weapons.length>1?"  ·  Q cambia":""); hud.wa.classList.remove("reloading"); }
     if(bossActive&&boss){ hud.boss.style.display="block"; hud.bossBar.style.width=(boss.hp/boss.hpMax*100)+"%"; }
+    if(hud.stims){ hud.stims.innerHTML=STIM_ORDER.map(k=>{ const s=STIMS[k],n=stims?stims[k]:0,act=buffs&&buffs[k]>0;
+      return `<div class="stim-pip ${n<=0&&!act?'empty':''}"><span class="ic" style="color:${(n>0||act)?s.col:'inherit'};${act?'text-shadow:0 0 8px '+s.col:''}">${s.ico}</span><span class="cg">${n}</span><span class="kb">${s.key}</span></div>`; }).join(""); }
+    if(hud.reinf){ const ready=reinfCd<=0; hud.reinf.className="reinf-box"+(ready?" ready":""); hud.reinf.innerHTML=ready?`SEAF <b>LISTO·C</b>`:`SEAF <b>${Math.ceil(reinfCd)}s</b>`; }
   }
   function toast(txt){ if(!toastEl)return; toastEl.textContent=txt; toastEl.classList.remove("show"); void toastEl.offsetWidth; toastEl.classList.add("show"); }
 
@@ -1028,15 +1228,20 @@ const Arena = (()=>{
         </div>
         <div class="boss-strip" id="hbBoss" style="display:none"><div class="bn">☠ ${BOSS.nm}</div><div class="bb"><i id="hbBossBar" style="width:100%"></i></div></div>
         <div class="arena-toast" id="hbToast"></div>
+        <div class="radio" id="hbRadio"></div>
+        <div class="hud-mid">
+          <div class="stim-tray" id="hbStims"></div>
+          <div class="reinf-box" id="hbReinf">SEAF <b>…</b></div>
+        </div>
         <div class="hud-bottom">
           <div class="weapon-box"><div class="wn" id="hbWn">…</div><div class="wa" id="hbWa">…</div></div>
-          <div class="keys-hint desktop-only">WASD mover · ratón apuntar · clic disparar<br>Q arma · R recargar · ESPACIO esquivar · P pausa</div>
+          <div class="keys-hint desktop-only">WASD mover · ratón apuntar · clic disparar<br>Q arma · R recargar · ESPACIO esquiva · 1-4 estims · C refuerzos · P pausa</div>
         </div>
-        ${isTouch?`<div class="joy" id="joy"><div class="stick" id="stick"></div></div><button class="fire" id="fireBtn">FUEGO</button><button class="swapbtn" id="swapBtn">⟳<br>ARMA</button>`:''}
+        ${isTouch?`<div class="joy" id="joy"><div class="stick" id="stick"></div></div><button class="fire" id="fireBtn">FUEGO</button><button class="swapbtn" id="swapBtn">⟳<br>ARMA</button><button class="stimbtn" id="stimBtn">✚<br>ESTIM</button><button class="reinfbtn" id="reinfBtn">SEAF</button>`:''}
       </div>`;
     cv=$("#game"); ctx=cv.getContext("2d");
-    hud={hp:$("#hbHp"),hpTxt:$("#hbHpTxt"),wave:$("#hbWave"),sector:$("#hbSector"),wn:$("#hbWn"),wa:$("#hbWa"),boss:$("#hbBoss"),bossBar:$("#hbBossBar")};
-    toastEl=$("#hbToast");
+    hud={hp:$("#hbHp"),hpTxt:$("#hbHpTxt"),wave:$("#hbWave"),sector:$("#hbSector"),wn:$("#hbWn"),wa:$("#hbWa"),boss:$("#hbBoss"),bossBar:$("#hbBossBar"),stims:$("#hbStims"),reinf:$("#hbReinf")};
+    toastEl=$("#hbToast"); radioEl=$("#hbRadio");
     reset(sec);
     bindInput();
     if(isTouch) bindTouch();
@@ -1054,13 +1259,164 @@ const Arena = (()=>{
     fireBtn.addEventListener("touchstart",e=>{e.preventDefault();touchFire=true;},{passive:false});
     fireBtn.addEventListener("touchend",e=>{e.preventDefault();touchFire=false;},{passive:false});
     swapBtn.addEventListener("touchstart",e=>{e.preventDefault();swapWeapon();},{passive:false});
+    const stimBtn=$("#stimBtn"), reinfBtn=$("#reinfBtn");
+    if(stimBtn)stimBtn.addEventListener("touchstart",e=>{e.preventDefault();useStim("combate");},{passive:false});
+    if(reinfBtn)reinfBtn.addEventListener("touchstart",e=>{e.preventDefault();callReinforcements();},{passive:false});
   }
 
   return { mount, pause, exit,
     stop(){ running=false; cancelAnimationFrame(raf); try{unbindInput();}catch(e){} } };
 })();
 
-function launchArena(id){ const s=GAME.war.sectors.find(x=>x.id===id); GAME.screen="arena"; save(); Arena.mount(s); }
+function launchArena(id){ const s=GAME.war.sectors.find(x=>x.id===id); if(typeof Hub!=="undefined")Hub.stop(); GAME.screen="arena"; save(); Arena.mount(s); }
+
+/* ---------- Retrato SVG de NPC ---------- */
+function portraitSVG(face,col){
+  const accents={helm:`<rect x="16" y="12" width="28" height="10" rx="4" fill="${col}" opacity=".9"/>`,
+    visor:`<rect x="14" y="24" width="32" height="8" rx="4" fill="${col}"/>`,
+    scar:`<path d="M36 16 L40 34" stroke="${col}" stroke-width="2"/>`,
+    headset:`<path d="M14 30a16 16 0 0 1 32 0" stroke="${col}" stroke-width="3" fill="none"/><rect x="12" y="30" width="6" height="12" rx="3" fill="${col}"/>`,
+    hood:`<path d="M12 44c0-22 36-22 36 0" fill="${col}" opacity=".35"/>`}[face]||"";
+  return `<svg class="portrait" viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#0b0807"/>
+    <circle cx="30" cy="30" r="16" fill="#1a130c" stroke="${col}" stroke-width="1.5"/>
+    <circle cx="24" cy="28" r="2.4" fill="${col}"/><circle cx="36" cy="28" r="2.4" fill="${col}"/>
+    <path d="M23 38q7 5 14 0" stroke="${col}" stroke-width="1.6" fill="none"/>${accents}</svg>`;
+}
+
+/* ===================================================================== */
+/*  HUB — La Supertierra (puente de mando caminable)                     */
+/* ===================================================================== */
+const Hub = (()=>{
+  let cv, ctx, VW, VH, running=false, raf=0, lastT=0, t=0;
+  let px, py, pr=15, faceX=0, faceY=-1, keys={}, touchMove={x:0,y:0,active:false};
+  let nodes=[], near=null, promptEl, dialogOpen=false;
+  const isTouch=matchMedia("(pointer:coarse)").matches;
+
+  function layout(){ const maxW=Math.min(1120,(window.innerWidth-36)); VW=Math.round(maxW); VH=Math.round(Math.min(600,Math.max(440,window.innerHeight*0.62))); }
+
+  function mount(){
+    const c=GAME.character; if(!c){ go("roster"); return; }
+    layout();
+    app.innerHTML=header()+tabs()+`
+      <div id="hubWrap" class="hub-wrap" style="max-width:${VW}px;margin:0 auto">
+        <canvas id="hub" width="${VW}" height="${VH}"></canvas>
+        <div class="hub-banner"><div class="hub-name">La Supertierra<small>Puente de mando · nave insignia</small></div>
+          <div class="hud-box">${esc(c.name)} · ${c.rank}</div></div>
+        <div class="prompt" id="hubPrompt"></div>
+        <div class="hub-hint desktop-only">WASD / flechas para moverte · acércate a la tripulación y pulsa <b style="color:var(--gold)">E</b> para hablar</div>
+        <div class="hub-hint touch-only">Usa el joystick y toca a un tripulante para hablar</div>
+        ${isTouch?`<div class="joy" id="hjoy"><div class="stick" id="hstick"></div></div>`:''}
+      </div>
+      <footer class="foot"><span>CORONA ESTELAR · LA SUPERTIERRA</span><span>Ciclo ${GAME.war.missions} · Plaga ${GAME.war.plaga}% · Liberación ${GAME.war.liberationPct}%</span></footer>`;
+    cv=$("#hub"); ctx=cv.getContext("2d"); promptEl=$("#hubPrompt");
+    nodes=NPCS.map(n=>({...n, sx:n.x*VW, sy:n.y*VH}));
+    px=VW*0.5; py=VH*0.90; near=null; dialogOpen=false;
+    bind(); if(isTouch)bindTouch();
+    running=true; lastT=performance.now(); raf=requestAnimationFrame(loop);
+  }
+  function stop(){ running=false; cancelAnimationFrame(raf); unbind(); }
+
+  function bind(){ window.addEventListener("keydown",onKey); window.addEventListener("keyup",onKeyUp); cv.addEventListener("click",onClick); }
+  function unbind(){ window.removeEventListener("keydown",onKey); window.removeEventListener("keyup",onKeyUp); if(cv)cv.removeEventListener("click",onClick); }
+  function onKey(e){ const k=e.key.toLowerCase(); if(["arrowup","arrowdown","arrowleft","arrowright"].includes(k))e.preventDefault(); keys[k]=true; if(k==="e"&&near&&!dialogOpen)openDialog(near); }
+  function onKeyUp(e){ keys[e.key.toLowerCase()]=false; }
+  function onClick(e){ if(dialogOpen)return; const rect=cv.getBoundingClientRect(); const rx=(e.clientX-rect.left)/rect.width*VW, ry=(e.clientY-rect.top)/rect.height*VH;
+    for(const n of nodes){ if(dist(rx,ry,n.sx,n.sy)<40){ openDialog(n); return; } } }
+
+  function bindTouch(){ const joy=$("#hjoy"), stick=$("#hstick"); if(!joy)return; let jid=null;
+    joy.addEventListener("touchstart",e=>{e.preventDefault();jid=e.changedTouches[0].identifier;touchMove.active=true;},{passive:false});
+    joy.addEventListener("touchmove",e=>{e.preventDefault();for(const tt of e.changedTouches){if(tt.identifier!==jid)continue;const r=joy.getBoundingClientRect();let dx=(tt.clientX-r.left)-60,dy=(tt.clientY-r.top)-60;const m=Math.hypot(dx,dy)||1;const cl=Math.min(m,46);dx=dx/m*cl;dy=dy/m*cl;stick.style.left=(34+dx)+"px";stick.style.top=(34+dy)+"px";touchMove.x=dx/46;touchMove.y=dy/46;}},{passive:false});
+    const end=e=>{for(const tt of e.changedTouches){if(tt.identifier===jid){jid=null;touchMove.active=false;touchMove.x=0;touchMove.y=0;stick.style.left="34px";stick.style.top="34px";}}};
+    joy.addEventListener("touchend",end);joy.addEventListener("touchcancel",end);
+  }
+
+  function openDialog(n){
+    dialogOpen=true; const q=pick(VOICE[GAME.character.base].quotes);
+    const el=document.createElement("div"); el.className="dialog"; el.id="hubDialog";
+    el.innerHTML=`<div class="box">
+      <div class="top">${portraitSVG(n.face,n.col)}<div class="who"><div class="nm">${n.nm}</div><div class="rl">${n.role}</div></div></div>
+      <div class="line">${n.line}</div>
+      <div class="acts">
+        <button class="btn primary" onclick="hubAction('${n.go}')">${n.action}</button>
+        <button class="btn" onclick="Hub.closeDialog()">Cerrar</button>
+      </div></div>`;
+    $("#hubWrap").appendChild(el);
+  }
+  function closeDialog(){ const el=$("#hubDialog"); if(el)el.remove(); dialogOpen=false; }
+
+  function loop(ts){ if(!running)return; let dt=(ts-lastT)/1000; lastT=ts; if(dt>.05)dt=.05; t+=dt; if(!dialogOpen)update(dt); draw(); raf=requestAnimationFrame(loop); }
+
+  function update(dt){
+    let x=0,y=0;
+    if(keys["w"]||keys["arrowup"])y-=1; if(keys["s"]||keys["arrowdown"])y+=1;
+    if(keys["a"]||keys["arrowleft"])x-=1; if(keys["d"]||keys["arrowright"])x+=1;
+    if(touchMove.active){x=touchMove.x;y=touchMove.y;}
+    const m=Math.hypot(x,y); if(m>1){x/=m;y/=m;}
+    if(m>.05){ faceX=x;faceY=y; }
+    const sp=210; px=clamp(px+x*sp*dt,24,VW-24); py=clamp(py+y*sp*dt,64,VH-24);
+    // NPC más cercano
+    near=null; let bd=72;
+    for(const n of nodes){ const d=dist(px,py,n.sx,n.sy); if(d<bd){bd=d;near=n;} }
+    if(near){ promptEl.style.left=(near.x*100)+"%"; promptEl.style.top=(near.y*100)+"%"; promptEl.innerHTML=`${isTouch?"Toca a":"[E]"} <b>${near.nm}</b>`; promptEl.classList.add("show"); }
+    else promptEl.classList.remove("show");
+  }
+
+  function draw(){
+    const c=GAME.character;
+    ctx.clearRect(0,0,VW,VH);
+    // suelo de placas
+    ctx.fillStyle="#0c0d12"; ctx.fillRect(0,0,VW,VH);
+    ctx.strokeStyle="rgba(120,140,170,.06)"; ctx.lineWidth=1;
+    for(let gx=0;gx<VW;gx+=64){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,VH);ctx.stroke(); }
+    for(let gy=48;gy<VH;gy+=64){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(VW,gy);ctx.stroke(); }
+    // holomesa central
+    const hx=VW*.5, hy=VH*.52, rx=VW*.20, ry=VH*.14;
+    ctx.save();
+    const pulse=REDUCE?0:Math.sin(t*1.6)*.05;
+    ctx.globalAlpha=.16+pulse; ctx.fillStyle="#4fd6b8"; ctx.beginPath();ctx.ellipse(hx,hy,rx*1.15,ry*1.15,0,0,6.28);ctx.fill();
+    ctx.globalAlpha=1; ctx.strokeStyle="rgba(79,214,184,.5)"; ctx.lineWidth=2; ctx.beginPath();ctx.ellipse(hx,hy,rx,ry,0,0,6.28);ctx.stroke();
+    // sectores flotando sobre la mesa
+    const secs=GAME.war.sectors;
+    for(let i=0;i<secs.length;i++){ const a=i/secs.length*6.28 + t*.25; const sxx=hx+Math.cos(a)*rx*.62, syy=hy+Math.sin(a)*ry*.62;
+      const s=secs[i]; const col=s.status==="liberado"?"#4fd6b8":s.status==="caído"?"#b3312b":"#c9a24b";
+      ctx.fillStyle=col; ctx.globalAlpha=.9; ctx.beginPath();ctx.arc(sxx,syy,4+ s.ctl/40,0,6.28);ctx.fill(); }
+    ctx.globalAlpha=1;
+    ctx.fillStyle="rgba(201,162,75,.8)"; ctx.font="700 12px Cinzel, serif"; ctx.textAlign="center";
+    ctx.fillText("HOLOMESA DEL FRENTE", hx, hy+ry+18);
+    ctx.restore();
+    // NPCs
+    for(const n of nodes){ drawNPC(n, near===n); }
+    // jugador
+    drawHubPlayer(c);
+  }
+  function drawNPC(n, hot){
+    ctx.save();
+    // plataforma
+    ctx.fillStyle="rgba(201,162,75,.05)"; ctx.strokeStyle=hot?n.col:"rgba(120,110,90,.4)"; ctx.lineWidth=hot?2:1;
+    ctx.beginPath();ctx.ellipse(n.sx,n.sy+14,30,10,0,0,6.28);ctx.fill();ctx.stroke();
+    if(hot){ ctx.globalAlpha=.35+(REDUCE?0:Math.sin(t*4)*.15); ctx.fillStyle=n.col; ctx.beginPath();ctx.arc(n.sx,n.sy,20,0,6.28);ctx.fill(); ctx.globalAlpha=1; }
+    // cuerpo
+    ctx.fillStyle=n.col; ctx.beginPath();ctx.arc(n.sx,n.sy,13,0,6.28);ctx.fill();
+    ctx.strokeStyle="#0b0807";ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle="#0b0807"; ctx.beginPath();ctx.arc(n.sx-4,n.sy-2,2,0,6.28);ctx.arc(n.sx+4,n.sy-2,2,0,6.28);ctx.fill();
+    // etiqueta
+    ctx.fillStyle="rgba(232,220,196,.92)"; ctx.font="700 12px Cinzel, serif"; ctx.textAlign="center"; ctx.fillText(n.nm, n.sx, n.sy-22);
+    ctx.fillStyle="rgba(124,111,94,.9)"; ctx.font="9px 'Share Tech Mono',monospace"; ctx.fillText(n.role.toUpperCase(), n.sx, n.sy-10);
+    ctx.restore();
+  }
+  function drawHubPlayer(c){
+    ctx.save();
+    ctx.fillStyle=c.col; ctx.beginPath();ctx.arc(px,py,pr,0,6.28);ctx.fill();
+    ctx.strokeStyle="#0b0807";ctx.lineWidth=2.5;ctx.stroke();
+    ctx.strokeStyle="#0b0807";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+faceX*(pr+8),py+faceY*(pr+8));ctx.stroke();
+    ctx.fillStyle="#0b0807";ctx.font="12px serif";ctx.textAlign="center";ctx.fillText(BASES[c.base].ico,px,py+4);
+    ctx.fillStyle="rgba(232,220,196,.8)";ctx.font="9px 'Share Tech Mono',monospace";ctx.fillText("TÚ",px,py-pr-6);
+    ctx.restore();
+  }
+
+  return { mount, stop, closeDialog };
+})();
+function hubAction(dest){ Hub.stop(); go(dest); }
 
 /* ---------- fondo de brasas ---------- */
 (function starfield(){
@@ -1077,6 +1433,7 @@ function launchArena(id){ const s=GAME.war.sectors.find(x=>x.id===id); GAME.scre
 })();
 
 // si una recarga dejó el estado dentro de la arena (no persistible), volver a un lugar seguro
-if(GAME.screen==="arena"){ GAME.screen = GAME.character? "game":"intro"; GAME.tab="frente"; }
-render();
+if(GAME.screen==="arena"){ GAME.screen = GAME.character? "hub":"intro"; GAME.tab="frente"; }
+if(GAME.screen==="hub" && GAME.character){ Hub.mount(); }
+else render();
 </script>
