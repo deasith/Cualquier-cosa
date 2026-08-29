@@ -257,7 +257,7 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(160deg, var(--blue-700), var(--blue-900));
   color: #eaf6ff; border-color: transparent; transform: translateY(-8px);
 }
-.plan--featured h3, .plan--featured .plan__price { color: #fff; }
+.plan.plan--featured h3, .plan.plan--featured .plan__price { color: #fff; }
 .plan--featured .plan__desc { color: #cfe6f7; }
 .plan--featured .checklist li { color: #eaf6ff; }
 .plan__badge {
