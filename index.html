@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tu Marca — Servicios y Productos Digitales</title>
+<meta name="description" content="Landing page lista para vender tus servicios o productos digitales. Personalízala y empieza a ganar." />
+<style>
+  :root {
+    --bg: #0b0f19;
+    --bg-soft: #121829;
+    --card: #161d31;
+    --text: #e7ecf5;
+    --muted: #9aa6bf;
+    --brand: #6c8cff;
+    --brand-2: #22d3ee;
+    --accent: #34d399;
+    --border: #263151;
+    --radius: 16px;
+    --shadow: 0 10px 40px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 80% -10%, rgba(108,140,255,.18), transparent 60%),
+                radial-gradient(900px 500px at -10% 10%, rgba(34,211,238,.12), transparent 55%),
+                var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { width: min(1120px, 92%); margin: 0 auto; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(11,15,25,.7);
+    border-bottom: 1px solid var(--border);
+  }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+  .logo { font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+  .logo .dot { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 0 18px rgba(108,140,255,.7); }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links a { color: var(--muted); font-size: .95rem; }
+  .nav-links a:hover { color: var(--text); }
+  .btn {
+    display: inline-block; cursor: pointer; border: 0;
+    padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: .95rem;
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    color: #08122e; transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 8px 24px rgba(108,140,255,.35);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(108,140,255,.5); }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--brand); }
+  .nav-links .btn { color: #08122e; }
+
+  /* Hero */
+  .hero { padding: 90px 0 70px; text-align: center; }
+  .pill { display: inline-block; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-soft); color: var(--brand-2); font-size: .82rem; font-weight: 600; margin-bottom: 22px; }
+  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); max-width: 640px; margin: 22px auto 34px; }
+  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .trust { margin-top: 34px; color: var(--muted); font-size: .9rem; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .trust b { color: var(--text); }
+
+  section { padding: 70px 0; }
+  .section-head { text-align: center; max-width: 620px; margin: 0 auto 48px; }
+  .section-head h2 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); letter-spacing: -.02em; }
+  .section-head p { color: var(--muted); margin-top: 12px; }
+
+  /* Services */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+  .card {
+    background: linear-gradient(180deg, var(--card), var(--bg-soft));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px; transition: transform .18s ease, border-color .18s ease;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--brand); }
+  .card .ico { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-size: 1.4rem; background: rgba(108,140,255,.15); margin-bottom: 16px; }
+  .card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: .95rem; }
+
+  /* Pricing */
+  .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; align-items: stretch; }
+  .price-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; }
+  .price-card.featured { border-color: var(--brand); box-shadow: var(--shadow); position: relative; }
+  .price-card.featured::before { content: "Más popular"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #08122e; font-size: .75rem; font-weight: 700; padding: 5px 14px; border-radius: 999px; }
+  .price-card h3 { font-size: 1.15rem; color: var(--brand-2); }
+  .price { font-size: 2.6rem; font-weight: 800; margin: 12px 0 4px; letter-spacing: -.02em; }
+  .price span { font-size: 1rem; color: var(--muted); font-weight: 500; }
+  .price-card ul { list-style: none; margin: 22px 0 28px; display: grid; gap: 12px; }
+  .price-card li { color: var(--muted); font-size: .95rem; display: flex; gap: 10px; align-items: flex-start; }
+  .price-card li::before { content: "✓"; color: var(--accent); font-weight: 800; }
+  .price-card .btn { margin-top: auto; text-align: center; }
+
+  /* Testimonials */
+  .quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+  .quote { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
+  .quote p { font-size: 1rem; }
+  .quote .who { margin-top: 18px; display: flex; align-items: center; gap: 12px; }
+  .quote .av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; font-weight: 700; color: #08122e; }
+  .quote .who b { display: block; font-size: .92rem; }
+  .quote .who small { color: var(--muted); }
+  .stars { color: #fbbf24; letter-spacing: 2px; margin-bottom: 12px; }
+
+  /* CTA / Contact */
+  .cta-box { text-align: center; background: linear-gradient(135deg, rgba(108,140,255,.18), rgba(34,211,238,.10)); border: 1px solid var(--border); border-radius: 24px; padding: 56px 28px; }
+  .cta-box h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.02em; }
+  .cta-box p { color: var(--muted); max-width: 520px; margin: 14px auto 28px; }
+
+  form { max-width: 460px; margin: 30px auto 0; display: grid; gap: 14px; text-align: left; }
+  form label { font-size: .85rem; color: var(--muted); }
+  form input, form textarea { width: 100%; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: .95rem; font-family: inherit; }
+  form input:focus, form textarea:focus { outline: none; border-color: var(--brand); }
+  form .btn { border: 0; }
+
+  footer { border-top: 1px solid var(--border); padding: 36px 0; color: var(--muted); font-size: .9rem; }
+  .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+  @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo"><span class="dot"></span> Tu&nbsp;Marca</div>
+      <div class="nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#precios">Precios</a>
+        <a href="#opiniones">Opiniones</a>
+        <a href="#contacto" class="btn">Empezar</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <span class="pill">✦ Disponible para nuevos proyectos</span>
+      <h1>Convierte tu talento en <span class="grad">ingresos reales</span></h1>
+      <p class="sub">Ofrezco servicios profesionales que ayudan a marcas y emprendedores a crecer. Resultados claros, entregas a tiempo y un trato cercano.</p>
+      <div class="hero-cta">
+        <a href="#precios" class="btn">Ver planes y precios</a>
+        <a href="#servicios" class="btn ghost">Cómo trabajo</a>
+      </div>
+      <div class="trust">
+        <span><b>+120</b> proyectos entregados</span>
+        <span><b>4.9/5</b> valoración media</span>
+        <span><b>48h</b> tiempo de respuesta</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="container">
+      <div class="section-head">
+        <h2>Lo que puedo hacer por ti</h2>
+        <p>Elige el servicio que necesitas. Cada uno está pensado para darte un retorno claro.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="ico">🎨</div>
+          <h3>Diseño y branding</h3>
+          <p>Identidad visual, logotipos y piezas que hacen que tu marca destaque y venda más.</p>
+        </div>
+        <div class="card">
+          <div class="ico">💻</div>
+          <h3>Páginas web</h3>
+          <p>Landing pages y sitios rápidos, modernos y optimizados para convertir visitas en clientes.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📈</div>
+          <h3>Marketing digital</h3>
+          <p>Estrategia de contenido y anuncios para que llegues a más gente y aumentes tus ventas.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✍️</div>
+          <h3>Contenido y copy</h3>
+          <p>Textos que enganchan: descripciones, publicaciones y guiones que conectan con tu audiencia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIOS -->
+  <section id="precios">
+    <div class="container">
+      <div class="section-head">
+        <h2>Planes simples y transparentes</h2>
+        <p>Sin sorpresas. Paga por lo que necesitas y escala cuando quieras.</p>
+      </div>
+      <div class="pricing">
+        <div class="price-card">
+          <h3>Básico</h3>
+          <div class="price">29€<span>/proyecto</span></div>
+          <ul>
+            <li>1 entregable</li>
+            <li>2 rondas de revisión</li>
+            <li>Entrega en 5 días</li>
+            <li>Soporte por email</li>
+          </ul>
+          <!-- Reemplaza el # por tu link de pago (Stripe, PayPal, Gumroad...) -->
+          <a href="#contacto" class="btn ghost" data-plan="Básico">Elegir Básico</a>
+        </div>
+        <div class="price-card featured">
+          <h3>Profesional</h3>
+          <div class="price">99€<span>/proyecto</span></div>
+          <ul>
+            <li>Hasta 3 entregables</li>
+            <li>Revisiones ilimitadas</li>
+            <li>Entrega prioritaria en 72h</li>
+            <li>Soporte por chat</li>
+            <li>Optimización incluida</li>
+          </ul>
+          <a href="#contacto" class="btn" data-plan="Profesional">Elegir Profesional</a>
+        </div>
+        <div class="price-card">
+          <h3>Premium</h3>
+          <div class="price">249€<span>/mes</span></div>
+          <ul>
+            <li>Proyectos ilimitados</li>
+            <li>Gestión dedicada</li>
+            <li>Entrega express</li>
+            <li>Reuniones semanales</li>
+            <li>Reporte de resultados</li>
+          </ul>
+          <a href="#contacto" class="btn ghost" data-plan="Premium">Elegir Premium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPINIONES -->
+  <section id="opiniones">
+    <div class="container">
+      <div class="section-head">
+        <h2>Lo que dicen mis clientes</h2>
+        <p>La confianza se gana con resultados.</p>
+      </div>
+      <div class="quotes">
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"Superó mis expectativas. Mi web nueva triplicó los contactos en el primer mes."</p>
+          <div class="who"><div class="av">LR</div><div><b>Laura Ramírez</b><small>Tienda online</small></div></div>
+        </div>
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"Profesional, rápido y con muy buenas ideas. Repetiré sin dudarlo."</p>
+          <div class="who"><div class="av">DM</div><div><b>Diego Martín</b><small>Startup</small></div></div>
+        </div>
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"El mejor dinero que he invertido en mi negocio este año. 100% recomendado."</p>
+          <div class="who"><div class="av">SC</div><div><b>Sofía Castro</b><small>Coach</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO / CTA -->
+  <section id="contacto">
+    <div class="container">
+      <div class="cta-box">
+        <h2>¿Listo para empezar?</h2>
+        <p>Cuéntame qué necesitas y te respondo con una propuesta en menos de 48 horas.</p>
+        <form id="contactForm" onsubmit="return enviar(event)">
+          <div>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="tucorreo@ejemplo.com" required />
+          </div>
+          <div>
+            <label for="plan">Plan de interés</label>
+            <input id="plan" name="plan" type="text" placeholder="Básico / Profesional / Premium" />
+          </div>
+          <div>
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
+          </div>
+          <button class="btn" type="submit">Enviar solicitud</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot">
+    <div class="logo"><span class="dot"></span> Tu&nbsp;Marca</div>
+    <div>© <span id="year"></span> Tu Marca. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Al pulsar un plan, rellena el campo del formulario
+  document.querySelectorAll('[data-plan]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var campo = document.getElementById('plan');
+      if (campo) campo.value = el.getAttribute('data-plan');
+    });
+  });
+
+  // Envío del formulario.
+  // Opción rápida sin backend: abre el correo del visitante hacia el tuyo.
+  // Cambia TU_EMAIL por tu dirección real.
+  function enviar(e) {
+    e.preventDefault();
+    var TU_EMAIL = "tucorreo@ejemplo.com";
+    var nombre = document.getElementById('nombre').value;
+    var email = document.getElementById('email').value;
+    var plan = document.getElementById('plan').value || '(sin especificar)';
+    var mensaje = document.getElementById('mensaje').value;
+    var asunto = encodeURIComponent('Nueva solicitud de ' + nombre + ' — Plan ' + plan);
+    var cuerpo = encodeURIComponent(
+      'Nombre: ' + nombre + '\n' +
+      'Email: ' + email + '\n' +
+      'Plan: ' + plan + '\n\n' +
+      'Mensaje:\n' + mensaje
+    );
+    window.location.href = 'mailto:' + TU_EMAIL + '?subject=' + asunto + '&body=' + cuerpo;
+    return false;
+  }
+</script>
+</body>
+</html>
