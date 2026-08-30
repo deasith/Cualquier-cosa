@@ -41,10 +41,12 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   Ciudadela del Trono, la Grieta Volcánica (lava y brasas), Costa Helada de Ael (nieve) y Forja Caída — cada
   uno con su paleta, props, partículas ambientales y disposición de cobertura variable (dispersa, fortaleza,
   pasillos o anillo).
-- **Personajes bien diseñados** — jugador, compañeros y SEAF se dibujan como **soldados con casco, visor,
-  hombreras, mochila y arma** (con emblema del héroe); cada tipo de enemigo tiene su **silueta propia**
-  (espinas, fauces, placas y cuernos, pústulas, humanoides). Los compañeros con IA te siguen, disparan y
-  pueden **morir de forma permanente**.
+- **Personajes bien diseñados** — jugador, compañeros y SEAF se dibujan como **soldados** con torso acorazado,
+  casco, visor luminoso, hombreras, mochila, rifle y piernas (con emblema del héroe). Cada facción tiene enemigos
+  con silueta propia: **insectos** con patas animadas, carapachos y mandíbulas (Plaga); **robots** angulares con
+  óptico rojo, chasis y cañones (Legión); **cristales** flotantes con esquirlas orbitando y ojo (Coro). Los jefes
+  tienen su propio aspecto por facción. Los compañeros con IA te siguen, disparan y pueden **morir para siempre**.
+- **Escenario con profundidad** — muros con relieve, borde iluminado y sombra proyectada, y viñeta del suelo.
 - **Enemigos con comportamientos** — Esporling (enjambre), Escupidor (bombardeo a distancia), Bruto
   (acorazado), Reventón (explota al morir) e Infectado (hostigador que dispara en ráfagas).
 - **Sistema de armas** — 6 armas con daño, cadencia, dispersión, munición y recarga reales: Fusil de Cadena,
