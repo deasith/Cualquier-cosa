@@ -47,6 +47,11 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   Ciudadela del Trono, la Grieta Volcánica (lava y brasas), Costa Helada de Ael (nieve) y Forja Caída — cada
   uno con su paleta, props, partículas ambientales y disposición de cobertura variable (dispersa, fortaleza,
   pasillos o anillo).
+- **Rol tipo D&D** — cada Vindicado tiene **atributos** (Fuerza, Destreza, Constitución, Voluntad, Puntería) con
+  modificadores que afectan al combate; gana **experiencia** matando y completando misiones para **subir de nivel**
+  y repartir **puntos de atributo** en su ficha; los disparos pueden hacer **crítico ×2** (según Puntería); y al
+  nivel 3 elige una **Senda** (subclase) permanente: Vanguardia, Francotirador, Médico de Campaña, Zapador,
+  Berserker o Guardián, cada una con una pasiva potente.
 - **Personajes bien diseñados** — jugador, compañeros y SEAF se dibujan como **soldados** con torso acorazado,
   casco, visor luminoso, hombreras, mochila, rifle y piernas (con emblema del héroe). Cada facción tiene enemigos
   con silueta propia: **insectos** con patas animadas, carapachos y mandíbulas (Plaga); **robots** angulares con
