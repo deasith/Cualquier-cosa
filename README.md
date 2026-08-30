@@ -32,6 +32,11 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
 - **Mapa galáctico estilo Helldivers 2** — el Frente es un disco radial con estrella central (Solmyr), telaraña
   de anillos y radios, **territorios de facción** en celdas de colores, planetas-nodo con anillos de control y
   líneas de suministro, y planetas neutrales dispersos. Ratón para inspeccionar, clic para desplegar.
+- **Tipos de misión por planeta** — cada sector ofrece varias operaciones al estilo Helldivers 2, y eliges cuál
+  jugar: **Exterminio** (sobrevive a las oleadas y mata a la Reina), **Defensa** (protege el Reactor de la Corona
+  contra oleadas hasta la evacuación, con temporizador), **Asalto** (localiza y destruye los nidos de la Plaga) y
+  **Sabotaje** (ponte junto a cada terminal para subir el virus del Trono). El HUD muestra el objetivo, y unas
+  flechas señalan los objetivos fuera de pantalla.
 - **Biomas de combate variados** — cada sector tiene su escenario propio: Campos de Sangre, Osario de Vhal,
   Ciudadela del Trono, la Grieta Volcánica (lava y brasas), Costa Helada de Ael (nieve) y Forja Caída — cada
   uno con su paleta, props, partículas ambientales y disposición de cobertura variable (dispersa, fortaleza,

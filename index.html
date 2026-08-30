@@ -303,6 +303,19 @@ const DEFBIOME={nm:"Yermo",floor:"#0d0b0a",floor2:"#080706",grid:"rgba(58,44,34,
 /* facción/tinte de cada sector en el mapa galáctico */
 const SECTOR_FX={ velo:{fac:"#b3312b"}, osario:{fac:"#c9a24b"}, trono:{fac:"#c9a24b"}, grieta:{fac:"#e07828"}, faro:{fac:"#4fd6b8"}, forja:{fac:"#8a6bd6"} };
 
+/* ---------- Tipos de misión (operaciones por planeta) ---------- */
+const MISSIONS={
+  purga:   {nm:"Exterminio", ico:"☠", tag:"Purga total",        col:"#e0554a", obj:"Aniquila cada forma de la Plaga y derriba a la Reina que anida en el sector.", how:"Sobrevive a las oleadas y mata al jefe."},
+  defensa: {nm:"Defensa",    ico:"⛨", tag:"Proteger el reactor",  col:"#c9a24b", obj:"Mantén el Reactor de la Corona en pie contra oleada tras oleada hasta la evacuación.", how:"Aguanta el tiempo · no dejes caer el reactor."},
+  asalto:  {nm:"Asalto",     ico:"✷", tag:"Destruir nidos",       col:"#4fd6b8", obj:"Localiza y destruye todos los nidos de la Plaga que infestan el sector.", how:"Dispara a cada nido hasta reventarlo."},
+  sabotaje:{nm:"Sabotaje",   ico:"⚡", tag:"Hackear terminales",   col:"#8a6bd6", obj:"Sube el virus del Trono a las terminales de la Plaga y colapsa su red.", how:"Ponte junto a cada terminal para subir el virus."},
+};
+const SECTOR_MISSIONS={
+  velo:["purga","defensa","asalto"], osario:["asalto","sabotaje","purga"], trono:["defensa","purga","sabotaje"],
+  grieta:["asalto","purga","defensa"], faro:["defensa","sabotaje","asalto"], forja:["sabotaje","asalto","purga"],
+};
+function missionsFor(id){ return SECTOR_MISSIONS[id]||["purga","defensa","asalto"]; }
+
 /* ---------- Personalidad de cada base (voz + frases) ---------- */
 const VOICE={
   centinela:{persona:"Firme y paternal", motto:"Formad conmigo. Hoy no caemos.",
@@ -510,32 +523,37 @@ function viewFrente(){const w=GAME.war;
 function briefing(id){ GAME.brief=id; GAME.screen="briefing"; render(); }
 function viewBriefing(){
   const s=GAME.war.sectors.find(x=>x.id===GAME.brief), c=GAME.character;
-  const waves = s.threat==="crítica"?4:s.threat==="alta"?3:s.threat==="media"?3:2;
   const alive=c.squad.filter(t=>t.alive);
+  const ops=missionsFor(s.id);
   return `<section class="view"><div class="card pad">
     <div class="eyebrow">Informe de despliegue · ${s.co}</div>
     <h2 class="title">${s.nm}</h2>
-    <p class="lede">Control imperial <b class="gold">${s.ctl}%</b> · Amenaza <b class="crimson">${s.threat}</b>. Sobrevive a <b>${waves} oleada(s)</b> y derriba a la Reina de la Plaga para reclamar el sector.</p>
+    <p class="lede">Control imperial <b class="gold">${s.ctl}%</b> · Amenaza <b class="crimson">${s.threat}</b> · Bioma: <b>${(BIOMES[s.id]||DEFBIOME).nm}</b>. La Corona autoriza tres operaciones. Elige tu misión.</p>
+    <hr class="rule">
+    <div class="label" style="margin-bottom:10px">Operaciones disponibles</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+      ${ops.map(mk=>{const M=MISSIONS[mk];return `<div class="opt" role="button" tabindex="0" onclick="launchArena('${s.id}','${mk}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();launchArena('${s.id}','${mk}')}" style="cursor:pointer">
+        <div class="nm"><span style="color:${M.col}">${M.ico}</span>${M.nm} <span class="tag">${M.tag}</span></div>
+        <div class="desc">${M.obj}</div>
+        <div class="stats" style="color:${M.col}">▸ ${M.how}</div>
+        <div class="stats" style="color:var(--gold)">Iniciar descenso ▸</div>
+      </div>`;}).join("")}
+    </div>
     <hr class="rule">
     <div class="grid g2">
       <div>
         <div class="label" style="margin-bottom:8px">Tu escuadra desciende contigo (${alive.length})</div>
         <div class="squad">${c.squad.map(t=>`<div class="trooper ${t.alive?'':'dead'}"><div class="tn">${t.name}</div><div class="tr">${t.alive?t.role:'Caído'}</div></div>`).join("")}</div>
+        <div class="label" style="margin:14px 0 8px">Arsenal · Estims · Apoyo</div>
+        <div class="chips">${c.weapons.map(w=>`<span class="chip medal">${WEAPONS[w].ico} ${WEAPONS[w].nm}</span>`).join("")}${STIM_ORDER.map(k=>`<span class="chip" style="border-color:${STIMS[k].col};color:${STIMS[k].col}">${STIMS[k].ico}</span>`).join("")}<span class="chip" style="border-color:var(--plague-dim);color:var(--plague)">⛨ SEAF</span></div>
       </div>
       <div>
-        <div class="label" style="margin-bottom:8px">Arsenal cargado</div>
-        <div class="chips">${c.weapons.map(w=>`<span class="chip medal">${WEAPONS[w].ico} ${WEAPONS[w].nm}</span>`).join("")}</div>
-        <div class="label" style="margin:14px 0 8px">Estims (teclas 1-4)</div>
-        <div class="chips">${STIM_ORDER.map(k=>`<span class="chip" style="border-color:${STIMS[k].col};color:${STIMS[k].col}">${STIMS[k].ico} ${STIMS[k].nm.replace('Estim de ','')} ×${STIMS[k].charges}</span>`).join("")}</div>
-        <div class="label" style="margin:14px 0 8px">Apoyo</div>
-        <div class="chips"><span class="chip" style="border-color:var(--plague-dim);color:var(--plague)">⛨ Refuerzos SEAF (tecla C)</span><span class="chip">Tu escuadra se cura y te cubre</span></div>
-        <p class="label" style="margin-top:14px;color:var(--parch-dim)">Controles: <span class="desktop-only">WASD · ratón apuntar · clic disparar · Q arma · R recargar · ESPACIO esquiva · 1-4 estims · C refuerzos</span><span class="touch-only">joystick + fuego (auto-apuntado) + botones de estim y SEAF</span></p>
+        <div class="muted-box" style="text-align:left"><b class="gold">Recuerda:</b> si tu Vida llega a 0, tu Vindicado muere para siempre y entra en la lista de honor. Los compañeros caídos no vuelven.</div>
+        <p class="label" style="margin-top:12px;color:var(--parch-dim)">Controles: <span class="desktop-only">WASD · ratón apuntar · clic disparar · Q arma · R recargar · ESPACIO esquiva · 1-4 estims · C refuerzos</span><span class="touch-only">joystick + fuego (auto-apuntado) + botones de estim y SEAF</span></p>
       </div>
     </div>
-    <div class="muted-box" style="margin-top:18px;text-align:left"><b class="gold">Recuerda:</b> si tu Vida llega a 0, tu Vindicado muere para siempre y entra en la lista de honor. Los compañeros caídos no vuelven.</div>
     <div class="btnrow" style="margin-top:20px">
       <button class="btn" onclick="go('frente')">◂ Volver al mapa</button>
-      <button class="btn primary" onclick="launchArena('${s.id}')">Iniciar descenso ▸</button>
     </div>
   </div></section>`;
 }
@@ -691,6 +709,7 @@ const Arena = (()=>{
   let touchMove={x:0,y:0,active:false}, touchFire=false;
   let stims, buffs, stimGcd, reinfCd, seafN, chatterT, lowWarn, radioMsgs, floats, prevBoss;
   let biome, props, ambient;
+  let missionType, objective, nests, terminals, missionTimer, bossKilled;
 
   function reset(sec){
     sector=sec;
@@ -706,13 +725,31 @@ const Arena = (()=>{
     stims={}; for(const k of STIM_ORDER) stims[k]=STIMS[k].charges;
     buffs={furia:0,vigor:0,coraza:0}; stimGcd=0; reinfCd=8; seafN=0; chatterT=rr(3,6); lowWarn=false; radioMsgs=[]; prevBoss=false;
     cam={x:player.x-VW/2,y:player.y-VH/2};
-    const waves = sec.threat==="crítica"?4:sec.threat==="alta"?3:sec.threat==="media"?3:2;
-    waveDefs=[]; for(let i=0;i<waves;i++) waveDefs.push(buildWave(i,waves,sec));
-    waveIdx=-1; spawnQueue=[]; spawnTimer=0; bossActive=false; boss=null; outcome=null;
+    waveDefs=[]; waveIdx=-1; spawnQueue=[]; spawnTimer=0; bossActive=false; boss=null; outcome=null;
+    objective=null; nests=null; terminals=null; missionTimer=0; bossKilled=false;
+    const M=MISSIONS[missionType]||MISSIONS.purga;
+    if(missionType==="purga"){
+      const waves = sec.threat==="crítica"?4:sec.threat==="alta"?3:sec.threat==="media"?3:2;
+      for(let i=0;i<waves;i++) waveDefs.push(buildWave(i,waves,sec));
+      nextWave();
+    } else if(missionType==="defensa"){
+      objective={x:W/2,y:H/2,hp:760,hpMax:760,r:36,hit:0};
+      missionTimer = sec.threat==="crítica"?110:sec.threat==="alta"?95:80;
+      toast("DEFENSA · PROTEGE EL REACTOR");
+    } else if(missionType==="asalto"){
+      const n=sec.threat==="crítica"?4:3; nests=[];
+      for(let i=0;i<n;i++){ const p=spot(i,n,0.33); nests.push({x:p.x,y:p.y,hp:300,hpMax:300,r:30,hit:0,emitCd:rr(1,2.5)}); }
+      toast("ASALTO · DESTRUYE LOS NIDOS");
+    } else if(missionType==="sabotaje"){
+      const n=3; terminals=[];
+      for(let i=0;i<n;i++){ const p=spot(i,n,0.34); terminals.push({x:p.x,y:p.y,r:22,progress:0,active:false}); }
+      toast("SABOTAJE · HACKEA LAS TERMINALES");
+    }
     state="playing";
-    nextWave();
     radio("MANDO", pick(RADIO.deploy), "#c9a24b");
+    radio("MANDO", M.how, M.col);
   }
+  function spot(i,n,radFrac){ const a=-Math.PI/2 + i/n*6.2832 + rr(-.25,.25); const rad=Math.min(W,H)*radFrac; return {x:clamp(W/2+Math.cos(a)*rad,130,W-130), y:clamp(H/2+Math.sin(a)*rad,130,H-130)}; }
   function buildLayout(){
     walls=[]; const M=180, tpl=pick(["scatter","fortress","corridors","ring","scatter"]);
     if(tpl==="scatter"){ for(let i=0;i<8;i++){ const w=rr(80,200),h=rr(60,150); walls.push({x:rr(M,W-M-w),y:rr(M,H-M-h),w,h}); } }
@@ -767,6 +804,31 @@ const Arena = (()=>{
     }while(dist(x,y,player.x,player.y)<420 && tries<8);
     enemies.push({type,x,y,r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0});
   }
+  function pickEnemyType(){ const r=Math.random(); return r<.5?"esporling":r<.68?"escupidor":r<.82?"infectado":r<.93?"reventon":"bruto"; }
+  function spawnFromNest(nst){ const t=pickEnemyType(),def=ENEMIES[t],a=Math.random()*6.28; enemies.push({type:t,x:nst.x+Math.cos(a)*(nst.r+14),y:nst.y+Math.sin(a)*(nst.r+14),r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0}); }
+  function contSpawn(dt){
+    spawnTimer-=dt;
+    const cap = missionType==="defensa"?32:24, base = missionType==="defensa"?.55:.85;
+    if(spawnTimer<=0 && enemies.length<cap){ spawnEnemy(pickEnemyType()); spawnTimer=rr(base*.6,base*1.3); }
+    if(nests) for(const nst of nests){ if(nst.hp>0){ nst.emitCd-=dt; if(nst.emitCd<=0 && enemies.length<26){ spawnFromNest(nst); nst.emitCd=rr(1.6,2.8); } } }
+  }
+  function damageNest(nst,dmg){ if(GAME.character.base==="marcado")dmg*=1.25; nst.hp-=dmg; nst.hit=.09;
+    if(nst.hp<=0){ nst.hp=0; boom(nst.x,nst.y,96,"#4fd6b8"); radio("MANDO","¡Nido destruido!","#4fd6b8"); toast("NIDO DESTRUIDO"); } }
+  function updateMission(dt){
+    if(state!=="playing")return;
+    if(missionType==="sabotaje" && terminals){ for(const tm of terminals){ if(tm.active)continue;
+      if(dist(player.x,player.y,tm.x,tm.y)<tm.r+player.r+12){ tm.progress+=dt/5; if(tm.progress>=1){ tm.active=true; tm.progress=1; boom(tm.x,tm.y,60,"#8a6bd6"); floatText(tm.x,tm.y-26,"HACKEADA","#8a6bd6"); radio("MANDO","¡Terminal en línea!","#8a6bd6"); } }
+      else tm.progress=Math.max(0,tm.progress-dt*.28); } }
+    if(missionType==="defensa" && objective){
+      if(objective.hit>0)objective.hit-=dt;
+      missionTimer-=dt;
+      if(objective.hp<=0){ objective.hp=0; return defeat("El Reactor de la Corona cayó ante la Plaga."); }
+      if(missionTimer<=22 && !prevBoss){ prevBoss=true; spawnBoss(); radio("MANDO","¡Asalto final! Aguantad hasta la evacuación.","#e0554a"); }
+      if(missionTimer<=0){ return victory(); }
+    } else if(missionType==="asalto" && nests && nests.length){ if(nests.every(n=>n.hp<=0)) return victory(); }
+    else if(missionType==="sabotaje" && terminals && terminals.length){ if(terminals.every(t=>t.active)) return victory(); }
+  }
+  function fmtTime(s){ s=Math.max(0,s|0); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
 
   /* ---------- input ---------- */
   function bindInput(){
@@ -906,18 +968,23 @@ const Arena = (()=>{
       }
       if(al.barkCd<=0){ al.barkCd=rr(12,22); if(Math.random()<.45) radio(al.name, pick(RADIO.banter), al.col); }
     }
-    // ---- spawn de oleada ----
-    if(!bossActive){
-      spawnTimer-=dt;
-      if(spawnQueue.length && spawnTimer<=0 && enemies.length<34){ spawnEnemy(spawnQueue.shift()); spawnTimer=rr(.25,.7); }
-      if(spawnQueue.length===0 && enemies.length===0){ nextWave(); }
-    }
+    // ---- spawn / objetivos según misión ----
+    if(missionType==="purga"){
+      if(!bossActive){
+        spawnTimer-=dt;
+        if(spawnQueue.length && spawnTimer<=0 && enemies.length<34){ spawnEnemy(spawnQueue.shift()); spawnTimer=rr(.25,.7); }
+        if(spawnQueue.length===0 && enemies.length===0){ nextWave(); }
+      }
+    } else { contSpawn(dt); }
     // ---- enemigos ----
     for(const e of enemies){ updateEnemy(e,dt); }
     // retirar los muertos (imprescindible para que avancen las oleadas)
     enemies=enemies.filter(e=>e.hp>0);
     // ---- jefe ----
     if(bossActive && boss) updateBoss(dt);
+    // ---- lógica de objetivo de misión ----
+    updateMission(dt);
+    if(state!=="playing")return;
     // ---- balas jugador ----
     for(const b of pbullets){ b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt; }
     // colisión balas->enemigos
@@ -925,8 +992,9 @@ const Arena = (()=>{
       let target=null;
       if(bossActive&&boss&&dist(b.x,b.y,boss.x,boss.y)<boss.r+b.r){ target={boss:true,x:boss.x,y:boss.y}; }
       else { for(const e of enemies){ if(e.hp>0&&dist(b.x,b.y,e.x,e.y)<e.r+b.r){ target=e; break; } } }
+      if(!target && nests){ for(const nst of nests){ if(nst.hp>0&&dist(b.x,b.y,nst.x,nst.y)<nst.r+b.r){ target={nest:nst,x:nst.x,y:nst.y}; break; } } }
       if(target){
-        if(target.boss){ damageBoss(b.dmg); } else { damageEnemy(target,b); }
+        if(target.boss){ damageBoss(b.dmg); } else if(target.nest){ damageNest(target.nest,b.dmg); } else { damageEnemy(target,b); }
         hitFx(b.x,b.y,b.col);
         if(b.splash){ splashDamage(b.x,b.y,b.splash,b.splashDmg,b.plagueBonus); }
         if(!b.pierce) b.life=0; else { b.pierced=(b.pierced||0)+1; if(b.pierced>3)b.life=0; }
@@ -963,6 +1031,7 @@ const Arena = (()=>{
   function nearestEnemy(x,y,maxD=99999){ let best=null,bd=maxD;
     for(const e of enemies){ if(e.hp<=0)continue; const d=dist(x,y,e.x,e.y); if(d<bd){bd=d;best=e;} }
     if(bossActive&&boss){ const d=dist(x,y,boss.x,boss.y); if(d<bd){bd=d;best=boss;} }
+    if(nests)for(const nst of nests){ if(nst.hp>0){ const d=dist(x,y,nst.x,nst.y); if(d<bd){bd=d;best=nst;} } }
     return best; }
 
   function resolveWalls(ent){
@@ -1002,6 +1071,7 @@ const Arena = (()=>{
     boom(x,y,r,"#ffb066");
     for(const e of enemies){ if(e.hp>0){ const d=dist(x,y,e.x,e.y); if(d<r){ let dd=dmg*(1-d/r); if(pb)dd*=pb; if(GAME.character.base==="marcado")dd*=1.25; e.hp-=dd; e.hit=.08; if(e.hp<=0)killEnemy(e);} } }
     if(bossActive&&boss){ const d=dist(x,y,boss.x,boss.y); if(d<r+boss.r) damageBoss(dmg*(pb||1)*.6); }
+    if(nests)for(const nst of nests){ if(nst.hp>0){ const d=dist(x,y,nst.x,nst.y); if(d<r+nst.r) damageNest(nst,dmg*(pb||1)*.6); } }
   }
   function killEnemy(e){
     if(e._dead)return; e._dead=true;
@@ -1018,11 +1088,14 @@ const Arena = (()=>{
     if(e.hp<=0)return;
     const def=ENEMIES[e.type];
     if(e.hit>0)e.hit-=dt;
-    const d=dist(e.x,e.y,player.x,player.y);
-    let dx=player.x-e.x, dy=player.y-e.y, m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
+    const objT=(missionType==="defensa" && objective && objective.hp>0 && def.behavior==="chase");
+    const tx=objT?objective.x:player.x, ty=objT?objective.y:player.y;
+    const d=dist(e.x,e.y,tx,ty);
+    let dx=tx-e.x, dy=ty-e.y, m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
     if(def.behavior==="chase"){
       e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt;
-      if(d<e.r+player.r+2){ if(player.iframe<=0)hurtPlayer(def.dmg*dt*2.4); if(GAME.character.base==="coloso"){ e.x-=dx*60*dt;e.y-=dy*60*dt; } }
+      if(objT){ if(d<e.r+objective.r+2){ objective.hp-=def.dmg*dt*3; objective.hit=.1; e.x-=dx*12*dt; e.y-=dy*12*dt; } }
+      else if(d<e.r+player.r+2){ if(player.iframe<=0)hurtPlayer(def.dmg*dt*2.4); if(GAME.character.base==="coloso"){ e.x-=dx*60*dt;e.y-=dy*60*dt; } }
     } else if(def.behavior==="ranged"){
       if(d>def.range){ e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt; }
       else if(d<def.range*.6){ e.x-=dx*def.speed*dt; e.y-=dy*def.speed*dt; }
@@ -1072,7 +1145,7 @@ const Arena = (()=>{
     }
   }
   function damageBoss(dmg){ if(!boss)return; if(GAME.character.base==="marcado")dmg*=1.25; boss.hp-=dmg; boss.hit=.07;
-    if(boss.hp<=0){ boss.hp=0; bossActive=false; boom(boss.x,boss.y,140,BOSS.core); victory(); } }
+    if(boss.hp<=0){ boss.hp=0; bossActive=false; bossKilled=true; boom(boss.x,boss.y,140,BOSS.core); if(missionType==="purga"||missionType==="defensa")victory(); } }
   function toastMini(){ /* señal visual de carga */ shake=Math.min(shake+3,10); }
 
   /* ---------- daño al jugador / aliados ---------- */
@@ -1097,23 +1170,29 @@ const Arena = (()=>{
     for(const al of allies){ if(!al.alive && al.ref){ al.ref.alive=false; } }
   }
   function victory(){
-    finishCommon(); const c=GAME.character, s=sector; c.bosses++;
+    finishCommon(); const c=GAME.character, s=sector; if(bossKilled)c.bosses++;
+    const M=MISSIONS[missionType]||MISSIONS.purga;
     const gain = s.threat==="crítica"?34:s.threat==="alta"?26:s.threat==="media"?20:14;
     s.ctl=clamp(s.ctl+gain); GAME.war.plaga=clamp(GAME.war.plaga-6); c.glory+=Math.round(gain/3)+5;
     updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals(); recomputeLiberation();
-    GAME.news.unshift(s.status==="liberado"
-      ? {kind:"win",src:`FRENTE · ${s.co}`,time:`CICLO ${GAME.war.missions}`,hl:`¡${s.nm} LIBERADO!`,bd:`${c.name} derriba a la Reina de la Plaga. El estandarte de la Corona ondea de nuevo.`}
-      : {kind:"win",src:`FRENTE · ${s.co}`,time:`CICLO ${GAME.war.missions}`,hl:`Reina abatida en ${s.nm}`,bd:`${c.name} rompe el nido. Control imperial al ${s.ctl}%. La Plaga retrocede a ${GAME.war.plaga}%.`});
+    const body = missionType==="defensa"?`${c.name} sostuvo el Reactor de la Corona hasta la evacuación.`
+      : missionType==="asalto"?`${c.name} arrasó los nidos de la Plaga en ${s.nm}.`
+      : missionType==="sabotaje"?`${c.name} colapsó la red de la Plaga desde dentro.`
+      : `${c.name} derribó a la Reina de la Plaga.`;
+    GAME.news.unshift({kind:"win",src:`FRENTE · ${s.co}`,time:`CICLO ${GAME.war.missions}`,
+      hl:s.status==="liberado"?`¡${s.nm} LIBERADO!`:`${M.nm} logrado en ${s.nm}`,
+      bd:`${body} Control imperial al ${s.ctl}%. La Plaga retrocede a ${GAME.war.plaga}%.`});
     if(Math.random()<.6)GAME.news.unshift({kind:"decree",src:"EDICTO DEL TRONO",time:`CICLO ${GAME.war.missions}`,hl:pick(DECREES),bd:"— Por orden de la Corona Eterna."});
-    outcome={win:true,gain,s}; save(); showOverlay();
+    outcome={win:true,gain,s,title:`${M.nm.toUpperCase()} LOGRADO`,body}; save(); showOverlay();
   }
-  function defeat(){
+  function defeat(reason){
+    if(state==="over")return;
     finishCommon(); const c=GAME.character, s=sector;
     s.ctl=clamp(s.ctl-10); GAME.war.plaga=clamp(GAME.war.plaga+4); updateSectorStatus(s);
     // permadeath
     GAME.war.fallen.push({name:c.name,rank:c.rank,base:BASES[c.base].nm,glory:c.glory,missions:c.missionsDone});
     GAME.news.unshift({kind:"war",src:"LISTA DE HONOR",time:`CICLO ${GAME.war.missions}`,hl:`Cae ${c.name}, ${c.rank}`,bd:`Abatido en ${s.nm} tras ${c.missionsDone} misión(es). La galaxia continúa sin él; la Corona ya llama al siguiente.`});
-    recomputeLiberation(); outcome={win:false,s}; const dead={...c}; GAME.character=null; save(); showOverlay(dead);
+    recomputeLiberation(); outcome={win:false,s,reason}; const dead={...c}; GAME.character=null; save(); showOverlay(dead);
   }
 
   /* ---------- overlay de resultado (DOM sobre el canvas) ---------- */
@@ -1123,13 +1202,13 @@ const Arena = (()=>{
     const box=document.createElement("div");
     box.className="over "+(win?"victory":"defeat");
     box.innerHTML = win
-     ? `<div><div class="eyebrow" style="color:var(--gold-dim)">Sector ${s.status==="liberado"?"liberado":"asegurado"}</div>
+     ? `<div><div class="eyebrow" style="color:var(--gold-dim)">${outcome.title||"Objetivo logrado"} · ${s.nm}</div>
         <h2>VICTORIA</h2>
-        <p>La Reina ha caído en <b>${s.nm}</b>. Control imperial al <b class="gold">${s.ctl}%</b>. Presión de la Plaga: <b class="crimson">${GAME.war.plaga}%</b>. Gloria total: <b class="gold">${GAME.character.glory}</b>.</p>
+        <p>${outcome.body||""} Control imperial al <b class="gold">${s.ctl}%</b> · Plaga <b class="crimson">${GAME.war.plaga}%</b> · Gloria <b class="gold">${GAME.character.glory}</b>.</p>
         <div class="btnrow" style="justify-content:center"><button class="btn" onclick="Arena.exit('noticias')">Leer los partes ▸</button><button class="btn primary" onclick="Arena.exit('hub')">Volver al puente ▸</button></div></div>`
      : `<div><div class="eyebrow" style="color:var(--crimson)">La lista de honor se alarga</div>
-        <h2>HÉROE CAÍDO</h2>
-        <p><b>${dead?esc(dead.name):"Tu Vindicado"}</b> ha muerto en <b>${s.nm}</b>. La muerte en el frente es permanente — pero la galaxia no se detiene por un solo héroe.</p>
+        <h2>${outcome.reason?"MISIÓN FALLIDA":"HÉROE CAÍDO"}</h2>
+        <p>${outcome.reason?esc(outcome.reason)+" ":""}<b>${dead?esc(dead.name):"Tu Vindicado"}</b> cae en <b>${s.nm}</b>. La muerte en el frente es permanente — pero la galaxia no se detiene por un solo héroe.</p>
         <div class="btnrow" style="justify-content:center"><button class="btn primary" onclick="Arena.exit('roster')">Alistar un nuevo Vindicado ▸</button><button class="btn" onclick="Arena.exit('intro')">Volver al inicio ▸</button></div></div>`;
     $("#arenaWrap").appendChild(box);
   }
@@ -1163,6 +1242,8 @@ const Arena = (()=>{
     // muros
     for(const wl of walls){ ctx.fillStyle=bm.cover; ctx.fillRect(wl.x,wl.y,wl.w,wl.h); ctx.strokeStyle=bm.border; ctx.lineWidth=2; ctx.strokeRect(wl.x,wl.y,wl.w,wl.h);
       ctx.fillStyle=bm.coverTop; ctx.fillRect(wl.x,wl.y,wl.w,6); }
+    // objetivos de misión (bajo entidades)
+    drawObjectives();
     // pickups
     for(const p of pickups){ ctx.fillStyle=p.kind==="ammo"?"#c9a24b":"#7fb069"; ctx.beginPath(); ctx.arc(p.x,p.y,7,0,6.28); ctx.fill();
       ctx.strokeStyle="#0b0807";ctx.lineWidth=2;ctx.stroke(); ctx.fillStyle="#0b0807";ctx.font="9px monospace";ctx.textAlign="center";ctx.fillText(p.kind==="ammo"?"A":"+",p.x,p.y+3.2); }
@@ -1188,6 +1269,8 @@ const Arena = (()=>{
     ctx.restore();
     // ambiente del bioma (brasas, nieve, polvo…) en espacio de pantalla
     if(ambient){ for(const p of ambient){ ctx.globalAlpha=Math.min(.7,p.life*.4); ctx.fillStyle=p.col; ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fill(); } ctx.globalAlpha=1; }
+    // marcadores de dirección a objetivos fuera de pantalla
+    drawMarkers();
     if(state==="paused"){ ctx.fillStyle="rgba(6,4,4,.7)";ctx.fillRect(0,0,VW,VH); ctx.fillStyle="#c9a24b";ctx.font="700 30px Cinzel, serif";ctx.textAlign="center";ctx.fillText("EN PAUSA",VW/2,VH/2-6); ctx.fillStyle="#b6a888";ctx.font="12px monospace";ctx.fillText("P / ESC para continuar",VW/2,VH/2+22); }
   }
   function drawProp(p,bm){
@@ -1199,6 +1282,51 @@ const Arena = (()=>{
     else if(p.type==="ice"){ ctx.fillStyle="rgba(140,220,220,.28)";ctx.beginPath();ctx.moveTo(0,-11*s);ctx.lineTo(8*s,0);ctx.lineTo(0,11*s);ctx.lineTo(-8*s,0);ctx.closePath();ctx.fill(); }
     else if(p.type==="gears"){ ctx.strokeStyle="rgba(180,160,120,.4)";ctx.lineWidth=3*s;ctx.beginPath();ctx.arc(0,0,10*s,0,6.28);ctx.stroke();for(let i=0;i<6;i++){const a=i/6*6.28;ctx.beginPath();ctx.moveTo(Math.cos(a)*10*s,Math.sin(a)*10*s);ctx.lineTo(Math.cos(a)*14*s,Math.sin(a)*14*s);ctx.stroke();} }
     ctx.restore();
+  }
+  function drawObjectives(){
+    const T=performance.now()/1000;
+    if(objective){ const o=objective, hpf=Math.max(0,o.hp/o.hpMax);
+      ctx.save(); ctx.translate(o.x,o.y);
+      ctx.globalAlpha=.2+(REDUCE?0:Math.abs(Math.sin(T*1.5))*.12); ctx.fillStyle=o.hit>0?"#e0554a":"#c9a24b"; ctx.beginPath();ctx.arc(0,0,o.r+16,0,6.28);ctx.fill(); ctx.globalAlpha=1;
+      ctx.fillStyle=o.hit>0?"#5a2a12":"#241a0d"; ctx.strokeStyle="#c9a24b"; ctx.lineWidth=3;
+      ctx.beginPath();for(let i=0;i<6;i++){const a=i/6*6.28+T*.3;const x=Math.cos(a)*o.r,y=Math.sin(a)*o.r;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle="#ffe9b0"; ctx.beginPath();ctx.arc(0,0,o.r*.4,0,6.28);ctx.fill();
+      ctx.restore();
+      const w=o.r*2.4; ctx.fillStyle="rgba(11,8,7,.85)";ctx.fillRect(o.x-w/2,o.y-o.r-20,w,6); ctx.fillStyle=hpf<.35?"#cf4b3f":"#c9a24b"; ctx.fillRect(o.x-w/2,o.y-o.r-20,w*hpf,6);
+      ctx.fillStyle="rgba(201,162,75,.9)";ctx.font="700 10px 'Share Tech Mono',monospace";ctx.textAlign="center";ctx.fillText("REACTOR",o.x,o.y-o.r-24);
+    }
+    if(nests)for(const n of nests){ if(n.hp<=0)continue;
+      ctx.save();ctx.translate(n.x,n.y);
+      ctx.globalAlpha=.22+(REDUCE?0:Math.abs(Math.sin(T*2+n.x*.05))*.12);ctx.fillStyle="#4fd6b8";ctx.beginPath();ctx.arc(0,0,n.r+12,0,6.28);ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle=n.hit>0?"#fff":"#2f8f79";ctx.beginPath();
+      for(let i=0;i<9;i++){const a=i/9*6.28;const rr2=n.r*(i%2?.72:1);const x=Math.cos(a)*rr2,y=Math.sin(a)*rr2;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();
+      ctx.strokeStyle="#0b0807";ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle="#4fd6b8";ctx.beginPath();ctx.arc(0,0,n.r*.35,0,6.28);ctx.fill();
+      ctx.restore();
+      const w=n.r*2; ctx.fillStyle="rgba(11,8,7,.85)";ctx.fillRect(n.x-w/2,n.y-n.r-12,w,4);ctx.fillStyle="#4fd6b8";ctx.fillRect(n.x-w/2,n.y-n.r-12,w*(n.hp/n.hpMax),4);
+    }
+    if(terminals)for(const tm of terminals){
+      ctx.save();ctx.translate(tm.x,tm.y); const col=tm.active?"#8fd66a":"#8a6bd6";
+      if(tm.active){ ctx.globalAlpha=.25;ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,0,tm.r+10,0,6.28);ctx.fill();ctx.globalAlpha=1; }
+      ctx.fillStyle="#1a1420";ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(0,0,tm.r,0,6.28);ctx.fill();ctx.stroke();
+      ctx.fillStyle=col;ctx.font="700 "+(tm.r|0)+"px 'Share Tech Mono',monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tm.active?"✓":"⚡",0,1);ctx.textBaseline="alphabetic";
+      if(!tm.active && tm.progress>0){ ctx.strokeStyle=col;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,tm.r+6,-Math.PI/2,-Math.PI/2+6.2832*tm.progress);ctx.stroke(); }
+      ctx.restore();
+    }
+  }
+  function drawMarkers(){
+    const targets=[];
+    if(objective&&objective.hp>0)targets.push([objective.x,objective.y,"#c9a24b"]);
+    if(nests)for(const n of nests){ if(n.hp>0)targets.push([n.x,n.y,"#4fd6b8"]); }
+    if(terminals)for(const tm of terminals){ if(!tm.active)targets.push([tm.x,tm.y,"#8a6bd6"]); }
+    if(bossActive&&boss)targets.push([boss.x,boss.y,"#e0554a"]);
+    for(const [wx,wy,col] of targets){ const sxp=wx-cam.x, syp=wy-cam.y;
+      if(sxp>18&&sxp<VW-18&&syp>18&&syp<VH-18)continue;
+      const px=clamp(sxp,18,VW-18), py=clamp(syp,18,VH-18), ang=Math.atan2(syp-VH/2,sxp-VW/2);
+      ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+      ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(9,0);ctx.lineTo(-5,-5);ctx.lineTo(-5,5);ctx.closePath();ctx.fill();
+      ctx.restore();
+    }
   }
   function drawEnemy(e){
     const def=ENEMIES[e.type], col=e.hit>0?"#fff":e.col, T=performance.now()/1000, r=e.r;
@@ -1290,9 +1418,14 @@ const Arena = (()=>{
     const w=p.weapons[p.wIdx], def=WEAPONS[w.key];
     hud.hp.style.width=Math.max(0,p.hp/p.hpMax*100)+"%";
     hud.hpTxt.textContent=Math.max(0,Math.round(p.hp))+"/"+p.hpMax;
-    const remaining = bossActive? "JEFE" : Math.max(0,(spawnQueue?spawnQueue.length:0)+enemies.length);
-    hud.wave.innerHTML = bossActive? `<b>OLEADA FINAL</b> · La Reina` : `Oleada <b>${Math.max(1,waveIdx+1)}/${waveDefs.length}</b> · enemigos <b>${remaining}</b>`;
-    hud.sector.innerHTML = `${sector.nm} · control <b>${sector.ctl}%</b>`;
+    const M=MISSIONS[missionType]||MISSIONS.purga;
+    let line;
+    if(missionType==="defensa"&&objective){ const hpP=Math.max(0,Math.round(objective.hp/objective.hpMax*100)); line=`⛨ Reactor <b style="color:${hpP<35?'#cf4b3f':'#c9a24b'}">${hpP}%</b> · Evac <b>${fmtTime(missionTimer)}</b>`; }
+    else if(missionType==="asalto"&&nests){ const down=nests.filter(n=>n.hp<=0).length; line=`✷ Nidos <b>${down}/${nests.length}</b> · enemigos <b>${enemies.length}</b>`; }
+    else if(missionType==="sabotaje"&&terminals){ const act=terminals.filter(t=>t.active).length; line=`⚡ Terminales <b>${act}/${terminals.length}</b> · enemigos <b>${enemies.length}</b>`; }
+    else { line = bossActive? `<b>OLEADA FINAL</b> · La Reina` : `Oleada <b>${Math.max(1,waveIdx+1)}/${waveDefs.length}</b> · enemigos <b>${Math.max(0,(spawnQueue?spawnQueue.length:0)+enemies.length)}</b>`; }
+    hud.wave.innerHTML=line;
+    hud.sector.innerHTML = `<span style="color:${M.col}">${M.ico} ${M.nm}</span> · ${sector.nm}`;
     hud.wn.textContent = def.ico+" "+def.nm;
     if(w.reloading>0){ hud.wa.textContent="RECARGANDO…"; hud.wa.classList.add("reloading"); }
     else { hud.wa.textContent=`Munición ${w.ammo}/${def.mag}`+(p.weapons.length>1?"  ·  Q cambia":""); hud.wa.classList.remove("reloading"); }
@@ -1305,8 +1438,8 @@ const Arena = (()=>{
 
   /* ---------- montaje ---------- */
   const isTouch = matchMedia("(pointer:coarse)").matches;
-  function mount(sec){
-    const c=GAME.character;
+  function mount(sec,mtype){
+    const c=GAME.character; missionType=mtype||"purga";
     // layout responsivo del viewport
     const maxW=Math.min(1120, (window.innerWidth-36));
     VW=Math.round(maxW); VH=Math.round(Math.min(620, Math.max(420, window.innerHeight*0.66)));
@@ -1365,7 +1498,7 @@ const Arena = (()=>{
     stop(){ running=false; cancelAnimationFrame(raf); try{unbindInput();}catch(e){} } };
 })();
 
-function launchArena(id){ const s=GAME.war.sectors.find(x=>x.id===id); stopCanvases(); GAME.screen="arena"; save(); Arena.mount(s); }
+function launchArena(id,mtype){ const s=GAME.war.sectors.find(x=>x.id===id); stopCanvases(); GAME.screen="arena"; save(); Arena.mount(s,mtype||"purga"); }
 
 /* ---------- Retrato SVG de NPC ---------- */
 function portraitSVG(face,col){
