@@ -405,6 +405,16 @@ const STIMS={
 };
 const STIM_ORDER=["combate","furia","vigor","coraza"];
 
+/* ---------- Niveles de dificultad ---------- */
+const DIFFS=[
+  {nm:"Recluta",  ico:"○", cnt:.6, hp:.7, dmg:.58, boss:.7, rew:.8,  desc:"Para foguearse. El enemigo apenas muerde."},
+  {nm:"Soldado",  ico:"◔", cnt:.8, hp:.86,dmg:.78, boss:.88,rew:1,   desc:"Un reto justo. Recomendado para empezar."},
+  {nm:"Vindicado",ico:"◑", cnt:1,  hp:1,  dmg:1,   boss:1,  rew:1.3, desc:"El frente real. Sin concesiones."},
+  {nm:"Élite",    ico:"◕", cnt:1.28,hp:1.2,dmg:1.2, boss:1.28,rew:1.7,desc:"Oleadas densas y golpes duros."},
+  {nm:"Infierno", ico:"●", cnt:1.55,hp:1.45,dmg:1.4,boss:1.55,rew:2.2,desc:"Solo para leyendas. No se esperan supervivientes."},
+];
+function curDiff(){ return DIFFS[Math.max(0,Math.min(DIFFS.length-1, (GAME.difficulty==null?1:GAME.difficulty)))]; }
+
 /* ---------- Refuerzos SEAF (Ejército del Trono) ---------- */
 const SEAF={ nm:"SEAF", hp:95, speed:172, dmgMult:.62, col:"#9db0c9", cd:26, count:2, life:34 };
 
@@ -456,6 +466,7 @@ function syncGame(){
   PLANETS.forEach((p,i)=>{ if(!have.has(p.id)) w.sectors.push(mkSector(p,i)); });
   for(const s of w.sectors){ const p=PLANET_BY_ID[s.id]; if(p){ s.nm=p.nm; s.co=p.co; if(!s.fac)s.fac=p.fac; } if(s.resistance===undefined)s.resistance= s.fac==="plaga"?30:45; updateSectorStatus(s); }
   if(GAME.req===undefined)GAME.req=0;
+  if(GAME.difficulty===undefined||GAME.difficulty<0||GAME.difficulty>4)GAME.difficulty=1;
   if(!Array.isArray(GAME.unlocked))GAME.unlocked=["torreta"];
   if(!GAME.unlocked.includes("torreta"))GAME.unlocked.unshift("torreta");
   if(!Array.isArray(GAME.equip)||!GAME.equip.length)GAME.equip=["torreta"];
@@ -467,7 +478,7 @@ function seedNews(){ return [
   {kind:"war",src:"FRENTE · SECTOR IV",time:"CICLO 0",hl:"La Grieta Novena al borde del colapso",bd:"El control imperial cae por debajo de un cuarto. Se solicitan voluntarios; no se esperan supervivientes."},
 ];}
 
-function freshGame(){ return { screen:"intro", tab:"frente", character:null, war:freshWar(), news:seedNews(), pickBase:null, brief:null, req:0, unlocked:["torreta"], equip:["torreta"] }; }
+function freshGame(){ return { screen:"intro", tab:"frente", character:null, war:freshWar(), news:seedNews(), pickBase:null, brief:null, req:0, unlocked:["torreta"], equip:["torreta"], difficulty:1 }; }
 let GAME = load() || freshGame();
 syncGame();
 
@@ -485,7 +496,7 @@ function finalizeCharacter(baseKey,name,secondary){
   return { base:baseKey, name:(name||"").trim()||b.nm, col:b.col,
     hp:b.hp, hpMax:b.hp, speed:b.speed, dmgMult:b.dmgMult,
     weapons:[b.primary, secondary].filter((w,i,a)=>w&&a.indexOf(w)===i),
-    glory:0, rank:"Recluta", medals:[], squad:makeSquad(2), missionsDone:0, kills:0, bosses:0, alive:true };
+    glory:0, rank:"Recluta", medals:[], squad:makeSquad(3), missionsDone:0, kills:0, bosses:0, alive:true };
 }
 const RANKS=[[0,"Recluta"],[4,"Soldado del Trono"],[9,"Vindicado"],[16,"Portador de la Llama"],[26,"Paladín de la Corona"],[40,"Mano del Trono"]];
 function rankFor(g){let r="Recluta";for(const[t,n]of RANKS)if(g>=t)r=n;return r;}
@@ -604,6 +615,7 @@ function viewFrente(){const w=GAME.war;
     }).join("")}</div></section>`;}
 
 function briefing(id){ GAME.brief=id; GAME.screen="briefing"; render(); }
+function setDiff(i){ GAME.difficulty=Math.max(0,Math.min(DIFFS.length-1,i)); save(); render(); }
 function viewBriefing(){
   const s=GAME.war.sectors.find(x=>x.id===GAME.brief), c=GAME.character;
   const alive=c.squad.filter(t=>t.alive);
@@ -611,7 +623,12 @@ function viewBriefing(){
   return `<section class="view"><div class="card pad">
     <div class="eyebrow">Informe de despliegue · ${s.co}</div>
     <h2 class="title">${s.nm}</h2>
-    <p class="lede">Control imperial <b class="gold">${s.ctl}%</b> · Amenaza <b class="crimson">${s.threat}</b> · Bioma: <b>${(BIOMES[s.id]||DEFBIOME).nm}</b>. La Corona autoriza tres operaciones. Elige tu misión.</p>
+    <p class="lede">Control imperial <b class="gold">${s.ctl}%</b> · Amenaza <b class="crimson">${s.threat}</b> · Facción <b style="color:${facOf(s).col}">${facOf(s).nm}</b> · Bioma <b>${(BIOMES[planetMeta(s.id).biome]||DEFBIOME).nm}</b>.</p>
+    ${(s.threat==="alta"||s.threat==="crítica")?`<p class="label" style="color:var(--plague)">▚ SECTOR DE RIESGO — cada cierto tiempo baja una nave SEAF con 5 refuerzos. Otros Vindicados combaten aquí.</p>`:''}
+    <hr class="rule">
+    <div class="label" style="margin-bottom:10px">Nivel de dificultad</div>
+    <div class="chips" style="margin-bottom:6px">${DIFFS.map((d,i)=>`<button class="chip ${GAME.difficulty===i?'on':''}" onclick="setDiff(${i})">${d.ico} ${d.nm}</button>`).join("")}</div>
+    <p class="stats" style="color:var(--parch-dim);margin-bottom:2px">${curDiff().desc}</p>
     <hr class="rule">
     <div class="label" style="margin-bottom:10px">Operaciones disponibles</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
@@ -837,6 +854,7 @@ const Arena = (()=>{
   let biome, props, ambient;
   let missionType, objective, nests, terminals, missionTimer, bossKilled;
   let fac, bossDef, roster, strat, turrets, mines, fires, orbitals, samples, deposits, subObj, shieldT, reqEarned;
+  let diff, edmgMul, risky, seafDropCd, dropships, vindCd;
 
   function reset(sec){
     sector=sec;
@@ -844,8 +862,9 @@ const Arena = (()=>{
     const wpDefs=c.weapons.map(k=>({key:k,ammo:WEAPONS[k].mag,reloading:0}));
     player={x:W/2,y:H/2,r:16,hp:c.hp,hpMax:c.hpMax,speed:c.speed,
       wIdx:0,weapons:wpDefs,fireCd:0,dashCd:0,dashT:0,iframe:0,col:c.col,dmgMult:c.dmgMult,base:c.base,revives:(c.base==="centinela"?1:0)};
-    allies=c.squad.filter(t=>t.alive).map((t,i)=>({name:t.name,ref:t,persona:t.persona||"Soldado",x:W/2+(i?60:-60),y:H/2+70,r:12,hp:78,hpMax:78,fireCd:rr(0,.4),alive:true,col:"#e0cf9a",label:t.name,
-      barkCd:rr(4,10),supportCd:rr(6,12),stimCd:0,stims:1}));
+    const sq=c.squad.filter(t=>t.alive), nsq=Math.max(1,sq.length);
+    allies=sq.map((t,i)=>({name:t.name,ref:t,persona:t.persona||"Soldado",x:W/2+Math.cos(i/nsq*6.28)*70,y:H/2+50+Math.sin(i/nsq*6.28)*30,r:12,hp:84,hpMax:84,fireCd:rr(0,.4),alive:true,col:"#e0cf9a",label:t.name,
+      slot:i,slots:nsq,barkCd:rr(4,10),supportCd:rr(6,12),stimCd:0,stims:2}));
     enemies=[];pbullets=[];ebullets=[];particles=[];pickups=[];floats=[];
     turrets=[];mines=[];fires=[];orbitals=[];samples=[];deposits=[];shieldT=0;reqEarned=0;
     fac = sec.fac || planetMeta(sec.id).fac || "plaga";
@@ -857,6 +876,11 @@ const Arena = (()=>{
     // estims, buffs y refuerzos por despliegue
     stims={}; for(const k of STIM_ORDER) stims[k]=STIMS[k].charges;
     buffs={furia:0,vigor:0,coraza:0}; stimGcd=0; reinfCd=8; seafN=0; chatterT=rr(3,6); lowWarn=false; radioMsgs=[]; prevBoss=false;
+    // dificultad, sector de riesgo, nave SEAF y Vindicados aliados
+    diff=curDiff(); edmgMul=diff.dmg;
+    risky = sector.threat==="alta"||sector.threat==="crítica";
+    dropships=[]; seafDropCd = risky? rr(22,34) : 1e9; vindCd = rr(20,30);
+    spawnVindicados(risky?3:2);
     cam={x:player.x-VW/2,y:player.y-VH/2};
     waveDefs=[]; waveIdx=-1; spawnQueue=[]; spawnTimer=0; bossActive=false; boss=null; outcome=null;
     objective=null; nests=null; terminals=null; missionTimer=0; bossKilled=false;
@@ -887,6 +911,7 @@ const Arena = (()=>{
     radio("MANDO", pick(RADIO.deploy), FACTIONS[fac].col);
     radio("MANDO", `${FACTIONS[fac].nm} controla este sector. ${M.how}`, M.col);
     radio("MANDO", `Objetivo extra: ${SB.nm.toLowerCase()}.`, SB.col);
+    if(risky) radio("MANDO", "Sector de riesgo: habrá refuerzos SEAF por aire y Vindicados en el frente.", "#9db0c9");
   }
   function spot(i,n,radFrac){ const a=-Math.PI/2 + i/n*6.2832 + rr(-.25,.25); const rad=Math.min(W,H)*radFrac; return {x:clamp(W/2+Math.cos(a)*rad,130,W-130), y:clamp(H/2+Math.sin(a)*rad,130,H-130)}; }
   function buildLayout(){
@@ -905,13 +930,9 @@ const Arena = (()=>{
     ambient.push({x,y,vx,vy,life:rr(3,6),col:biome.amb,r:type==="snow"?rr(1,2.3):rr(.8,1.8)});
   }
   function buildWave(i,total,sec){
-    const diff = (sec.threat==="crítica"?1.5:sec.threat==="alta"?1.25:sec.threat==="media"?1:.8) * (1+i*.35);
-    const list=[];
-    const n=Math.round((6+i*3)*diff);
-    for(let k=0;k<n;k++){
-      const roll=Math.random();
-      list.push(pickFromRoster());
-    }
+    const thr = (sec.threat==="crítica"?1.4:sec.threat==="alta"?1.2:sec.threat==="media"?1:.85) * (1+i*.32);
+    const n=Math.max(3, Math.round((5+i*2.4)*thr*(diff?diff.cnt:1)));
+    const list=[]; for(let k=0;k<n;k++) list.push(pickFromRoster());
     return list;
   }
   function nextWave(){
@@ -925,8 +946,8 @@ const Arena = (()=>{
     if(bossActive) return;
     bossActive=true;
     const bd=bossDef||BOSSES.reina;
-    const a=Math.random()*6.28, R=Math.min(W,H)/2-140;
-    boss={x:W/2+Math.cos(a)*R,y:H/2+Math.sin(a)*R,r:bd.r,hp:bd.hp,hpMax:bd.hp,phase:1,atkCd:2,chargeT:0,vx:0,vy:0,summonCd:4};
+    const a=Math.random()*6.28, R=Math.min(W,H)/2-140, bhp=Math.round(bd.hp*(diff?diff.boss:1));
+    boss={x:W/2+Math.cos(a)*R,y:H/2+Math.sin(a)*R,r:bd.r,hp:bhp,hpMax:bhp,phase:1,atkCd:2,chargeT:0,vx:0,vy:0,summonCd:4};
     toast(bd.nm.toUpperCase());
     radio("MANDO", pick(RADIO.boss), FACTIONS[bd.fac].accent);
     if(hud.bossName) hud.bossName.textContent="☠ "+bd.nm;
@@ -942,16 +963,45 @@ const Arena = (()=>{
       else if(edge===2){x=40;y=rr(40,H-40);} else {x=W-40;y=rr(40,H-40);}
       tries++;
     }while(dist(x,y,player.x,player.y)<420 && tries<8);
-    enemies.push({type,x,y,r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0});
+    const hp=Math.round(def.hp*(diff?diff.hp:1));
+    enemies.push({type,x,y,r:def.r,hp,hpMax:hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0});
   }
   function pickFromRoster(){ const rs=roster&&roster.length?roster:rosterOf("plaga"); let tot=0; const ws=rs.map(k=>{ const w=1/(0.6+ENEMIES[k].hp/45); tot+=w; return w; }); let r=Math.random()*tot; for(let i=0;i<rs.length;i++){ r-=ws[i]; if(r<=0)return rs[i]; } return rs[0]; }
   function pickEnemyType(){ return pickFromRoster(); }
-  function spawnFromNest(nst){ const t=pickEnemyType(),def=ENEMIES[t],a=Math.random()*6.28; enemies.push({type:t,x:nst.x+Math.cos(a)*(nst.r+14),y:nst.y+Math.sin(a)*(nst.r+14),r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0}); }
+  function spawnFromNest(nst){ const t=pickEnemyType(),def=ENEMIES[t],a=Math.random()*6.28; enemies.push({type:t,x:nst.x+Math.cos(a)*(nst.r+14),y:nst.y+Math.sin(a)*(nst.r+14),r:def.r,hp:Math.round(def.hp*(diff?diff.hp:1)),hpMax:Math.round(def.hp*(diff?diff.hp:1)),fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0}); }
+  /* ---- Vindicados aliados (otros héroes combatiendo en el planeta) ---- */
+  const VNAMES=["Vael","Ryn","Sora","Doryn","Halix","Kest","Nova","Bram","Iria","Torv"];
+  function spawnVindicados(n){
+    for(let i=0;i<n;i++){ const a=Math.random()*6.28,d=rr(260,560); const x=clamp(player.x+Math.cos(a)*d,60,W-60),y=clamp(player.y+Math.sin(a)*d,60,H-60);
+      allies.push({name:pick(VNAMES),ref:null,vindicado:true,roam:true,x,y,r:14,hp:135,hpMax:135,fireCd:rr(0,.4),alive:true,col:"#d8b45a",label:"⚔",barkCd:rr(6,16),supportCd:99,stimCd:99,stims:0,dmgMult:1,wpn:pick(["fusil","rifle","escopeta","repetidor"])}); }
+  }
+  /* ---- Nave de refuerzo SEAF (5 soldados) en sectores de riesgo ---- */
+  function launchDropship(){
+    const tx=clamp(player.x+rr(-220,220),150,W-150), ty=clamp(player.y+rr(-140,140),170,H-170);
+    dropships.push({x:tx,y:ty-VH*0.62,tx,ty,phase:"in",dropped:false,hover:0.8});
+    radio("MANDO","¡Nave de refuerzo SEAF entrante! Cinco soldados en camino.","#9db0c9"); toast("NAVE SEAF ENTRANTE");
+  }
+  function updateDropship(s,dt){
+    if(s.phase==="in"){ s.y += Math.min(340*dt, (s.ty-s.y)); if(s.y>=s.ty-2){ s.y=s.ty; s.phase="hover"; } }
+    else if(s.phase==="hover"){ s.hover-=dt;
+      if(!s.dropped){ s.dropped=true; for(let i=0;i<5;i++){ seafN++; const a=i/5*6.28,d=rr(26,58); const x=clamp(s.x+Math.cos(a)*d,40,W-40),y=clamp(s.y+Math.sin(a)*d,40,H-40); boom(x,y,32,SEAF.col);
+        allies.push({name:"SEAF-"+seafN,ref:null,seaf:true,x,y,r:12,hp:SEAF.hp,hpMax:SEAF.hp,fireCd:rr(0,.3),alive:true,col:SEAF.col,label:"SEAF",life:SEAF.life+16,barkCd:rr(8,16),supportCd:99,stimCd:99,stims:0,dmgMult:SEAF.dmgMult}); } }
+      if(s.hover<=0)s.phase="out"; }
+    else { s.y -= 320*dt; if(s.y < s.ty - VH*0.72) s.dead=true; }
+  }
+  function updateSupport(dt){
+    if(state!=="playing")return;
+    if(risky){ seafDropCd-=dt; if(seafDropCd<=0){ seafDropCd=rr(44,60); launchDropship(); }
+      vindCd-=dt; if(vindCd<=0){ vindCd=rr(22,34); if(allies.filter(a=>a.alive&&a.vindicado).length<3) spawnVindicados(1); } }
+    if(dropships){ for(const s of dropships)updateDropship(s,dt); dropships=dropships.filter(s=>!s.dead); }
+  }
+  function objectivePoint(){ if(objective&&objective.hp>0)return objective; if(nests){const n=nests.find(x=>x.hp>0);if(n)return n;} if(terminals){const t=terminals.find(x=>!x.active);if(t)return t;} if(bossActive&&boss)return boss; return {x:W/2,y:H/2}; }
   function contSpawn(dt){
     spawnTimer-=dt;
-    const cap = missionType==="defensa"?32:24, base = missionType==="defensa"?.55:.85;
+    const dc=(diff?diff.cnt:1);
+    const cap = Math.round((missionType==="defensa"?26:20)*dc), base = (missionType==="defensa"?.72:1.0)/Math.max(.6,dc);
     if(spawnTimer<=0 && enemies.length<cap){ spawnEnemy(pickEnemyType()); spawnTimer=rr(base*.6,base*1.3); }
-    if(nests) for(const nst of nests){ if(nst.hp>0){ nst.emitCd-=dt; if(nst.emitCd<=0 && enemies.length<26){ spawnFromNest(nst); nst.emitCd=rr(1.6,2.8); } } }
+    if(nests) for(const nst of nests){ if(nst.hp>0){ nst.emitCd-=dt; if(nst.emitCd<=0 && enemies.length<cap+4){ spawnFromNest(nst); nst.emitCd=rr(2.0,3.2)/Math.max(.7,dc); } } }
   }
   function damageNest(nst,dmg){ if(GAME.character.base==="marcado")dmg*=1.25; nst.hp-=dmg; nst.hit=.09;
     if(nst.hp<=0){ nst.hp=0; boom(nst.x,nst.y,96,"#4fd6b8"); radio("MANDO","¡Nido destruido!","#4fd6b8"); toast("NIDO DESTRUIDO"); } }
@@ -1130,24 +1180,36 @@ const Arena = (()=>{
       if(w.ammo<=0){ startReload(); }
       else { fireWeapon(player,def,aim,player.dmgMult*(buffs.furia>0?1.4:1),true); w.ammo--; player.fireCd=def.cd*(buffs.furia>0?.7:1); if(w.ammo<=0)startReload(); }
     }
-    // ---- aliados (escuadra + SEAF) ----
+    // ---- aliados: escuadra (formación inteligente), Vindicados (patrullan) y SEAF ----
     for(const al of allies){ if(!al.alive)continue;
       if(al.seaf){ al.life-=dt; if(al.life<=0){ al.alive=false; boom(al.x,al.y,24,al.col); radio(al.name,"Extracción. Ha sido un honor.",al.col); continue; } }
-      const follow=dist(al.x,al.y,player.x,player.y);
-      const tgt=nearestEnemy(al.x,al.y,540);
-      let dx=player.x-al.x, dy=player.y-al.y, dm=Math.hypot(dx,dy)||1;
-      if(follow>130){ al.x+=dx/dm*180*dt; al.y+=dy/dm*180*dt; }
-      resolveWalls(al);
       al.fireCd-=dt; al.barkCd-=dt; al.supportCd-=dt; al.stimCd-=dt;
-      const mult=(al.dmgMult||.7);
-      if(tgt&&al.fireCd<=0){ const a={x:tgt.x-al.x,y:tgt.y-al.y}; const m=Math.hypot(a.x,a.y)||1;a.x/=m;a.y/=m;
-        fireWeapon(al,WEAPONS.fusil,a,mult,true); al.fireCd=.30; }
-      // apoyo con estims entre la escuadra propia
-      if(!al.seaf && al.stimCd<=0 && al.stims>0){
-        if(al.hp/al.hpMax<.45){ al.stims--; al.hp=Math.min(al.hpMax,al.hp+al.hpMax*.5); al.stimCd=9; floatText(al.x,al.y-16,"+","#7fb069"); radio(al.name,"Me curo, aguantad.",al.col); }
-        else if(player.hp/player.hpMax<.35 && follow<170){ al.stims--; player.hp=Math.min(player.hpMax,player.hp+Math.round(player.hpMax*.22)); al.stimCd=11; floatText(player.x,player.y-16,"+","#7fb069"); radio(al.name,"¡Aguanta, te cubro!",al.col); }
+      const wpn = WEAPONS[al.wpn||"fusil"];
+      const tgt = nearestEnemy(al.x,al.y, al.roam?99999:660);
+      const td = tgt? dist(al.x,al.y,tgt.x,tgt.y) : 1e9;
+      let mvx=0,mvy=0,spd=182;
+      if(al.roam){ // Vindicados: cazan por el mapa
+        if(tgt){ if(td>210){mvx=tgt.x-al.x;mvy=tgt.y-al.y;} else if(td<130){mvx=al.x-tgt.x;mvy=al.y-tgt.y;} }
+        else { const o=objectivePoint(); mvx=o.x-al.x; mvy=o.y-al.y; }
+        spd=168;
+      } else { // escuadra: formación alrededor del jugador + kite si aprietan
+        if(tgt && td<74){ mvx=al.x-tgt.x; mvy=al.y-tgt.y; spd=205; }
+        else { const ang=(al.slot||0)/(al.slots||1)*6.2832; const fx=player.x+Math.cos(ang)*76, fy=player.y+Math.sin(ang)*76; mvx=fx-al.x; mvy=fy-al.y; }
       }
-      if(al.barkCd<=0){ al.barkCd=rr(12,22); if(Math.random()<.45) radio(al.name, pick(RADIO.banter), al.col); }
+      const mm=Math.hypot(mvx,mvy)||1; if(mm>7){ al.x+=mvx/mm*spd*dt; al.y+=mvy/mm*spd*dt; }
+      // separación entre aliados (no se amontonan)
+      for(const o of allies){ if(o===al||!o.alive)continue; const dd=dist(al.x,al.y,o.x,o.y),mn=al.r+o.r+8; if(dd<mn&&dd>0){ al.x+=(al.x-o.x)/dd*46*dt; al.y+=(al.y-o.y)/dd*46*dt; } }
+      resolveWalls(al);
+      // disparo (con su arma)
+      if(tgt && al.fireCd<=0 && td<(al.roam?900:640)){ const a={x:tgt.x-al.x,y:tgt.y-al.y}; const m=Math.hypot(a.x,a.y)||1;a.x/=m;a.y/=m;
+        fireWeapon(al,wpn,a,(al.dmgMult||.7),true); al.fireCd=Math.max(.14,(wpn.cd||.3)*1.5); }
+      // apoyo con estims (solo escuadra propia)
+      if(!al.seaf && !al.roam && al.stimCd<=0 && al.stims>0){
+        const follow=dist(al.x,al.y,player.x,player.y);
+        if(al.hp/al.hpMax<.45){ al.stims--; al.hp=Math.min(al.hpMax,al.hp+al.hpMax*.5); al.stimCd=9; floatText(al.x,al.y-16,"+","#7fb069"); radio(al.name,"Me curo, aguantad.",al.col); }
+        else if(player.hp/player.hpMax<.35 && follow<180){ al.stims--; player.hp=Math.min(player.hpMax,player.hp+Math.round(player.hpMax*.22)); al.stimCd=11; floatText(player.x,player.y-16,"+","#7fb069"); radio(al.name,"¡Aguanta, te cubro!",al.col); }
+      }
+      if(al.barkCd<=0){ al.barkCd=rr(12,22); if(!al.roam && Math.random()<.4) radio(al.name, pick(RADIO.banter), al.col); }
     }
     // ---- spawn / objetivos según misión ----
     if(missionType==="purga"){
@@ -1163,6 +1225,8 @@ const Arena = (()=>{
     enemies=enemies.filter(e=>e.hp>0);
     // ---- jefe ----
     if(bossActive && boss) updateBoss(dt);
+    // ---- apoyo: nave SEAF de riesgo + Vindicados ----
+    updateSupport(dt);
     // ---- estratagemas desplegadas ----
     updateStratagems(dt);
     // ---- lógica de objetivo de misión ----
@@ -1263,7 +1327,7 @@ const Arena = (()=>{
     const def=ENEMIES[e.type];
     GAME.character.kills++; GAME.character.glory=Math.min(999,GAME.character.glory+0); // gloria se otorga al final
     boom(e.x,e.y,e.r*2,e.col);
-    if(def.explode){ splashHitsPlayer(e.x,e.y,def.explode.r,def.explode.dmg); boom(e.x,e.y,def.explode.r,"#8fd66a"); }
+    if(def.explode){ splashHitsPlayer(e.x,e.y,def.explode.r,def.explode.dmg*(edmgMul||1)); boom(e.x,e.y,def.explode.r,"#8fd66a"); }
     if(Math.random()<.14) pickups.push({x:e.x,y:e.y,kind:Math.random()<.6?"ammo":"heal"});
     e.hp=0; e._kdrop=true;
   }
@@ -1279,8 +1343,8 @@ const Arena = (()=>{
     let dx=tx-e.x, dy=ty-e.y, m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
     if(def.behavior==="chase"){
       e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt;
-      if(objT){ if(d<e.r+objective.r+2){ objective.hp-=def.dmg*dt*3; objective.hit=.1; e.x-=dx*12*dt; e.y-=dy*12*dt; } }
-      else if(d<e.r+player.r+2){ if(player.iframe<=0)hurtPlayer(def.dmg*dt*2.4); if(GAME.character.base==="coloso"){ e.x-=dx*60*dt;e.y-=dy*60*dt; } }
+      if(objT){ if(d<e.r+objective.r+2){ objective.hp-=def.dmg*(edmgMul||1)*dt*3; objective.hit=.1; e.x-=dx*12*dt; e.y-=dy*12*dt; } }
+      else if(d<e.r+player.r+2){ if(player.iframe<=0)hurtPlayer(def.dmg*(edmgMul||1)*dt*1.9); if(GAME.character.base==="coloso"){ e.x-=dx*60*dt;e.y-=dy*60*dt; } }
     } else if(def.behavior==="ranged"){
       if(d>def.range){ e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt; }
       else if(d<def.range*.6){ e.x-=dx*def.speed*dt; e.y-=dy*def.speed*dt; }
@@ -1294,9 +1358,9 @@ const Arena = (()=>{
     for(const o of enemies){ if(o===e||o.hp<=0)continue; const dd=dist(e.x,e.y,o.x,o.y); const min=e.r+o.r; if(dd<min&&dd>0){ const px=(e.x-o.x)/dd,py=(e.y-o.y)/dd; e.x+=px*(min-dd)*.5; e.y+=py*(min-dd)*.5; } }
     resolveWalls(e);
     // colisión con aliados
-    for(const al of allies){ if(al.alive&&dist(e.x,e.y,al.x,al.y)<e.r+al.r+2){ if(def.behavior==="chase")hurtAlly(al,def.dmg*dt*2); } }
+    for(const al of allies){ if(al.alive&&dist(e.x,e.y,al.x,al.y)<e.r+al.r+2){ if(def.behavior==="chase")hurtAlly(al,def.dmg*(edmgMul||1)*dt*1.6); } }
   }
-  function enemyShoot(e,dx,dy,def){ const m=Math.hypot(dx,dy)||1; const ang=Math.atan2(dy/m,dx/m)+rr(-.05,.05); ebullets.push({x:e.x,y:e.y,vx:Math.cos(ang)*(def.projSpd||320),vy:Math.sin(ang)*(def.projSpd||320),life:2.2,r:5,dmg:def.dmg}); }
+  function enemyShoot(e,dx,dy,def){ const m=Math.hypot(dx,dy)||1; const ang=Math.atan2(dy/m,dx/m)+rr(-.05,.05); ebullets.push({x:e.x,y:e.y,vx:Math.cos(ang)*(def.projSpd||320),vy:Math.sin(ang)*(def.projSpd||320),life:2.2,r:5,dmg:def.dmg*(edmgMul||1)}); }
 
   /* ---------- jefe ---------- */
   function updateBoss(dt){
@@ -1310,7 +1374,7 @@ const Arena = (()=>{
     if(b.chargeT>0){ b.chargeT-=dt; b.x+=b.vx*dt; b.y+=b.vy*dt; }
     else { b.x+=dx*spd*dt; b.y+=dy*spd*dt; }
     b.x=clamp(b.x,60,W-60); b.y=clamp(b.y,60,H-60);
-    if(dist(b.x,b.y,player.x,player.y)<b.r+player.r){ if(player.iframe<=0)hurtPlayer(28*dt*2.4); }
+    if(dist(b.x,b.y,player.x,player.y)<b.r+player.r){ if(player.iframe<=0)hurtPlayer(26*(edmgMul||1)*dt*2); }
     // ataques
     b.atkCd-=dt; b.summonCd-=dt;
     if(b.atkCd<=0){
@@ -1319,8 +1383,8 @@ const Arena = (()=>{
         b.atkCd=b.phase===3?1.6:2.2;
       } else { // salva radial
         const n=b.phase===3?16:b.phase===2?12:9;
-        for(let i=0;i<n;i++){ const a=i/n*6.28; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*260,vy:Math.sin(a)*260,life:2.6,r:6,dmg:12}); }
-        if((bossDef||{}).ranged){ for(let i=-1;i<=1;i++){ const a=Math.atan2(dy,dx)+i*.16; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*440,vy:Math.sin(a)*440,life:2.2,r:6,dmg:14}); } }
+        for(let i=0;i<n;i++){ const a=i/n*6.28; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*260,vy:Math.sin(a)*260,life:2.6,r:6,dmg:11*(edmgMul||1)}); }
+        if((bossDef||{}).ranged){ for(let i=-1;i<=1;i++){ const a=Math.atan2(dy,dx)+i*.16; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*440,vy:Math.sin(a)*440,life:2.2,r:6,dmg:13*(edmgMul||1)}); } }
         b.atkCd=b.phase===3?1.9:2.6;
       }
     }
@@ -1359,10 +1423,11 @@ const Arena = (()=>{
     finishCommon(); const c=GAME.character, s=sector; if(bossKilled)c.bosses++;
     const M=MISSIONS[missionType]||MISSIONS.purga, F=FACTIONS[fac]||FACTIONS.plaga;
     const subDone = subObj && subObj.done;
-    const gain = (s.threat==="crítica"?34:s.threat==="alta"?26:s.threat==="media"?20:14) + (subDone?8:0);
-    s.ctl=clamp(s.ctl+gain); GAME.war.plaga=clamp(GAME.war.plaga-6); c.glory+=Math.round(gain/3)+5;
-    // recompensa en Réditos
-    const req=reqReward(missionType, subDone); GAME.req=(GAME.req||0)+req; reqEarned=req;
+    const rew=(diff?diff.rew:1);
+    const gain = Math.round(((s.threat==="crítica"?34:s.threat==="alta"?26:s.threat==="media"?20:14) + (subDone?8:0)) * (0.7+rew*0.3));
+    s.ctl=clamp(s.ctl+gain); GAME.war.plaga=clamp(GAME.war.plaga-6); c.glory+=Math.round((Math.round(gain/3)+5)*rew);
+    // recompensa en Réditos (escalada por dificultad)
+    const req=Math.round(reqReward(missionType, subDone)*rew); GAME.req=(GAME.req||0)+req; reqEarned=req;
     updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals();
     const body = missionType==="defensa"?`${c.name} sostuvo el Reactor de la Corona hasta la evacuación.`
       : missionType==="asalto"?`${c.name} arrasó los nidos de ${F.nm} en ${s.nm}.`
@@ -1462,6 +1527,8 @@ const Arena = (()=>{
     // balas jugador
     for(const b of pbullets){ ctx.fillStyle=b.col; ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.28);ctx.fill();
       ctx.strokeStyle="rgba(255,255,255,.5)";ctx.lineWidth=1;ctx.stroke(); }
+    // naves SEAF (vuelan sobre el campo)
+    if(dropships)for(const s of dropships) drawDropship(s);
     // textos flotantes (estims, curas)
     if(floats){ ctx.textAlign="center"; ctx.font="700 13px 'Share Tech Mono',monospace";
       for(const f of floats){ ctx.globalAlpha=Math.max(0,Math.min(1,f.life)); ctx.fillStyle=f.col; ctx.fillText(f.txt,f.x,f.y); } ctx.globalAlpha=1; }
@@ -1730,6 +1797,19 @@ const Arena = (()=>{
     if(o.hpFrac!==undefined&&o.hpFrac<1){ ctx.fillStyle="rgba(11,8,7,.8)";ctx.fillRect(x-r,y+r+5,r*2,3); ctx.fillStyle="#e0554a";ctx.fillRect(x-r,y+r+5,r*2*o.hpFrac,3); }
   }
   function drawToken(x,y,r,col,label,hpFrac,seaf){ const tgt=nearestEnemy(x,y,600); const ang=tgt?Math.atan2(tgt.y-y,tgt.x-x):0; drawTrooper(x,y,r,col,ang,{label,hpFrac,seaf}); }
+  function drawDropship(s){
+    const T=performance.now()/1000, alt=Math.max(0,s.ty-s.y);
+    ctx.save(); ctx.translate(s.x,s.y);
+    ctx.fillStyle="rgba(0,0,0,.3)"; ctx.beginPath();ctx.ellipse(0,alt,38,15,0,0,6.28);ctx.fill();
+    if(s.phase==="hover"){ ctx.globalAlpha=.14;ctx.fillStyle="#9db0c9";ctx.beginPath();ctx.moveTo(-22,0);ctx.lineTo(22,0);ctx.lineTo(42,alt+8);ctx.lineTo(-42,alt+8);ctx.closePath();ctx.fill();ctx.globalAlpha=1; }
+    ctx.fillStyle="#232a34"; ctx.beginPath();ctx.moveTo(-30,-6);ctx.lineTo(-54,7);ctx.lineTo(-28,11);ctx.closePath();ctx.moveTo(30,-6);ctx.lineTo(54,7);ctx.lineTo(28,11);ctx.closePath();ctx.fill(); // alas
+    ctx.fillStyle="#2b333f"; rrect(-30,-16,60,32,8); ctx.fill(); ctx.strokeStyle=DK;ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle="#3a4453"; rrect(-15,-21,30,12,4); ctx.fill();
+    ctx.fillStyle="#9db0c9"; rrect(-9,-19,18,6,3); ctx.fill();
+    ctx.fillStyle="rgba(201,162,75,.9)"; ctx.font="700 8px 'Share Tech Mono',monospace"; ctx.textAlign="center"; ctx.fillText("SEAF",0,4);
+    ctx.globalAlpha=.85; for(const ex of [-42,42]){ ctx.fillStyle="#7ad6ff"; ctx.beginPath();ctx.arc(ex,8,4+(REDUCE?0:Math.abs(Math.sin(T*20))*2),0,6.28);ctx.fill(); } ctx.globalAlpha=1;
+    ctx.restore();
+  }
   function drawPlayer(){
     const p=player;
     if(p.iframe>0){ ctx.globalAlpha=.3; ctx.fillStyle=p.col; ctx.beginPath();ctx.arc(p.x,p.y,p.r+4,0,6.28);ctx.fill(); ctx.globalAlpha=1; }
@@ -1755,7 +1835,7 @@ const Arena = (()=>{
     else { line = bossActive? `<b>OLEADA FINAL</b> · ${bossDef?bossDef.nm:"Jefe"}` : `Oleada <b>${Math.max(1,waveIdx+1)}/${waveDefs.length}</b> · enemigos <b>${Math.max(0,(spawnQueue?spawnQueue.length:0)+enemies.length)}</b>`; }
     if(subObj){ line += ` · <span style="color:${subObj.def.col}">${subObj.def.ico} ${subObj.done?'✓':subObj.count+'/'+subObj.total}</span>`; }
     hud.wave.innerHTML=line;
-    hud.sector.innerHTML = `<span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${M.ico} ${M.nm}</span> · ${sector.nm} · <span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${(FACTIONS[fac]||FACTIONS.plaga).nm}</span>`;
+    hud.sector.innerHTML = `<span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${M.ico} ${M.nm}</span> · ${sector.nm} · <span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${(FACTIONS[fac]||FACTIONS.plaga).nm}</span> · <b>${(diff||{nm:''}).ico||''} ${(diff||{nm:''}).nm||''}</b>${risky?' · <span class="plague">RIESGO</span>':''}`;
     hud.wn.textContent = def.ico+" "+def.nm;
     if(w.reloading>0){ hud.wa.textContent="RECARGANDO…"; hud.wa.classList.add("reloading"); }
     else { hud.wa.textContent=`Munición ${w.ammo}/${def.mag}`+(p.weapons.length>1?"  ·  Q cambia":""); hud.wa.classList.remove("reloading"); }

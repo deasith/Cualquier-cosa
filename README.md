@@ -27,8 +27,14 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   **Vigor** (+velocidad) y **Coraza** (−daño recibido).
 - **Refuerzos SEAF** — llama al Ejército del Trono (tecla C, con enfriamiento): soldados aliados equilibrados que
   aguantan, disparan y se repliegan tras un tiempo. Ni rotos ni inútiles.
-- **Escuadra que se apoya** — tus compañeros tienen personalidad, usan sus propios estims para curarse y te
-  cubren cuando flaqueas, con mensajes de radio contextuales durante la batalla.
+- **Escuadra de 3 compañeros inteligentes** — luchan en formación a tu alrededor, se separan para no
+  amontonarse, retroceden si los aprietan (kite), priorizan objetivos, y usan sus propios estims para curarse
+  y cubrirte. Tienen personalidad y radio contextual.
+- **Niveles de dificultad** — de **Recluta** (relajado) a **Infierno**; escalan cantidad de enemigos, vida,
+  daño, vida del jefe y recompensas. Se elige en el informe de despliegue.
+- **Sectores de riesgo** — en planetas de amenaza alta/crítica, cada cierto tiempo **baja una nave SEAF con 5
+  refuerzos**, y hay **otros Vindicados aliados** patrullando y combatiendo por su cuenta, para que el frente
+  se sienta una guerra de verdad.
 - **Mapa galáctico estilo Helldivers 2** — el Frente es un disco radial con estrella central (Solmyr), telaraña
   de anillos y radios, **territorios de facción** en celdas de colores, planetas-nodo con anillos de control y
   líneas de suministro, y planetas neutrales dispersos. Ratón para inspeccionar, clic para desplegar.
