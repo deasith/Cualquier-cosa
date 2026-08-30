@@ -195,6 +195,7 @@
 
   .stimbtn{position:absolute;bottom:130px;right:110px;width:60px;height:60px;border-radius:50%;border:1px solid var(--ok);background:rgba(30,60,30,.4);color:var(--ok);font-family:var(--mono);font-size:11px;pointer-events:auto;z-index:4}
   .reinfbtn{position:absolute;bottom:200px;right:34px;width:60px;height:60px;border-radius:50%;border:1px solid var(--plague-dim);background:rgba(20,50,44,.4);color:var(--plague);font-family:var(--mono);font-size:10px;pointer-events:auto;z-index:4}
+  .stratbtn{position:absolute;bottom:200px;right:110px;width:60px;height:60px;border-radius:50%;border:1px solid var(--gold-dim);background:rgba(40,30,14,.4);color:var(--gold);font-family:var(--mono);font-size:10px;pointer-events:auto;z-index:4}
 
   /* ============ MAPA GALÁCTICO ============ */
   .galaxy-wrap{position:relative;border:1px solid var(--line);background:radial-gradient(120% 100% at 50% 46%,#0a1018 0%,#070a10 45%,#050406 100%);overflow:hidden;touch-action:none;user-select:none}
@@ -274,34 +275,57 @@ const WEAPONS={
 };
 
 /* ---------- ENEMIGOS ---------- */
+/* ---------- Facciones enemigas ---------- */
+const FACTIONS={
+  plaga: {nm:"La Plaga",            col:"#4fd6b8", accent:"#8fd66a", shape:"bug",  boss:"reina",    blurb:"Marea de carne infecta que devora mundos enteros."},
+  legion:{nm:"La Legión de Hierro", col:"#d6742b", accent:"#e0554a", shape:"bot",  boss:"forjador", blurb:"Autómatas herejes que niegan a la Corona y forjan su propio dominio."},
+  coro:  {nm:"El Coro Pálido",      col:"#9a7be0", accent:"#7ad6d6", shape:"void", boss:"heraldo",  blurb:"Mentes del vacío que susurran locura y consumen la luz."},
+};
+function facOf(s){ return FACTIONS[s&&s.fac] || FACTIONS.plaga; }
+function rosterOf(fac){ return Object.keys(ENEMIES).filter(k=>ENEMIES[k].fac===fac); }
+
 const ENEMIES={
-  esporling:{nm:"Esporling", r:12, hp:18, speed:150, dmg:7, behavior:"chase", col:"#4fd6b8", glory:1, plaga:.2,
-    desc:"Cría de la Plaga. Débil sola, letal en enjambre."},
-  escupidor:{nm:"Escupidor", r:15, hp:34, speed:74, dmg:11, behavior:"ranged", range:320, fireCd:1.7, projSpd:300, col:"#3fb6a8", glory:2, plaga:.3,
-    desc:"Bombardea esporas desde lejos y mantiene la distancia."},
-  bruto:{nm:"Bruto", r:26, hp:150, speed:66, dmg:24, behavior:"chase", armor:4, col:"#b3312b", glory:4, plaga:.5,
-    desc:"Montaña de carne acorazada. Lento pero aplasta."},
-  reventon:{nm:"Reventón", r:16, hp:40, speed:132, dmg:10, behavior:"chase", explode:{r:96,dmg:34}, col:"#8fd66a", glory:3, plaga:.4,
-    desc:"Corre hacia ti y estalla en una nube tóxica al morir."},
-  infectado:{nm:"Infectado", r:14, hp:58, speed:104, dmg:9, behavior:"kite", range:250, fireCd:1.2, burst:3, projSpd:360, col:"#c76b52", glory:3, plaga:.4,
-    desc:"Soldado caído, ahora esclavo de la Plaga. Dispara en ráfagas."},
+  /* La Plaga */
+  esporling:{nm:"Esporling", fac:"plaga", shape:"bug", r:12,hp:18,speed:150,dmg:7,behavior:"chase",col:"#4fd6b8",desc:"Cría de la Plaga. Débil sola, letal en enjambre."},
+  escupidor:{nm:"Escupidor", fac:"plaga", shape:"bug", r:15,hp:34,speed:74,dmg:11,behavior:"ranged",range:320,fireCd:1.7,projSpd:300,col:"#3fb6a8",desc:"Bombardea esporas desde lejos y mantiene la distancia."},
+  bruto:{nm:"Bruto", fac:"plaga", shape:"bug", r:26,hp:150,speed:66,dmg:24,behavior:"chase",armor:4,col:"#b3312b",desc:"Montaña de carne acorazada. Lento pero aplasta."},
+  reventon:{nm:"Reventón", fac:"plaga", shape:"bug", r:16,hp:40,speed:132,dmg:10,behavior:"chase",explode:{r:96,dmg:34},col:"#8fd66a",desc:"Corre hacia ti y estalla en una nube tóxica al morir."},
+  infectado:{nm:"Infectado", fac:"plaga", shape:"bug", r:14,hp:58,speed:104,dmg:9,behavior:"kite",range:250,fireCd:1.2,burst:3,projSpd:360,col:"#c76b52",desc:"Soldado caído, ahora esclavo de la Plaga. Dispara en ráfagas."},
+  /* La Legión de Hierro */
+  zumbador:{nm:"Zumbador", fac:"legion", shape:"bot", r:11,hp:22,speed:188,dmg:8,behavior:"chase",col:"#e0894a",desc:"Dron de asalto veloz. Cae fácil, pero nunca viene solo."},
+  fusilbot:{nm:"Fusilbot", fac:"legion", shape:"bot", r:14,hp:52,speed:96,dmg:9,behavior:"kite",range:300,fireCd:1.0,burst:3,projSpd:430,col:"#d6742b",desc:"Autómata de línea. Ráfagas de plasma sin descanso."},
+  lancero:{nm:"Lancero de Hierro", fac:"legion", shape:"bot", r:16,hp:74,speed:70,dmg:16,behavior:"ranged",range:390,fireCd:1.9,projSpd:520,col:"#b85a22",desc:"Cañón andante. Un disparo pesado que castiga la cobertura."},
+  acorazado:{nm:"Acorazado", fac:"legion", shape:"bot", r:27,hp:205,speed:58,dmg:26,behavior:"chase",armor:7,col:"#8a5a2a",desc:"Tanque con patas. Blindaje que se ríe de tus balas."},
+  /* El Coro Pálido */
+  acolito:{nm:"Acólito", fac:"coro", shape:"void", r:13,hp:30,speed:150,dmg:9,behavior:"chase",col:"#9a7be0",desc:"Fanático del vacío. Corre hacia ti sin miedo ni razón."},
+  vidente:{nm:"Vidente", fac:"coro", shape:"void", r:16,hp:48,speed:60,dmg:13,behavior:"ranged",range:340,fireCd:1.6,projSpd:300,col:"#7ad6d6",desc:"Ojo flotante que escupe luz fría desde la distancia."},
+  guardian:{nm:"Guardián Pálido", fac:"coro", shape:"void", r:24,hp:175,speed:64,dmg:22,behavior:"chase",armor:3,col:"#6a4fb0",desc:"Coloso translúcido. Su piel de vacío absorbe el castigo."},
+  abismal:{nm:"Abismal", fac:"coro", shape:"void", r:14,hp:54,speed:122,dmg:10,behavior:"kite",range:260,fireCd:1.1,burst:2,projSpd:360,col:"#b59ae6",desc:"Parpadea entre sombras y hostiga desde ángulos imposibles."},
 };
 
-/* ---------- JEFE ---------- */
-const BOSS={ nm:"La Reina de la Plaga", r:58, hp:1500, speed:70, col:"#8f1a16", core:"#4fd6b8", glory:20 };
+/* ---------- Jefes por facción ---------- */
+const BOSSES={
+  reina:   {nm:"La Reina de la Plaga",  fac:"plaga",  r:58,hp:1500,speed:70,col:"#8f1a16",core:"#4fd6b8",summon:"esporling",summon3:"reventon",ranged:false},
+  forjador:{nm:"El Forjador de Hierro", fac:"legion", r:62,hp:1900,speed:64,col:"#5a3a1a",core:"#e0554a",summon:"zumbador",summon3:"fusilbot",ranged:true},
+  heraldo: {nm:"El Heraldo Pálido",     fac:"coro",   r:56,hp:1650,speed:76,col:"#3a2a5a",core:"#9a7be0",summon:"acolito",summon3:"guardian",ranged:true},
+};
 
-/* ---------- Biomas de combate (variedad por sector) ---------- */
+/* ---------- Biomas de combate ---------- */
 const BIOMES={
-  velo:  {nm:"Campos de Sangre",       floor:"#160b0b",floor2:"#0a0605",grid:"rgba(179,49,43,.12)", border:"rgba(224,85,74,.55)", cover:"#2a1512",coverTop:"rgba(224,85,74,.14)", ambient:"ember", amb:"rgba(224,85,74,.55)", props:"spikes"},
-  osario:{nm:"Osario de Vhal",         floor:"#12100b",floor2:"#0a0908",grid:"rgba(201,162,75,.09)",border:"rgba(150,132,96,.5)",  cover:"#241f16",coverTop:"rgba(232,220,196,.10)",ambient:"dust",  amb:"rgba(190,176,140,.5)", props:"bones"},
-  trono: {nm:"Ciudadela del Trono",    floor:"#0e0f15",floor2:"#080a11",grid:"rgba(201,162,75,.14)",border:"rgba(201,162,75,.65)", cover:"#1b1e2a",coverTop:"rgba(201,162,75,.16)",ambient:"none",  amb:"rgba(201,162,75,.4)",  props:"pillars"},
-  grieta:{nm:"La Grieta Volcánica",    floor:"#150d07",floor2:"#0b0604",grid:"rgba(230,120,40,.12)", border:"rgba(230,120,40,.55)", cover:"#251609",coverTop:"rgba(255,150,70,.16)", ambient:"ember", amb:"rgba(255,140,60,.7)",  props:"lava"},
-  faro:  {nm:"Costa Helada de Ael",    floor:"#0a1015",floor2:"#060a0e",grid:"rgba(79,214,184,.11)", border:"rgba(120,214,214,.5)", cover:"#122029",coverTop:"rgba(140,220,220,.14)",ambient:"snow",  amb:"rgba(205,232,240,.75)",props:"ice"},
-  forja: {nm:"Forja Caída",            floor:"#0f0e0c",floor2:"#080706",grid:"rgba(160,150,150,.09)",border:"rgba(160,146,120,.5)", cover:"#212020",coverTop:"rgba(201,162,75,.12)",ambient:"spark", amb:"rgba(255,200,120,.7)", props:"gears"},
+  velo:  {nm:"Campos de Sangre",    floor:"#160b0b",floor2:"#0a0605",grid:"rgba(179,49,43,.12)", border:"rgba(224,85,74,.55)", cover:"#2a1512",coverTop:"rgba(224,85,74,.14)", ambient:"ember", amb:"rgba(224,85,74,.55)", props:"spikes"},
+  osario:{nm:"Osario de Vhal",      floor:"#12100b",floor2:"#0a0908",grid:"rgba(201,162,75,.09)",border:"rgba(150,132,96,.5)",  cover:"#241f16",coverTop:"rgba(232,220,196,.10)",ambient:"dust",  amb:"rgba(190,176,140,.5)", props:"bones"},
+  trono: {nm:"Ciudadela del Trono", floor:"#0e0f15",floor2:"#080a11",grid:"rgba(201,162,75,.14)",border:"rgba(201,162,75,.65)", cover:"#1b1e2a",coverTop:"rgba(201,162,75,.16)",ambient:"none",  amb:"rgba(201,162,75,.4)",  props:"pillars"},
+  grieta:{nm:"La Grieta Volcánica", floor:"#150d07",floor2:"#0b0604",grid:"rgba(230,120,40,.12)", border:"rgba(230,120,40,.55)", cover:"#251609",coverTop:"rgba(255,150,70,.16)", ambient:"ember", amb:"rgba(255,140,60,.7)",  props:"lava"},
+  faro:  {nm:"Costa Helada de Ael", floor:"#0a1015",floor2:"#060a0e",grid:"rgba(79,214,184,.11)", border:"rgba(120,214,214,.5)", cover:"#122029",coverTop:"rgba(140,220,220,.14)",ambient:"snow",  amb:"rgba(205,232,240,.75)",props:"ice"},
+  forja: {nm:"Forja Caída",         floor:"#0f0e0c",floor2:"#080706",grid:"rgba(160,150,150,.09)",border:"rgba(160,146,120,.5)", cover:"#212020",coverTop:"rgba(201,162,75,.12)",ambient:"spark", amb:"rgba(255,200,120,.7)", props:"gears"},
+  acero: {nm:"Yunque de Acero",     floor:"#0c0e11",floor2:"#070809",grid:"rgba(160,120,90,.12)", border:"rgba(214,116,43,.5)",  cover:"#1c2026",coverTop:"rgba(214,116,43,.14)", ambient:"spark", amb:"rgba(255,170,90,.7)",  props:"gears"},
+  vacio: {nm:"El Vacío Susurrante", floor:"#0c0a14",floor2:"#07050d",grid:"rgba(154,123,224,.12)",border:"rgba(154,123,224,.5)", cover:"#181428",coverTop:"rgba(154,123,224,.16)",ambient:"void",  amb:"rgba(154,123,224,.7)", props:"shards"},
+  cristal:{nm:"Prisma de Nael",     floor:"#0a1014",floor2:"#060a0d",grid:"rgba(122,214,214,.12)",border:"rgba(122,214,214,.5)", cover:"#122428",coverTop:"rgba(122,214,214,.16)",ambient:"void",  amb:"rgba(150,230,230,.7)", props:"shards"},
+  selva: {nm:"Jardín Podrido",      floor:"#0a120c",floor2:"#060a07",grid:"rgba(79,214,120,.10)", border:"rgba(79,214,120,.5)",  cover:"#132417",coverTop:"rgba(143,214,106,.14)",ambient:"spore", amb:"rgba(143,214,106,.6)", props:"vines"},
+  tundra:{nm:"Yermo de Escarcha",   floor:"#0c1014",floor2:"#080b0e",grid:"rgba(180,205,220,.10)",border:"rgba(180,205,220,.45)",cover:"#182028",coverTop:"rgba(200,220,235,.12)",ambient:"snow",  amb:"rgba(215,232,240,.8)", props:"ice"},
+  dunas: {nm:"Mar de Ceniza",       floor:"#141009",floor2:"#0b0805",grid:"rgba(201,162,75,.09)", border:"rgba(201,162,75,.45)", cover:"#241d10",coverTop:"rgba(201,162,75,.12)", ambient:"dust",  amb:"rgba(210,180,120,.6)", props:"bones"},
 };
 const DEFBIOME={nm:"Yermo",floor:"#0d0b0a",floor2:"#080706",grid:"rgba(58,44,34,.5)",border:"rgba(179,49,43,.5)",cover:"#1d1512",coverTop:"rgba(201,162,75,.06)",ambient:"dust",amb:"rgba(160,140,110,.4)",props:"none"};
-/* facción/tinte de cada sector en el mapa galáctico */
-const SECTOR_FX={ velo:{fac:"#b3312b"}, osario:{fac:"#c9a24b"}, trono:{fac:"#c9a24b"}, grieta:{fac:"#e07828"}, faro:{fac:"#4fd6b8"}, forja:{fac:"#8a6bd6"} };
 
 /* ---------- Tipos de misión (operaciones por planeta) ---------- */
 const MISSIONS={
@@ -310,11 +334,50 @@ const MISSIONS={
   asalto:  {nm:"Asalto",     ico:"✷", tag:"Destruir nidos",       col:"#4fd6b8", obj:"Localiza y destruye todos los nidos de la Plaga que infestan el sector.", how:"Dispara a cada nido hasta reventarlo."},
   sabotaje:{nm:"Sabotaje",   ico:"⚡", tag:"Hackear terminales",   col:"#8a6bd6", obj:"Sube el virus del Trono a las terminales de la Plaga y colapsa su red.", how:"Ponte junto a cada terminal para subir el virus."},
 };
-const SECTOR_MISSIONS={
-  velo:["purga","defensa","asalto"], osario:["asalto","sabotaje","purga"], trono:["defensa","purga","sabotaje"],
-  grieta:["asalto","purga","defensa"], faro:["defensa","sabotaje","asalto"], forja:["sabotaje","asalto","purga"],
+function missionsFor(id){ const all=["purga","defensa","asalto","sabotaje"]; let h=0; for(const ch of id)h=(h*31+ch.charCodeAt(0))>>>0; const start=h%all.length,out=[]; for(let i=0;i<3;i++)out.push(all[(start+i)%all.length]); return out; }
+
+/* ---------- Planetas de la galaxia ---------- */
+const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"];
+const PLANETS=[
+  {id:"velo",   nm:"El Velo Carmesí",   fac:"plaga",  biome:"velo"},
+  {id:"osario", nm:"Osario de Vhal",    fac:"plaga",  biome:"osario"},
+  {id:"trono",  nm:"Puertas del Trono", fac:"plaga",  biome:"trono"},
+  {id:"grieta", nm:"La Grieta Novena",  fac:"plaga",  biome:"grieta"},
+  {id:"faro",   nm:"Faro de Ael",       fac:"plaga",  biome:"faro"},
+  {id:"jardin", nm:"Jardín Podrido",    fac:"plaga",  biome:"selva"},
+  {id:"colmena",nm:"La Gran Colmena",   fac:"plaga",  biome:"selva"},
+  {id:"duna",   nm:"Mar de Ceniza",     fac:"plaga",  biome:"dunas"},
+  {id:"forja",  nm:"Forja Caída",       fac:"legion", biome:"forja"},
+  {id:"acero",  nm:"Yunque de Acero",   fac:"legion", biome:"acero"},
+  {id:"clavo",  nm:"El Clavo Ardiente", fac:"legion", biome:"grieta"},
+  {id:"muro",   nm:"Muro de Kograd",    fac:"legion", biome:"acero"},
+  {id:"tundra", nm:"Yermo de Escarcha", fac:"legion", biome:"tundra"},
+  {id:"corte",  nm:"La Corte Muda",     fac:"coro",   biome:"vacio"},
+  {id:"prisma", nm:"Prisma de Nael",    fac:"coro",   biome:"cristal"},
+  {id:"vigilia",nm:"La Vigilia",        fac:"coro",   biome:"vacio"},
+  {id:"abismo", nm:"El Abismo Menor",   fac:"coro",   biome:"cristal"},
+  {id:"solmyr", nm:"Bastión de Solmyr", fac:"legion", biome:"trono"},
+];
+const PLANET_BY_ID={}; PLANETS.forEach((p,i)=>{ p.co="SECTOR "+ROMAN[i]; PLANET_BY_ID[p.id]=p; });
+function planetMeta(id){ return PLANET_BY_ID[id]||PLANETS[0]; }
+
+/* ---------- Estratagemas (desbloqueables con Réditos) ---------- */
+const STRATAGEMS={
+  torreta: {nm:"Torreta Centinela",  ico:"⌖", col:"#c9a24b", cost:0,   cd:32, charges:2, desc:"Despliega una torreta que dispara sola durante 22 s.", free:true},
+  resupply:{nm:"Reabastecimiento",   ico:"▮", col:"#7fb069", cost:70,  cd:26, charges:3, desc:"Cápsula con munición completa y un estim de combate."},
+  orbital: {nm:"Bombardeo Orbital",  ico:"✷", col:"#e0554a", cost:120, cd:38, charges:2, desc:"Marca un punto (tu puntería): cae fuego orbital tras 1,4 s."},
+  escudo:  {nm:"Búnker de Escudo",   ico:"⛨", col:"#4fd6b8", cost:150, cd:44, charges:2, desc:"Cúpula que te vuelve inmune al daño durante 6 s."},
+  minas:   {nm:"Campo de Minas",     ico:"◈", col:"#d99a2b", cost:130, cd:34, charges:2, desc:"Siembra minas de proximidad a tu alrededor."},
+  napalm:  {nm:"Lluvia de Fuego",    ico:"♨", col:"#ff8c3c", cost:180, cd:40, charges:2, desc:"Prende un área en llamas que abrasa a la Plaga que la pise."},
 };
-function missionsFor(id){ return SECTOR_MISSIONS[id]||["purga","defensa","asalto"]; }
+const STRAT_ORDER=["torreta","resupply","orbital","escudo","minas","napalm"];
+
+/* ---------- Subobjetivos opcionales ---------- */
+const SUBOBJS={
+  muestras: {nm:"Recuperar muestras", ico:"◆", col:"#4fd6b8", n:4, desc:"Recoge las muestras de la Plaga esparcidas por la zona."},
+  depositos:{nm:"Destruir depósitos",  ico:"⬢", col:"#e0554a", n:3, desc:"Vuela los depósitos de bilis antes de la extracción."},
+};
+const SUB_ORDER=["muestras","depositos"];
 
 /* ---------- Personalidad de cada base (voz + frases) ---------- */
 const VOICE={
@@ -367,31 +430,50 @@ const NPCS=[
     line:"¿Cambiar de campeón? Los héroes se hacen y se rompen. Elige con cabeza.", action:"Cambiar de Vindicado ▸", go:"roster"},
   {id:"noticias", nm:"Oficial Wren", role:"Comunicaciones", col:"#4fd6b8", x:.32,y:.80, face:"headset",
     line:"Partes del frente y edictos del Trono. La verdad, tal como conviene contarla.", action:"Leer las noticias ▸", go:"noticias"},
-  {id:"bestiario", nm:"Archivista Sib", role:"Archivo de la Plaga", col:"#c76b52", x:.68,y:.80, face:"hood",
-    line:"Conoce a lo que te devora. He catalogado cada horror. Léelo, y vive un día más.", action:"Abrir el bestiario ▸", go:"bestiario"},
+  {id:"bestiario", nm:"Archivista Sib", role:"Archivo de facciones", col:"#c76b52", x:.68,y:.80, face:"hood",
+    line:"Conoce a lo que te devora. Plaga, Legión, Coro… he catalogado cada horror. Léelo, y vive un día más.", action:"Abrir el bestiario ▸", go:"bestiario"},
+  {id:"estratega", nm:"Estratega Thorne", role:"Apoyo orbital", col:"#4fd6b8", x:.50,y:.66, face:"visor",
+    line:"¿Réditos en el bolsillo? Con eso te bajo torretas, bombardeos y escudos desde órbita. Equipa y baja a repartir.", action:"Abrir estratagemas ▸", go:"estratagemas"},
 ];
 
 /* ---------- Mundo / guerra ---------- */
+function mkSector(p,i){
+  const ctl = i<3? rr(52,84) : i<8? rr(26,58) : rr(8,40);
+  const res = p.fac==="legion"? rr(34,62) : p.fac==="coro"? rr(38,66) : rr(16,46);
+  const s={id:p.id, nm:p.nm, co:p.co, fac:p.fac, ctl:Math.round(ctl), resistance:Math.round(res), status:"activo", threat:"media"};
+  updateSectorStatus(s); return s;
+}
 function freshWar(){
-  return { sectors:[
-      {id:"velo",   nm:"El Velo Carmesí",  co:"SECTOR I",  ctl:64, threat:"media",   status:"activo"},
-      {id:"osario", nm:"Osario de Vhal",   co:"SECTOR II", ctl:38, threat:"alta",    status:"activo"},
-      {id:"trono",  nm:"Puertas del Trono",co:"SECTOR III",ctl:82, threat:"baja",    status:"activo"},
-      {id:"grieta", nm:"La Grieta Novena", co:"SECTOR IV", ctl:21, threat:"crítica", status:"activo"},
-      {id:"faro",   nm:"Faro de Ael",      co:"SECTOR V",  ctl:55, threat:"media",   status:"activo"},
-      {id:"forja",  nm:"Forja Caída",      co:"SECTOR VI", ctl:44, threat:"alta",    status:"activo"},
-    ], plaga:46, missions:0, fallen:[], liberated:0, liberationPct:50 };
+  const sectors=PLANETS.map(mkSector);
+  const w={ sectors, plaga:46, missions:0, fallen:[], liberated:0, liberationPct:50 };
+  return w;
+}
+/* Migración: añade planetas nuevos y campos que falten a partidas antiguas */
+function syncGame(){
+  if(!GAME.war) GAME.war=freshWar();
+  const w=GAME.war; if(!Array.isArray(w.sectors))w.sectors=[];
+  const have=new Set(w.sectors.map(s=>s.id));
+  PLANETS.forEach((p,i)=>{ if(!have.has(p.id)) w.sectors.push(mkSector(p,i)); });
+  for(const s of w.sectors){ const p=PLANET_BY_ID[s.id]; if(p){ s.nm=p.nm; s.co=p.co; if(!s.fac)s.fac=p.fac; } if(s.resistance===undefined)s.resistance= s.fac==="plaga"?30:45; updateSectorStatus(s); }
+  if(GAME.req===undefined)GAME.req=0;
+  if(!Array.isArray(GAME.unlocked))GAME.unlocked=["torreta"];
+  if(!GAME.unlocked.includes("torreta"))GAME.unlocked.unshift("torreta");
+  if(!Array.isArray(GAME.equip)||!GAME.equip.length)GAME.equip=["torreta"];
+  GAME.equip=GAME.equip.filter(k=>GAME.unlocked.includes(k)).slice(0,4);
+  recomputeLiberation();
 }
 function seedNews(){ return [
   {kind:"decree",src:"EDICTO DEL TRONO",time:"CICLO 0",hl:"La Corona convoca a un nuevo Vindicado",bd:"La Plaga no descansa; tampoco lo harán los hijos del Trono. Elige tu campeón y desciende al frente."},
   {kind:"war",src:"FRENTE · SECTOR IV",time:"CICLO 0",hl:"La Grieta Novena al borde del colapso",bd:"El control imperial cae por debajo de un cuarto. Se solicitan voluntarios; no se esperan supervivientes."},
 ];}
 
-let GAME = load() || { screen:"intro", tab:"frente", character:null, war:freshWar(), news:seedNews(), pickBase:null, brief:null };
+function freshGame(){ return { screen:"intro", tab:"frente", character:null, war:freshWar(), news:seedNews(), pickBase:null, brief:null, req:0, unlocked:["torreta"], equip:["torreta"] }; }
+let GAME = load() || freshGame();
+syncGame();
 
-function save(){ try{ const clone={...GAME}; delete clone._arena; localStorage.setItem("corona-estelar-v3",JSON.stringify(clone)); }catch(e){} }
-function load(){ try{ const s=localStorage.getItem("corona-estelar-v3"); return s?JSON.parse(s):null; }catch(e){ return null; } }
-function wipe(){ try{ localStorage.removeItem("corona-estelar-v3"); }catch(e){} GAME={screen:"intro",tab:"frente",character:null,war:freshWar(),news:seedNews(),pickBase:null,brief:null}; render(); }
+function save(){ try{ const clone={...GAME}; delete clone._arena; localStorage.setItem("corona-estelar-v4",JSON.stringify(clone)); }catch(e){} }
+function load(){ try{ const s=localStorage.getItem("corona-estelar-v4"); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function wipe(){ try{ localStorage.removeItem("corona-estelar-v4"); }catch(e){} GAME=freshGame(); syncGame(); render(); }
 
 /* ---------- Crear personaje desde una base ---------- */
 const NAMES=["Bram","Kesh","Ylva","Doran","Mira","Torv","Sela","Rook","Fenn","Ada","Cael","Nyx","Hald","Verel","Sib","Oren"];
@@ -420,6 +502,7 @@ function tabs(){const c=GAME.character,on=t=>GAME.tab===t?'aria-current="true"':
     <button ${on('frente')} onclick="go('frente')" ${dis}>◈ Frente</button>
     <button ${on('personaje')} onclick="go('personaje')" ${dis}>❖ Escuadrón</button>
     <button ${on('armeria')} onclick="go('armeria')">▮ Armería</button>
+    <button ${on('estratagemas')} onclick="go('estratagemas')">⌖ Estratagemas</button>
     <button ${on('bestiario')} onclick="go('bestiario')">☣ Bestiario</button>
     <button ${on('noticias')} onclick="go('noticias')" ${dis}>▤ Noticias</button>
   </nav>`;}
@@ -621,22 +704,47 @@ function viewArmeria(){
       </div>
     </div></section>`;
 }
+/* ----- Estratagemas (tienda) ----- */
+function viewEstratagemas(){
+  const eq=GAME.equip||[];
+  return `<section class="view"><div class="eyebrow">Cuartel de estratagemas · <span class="plague">${GAME.req||0} ◈ Réditos</span></div>
+    <h2 class="title">Estratagemas</h2>
+    <p class="lede">Gana <b class="plague">Réditos</b> completando misiones. Desbloquea apoyos orbitales y equipa hasta 4 para el frente (teclas 5-8): torretas, bombardeos, escudos y más.</p><hr class="rule">
+    <div class="grid g2">${STRAT_ORDER.map(k=>{ const d=STRATAGEMS[k], un=(GAME.unlocked||[]).includes(k), on=eq.includes(k);
+      return `<div class="card pad">
+        <div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="color:${d.col}">${d.ico}</div>
+          <div><div style="font-family:var(--display);font-weight:700;font-size:16px">${d.nm}</div><div class="label">Enfriamiento ${d.cd}s · ${d.charges} usos${d.free?' · gratis':''}</div></div></div>
+        <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 10px">${d.desc}</p>
+        <div class="btnrow">${un
+          ? `<button class="btn ${on?'primary':''}" onclick="toggleEquip('${k}')">${on?'✓ Equipada':'Equipar'}</button>`
+          : `<button class="btn primary" ${(GAME.req||0)>=d.cost?'':'disabled'} onclick="unlockStrat('${k}')">Desbloquear · ${d.cost} ◈</button>`}</div>
+      </div>`;}).join("")}</div>
+    <p class="label" style="margin-top:14px;color:var(--parch-dim)">Equipadas (${eq.length}/4): <span class="gold">${eq.map(k=>STRATAGEMS[k].nm).join(" · ")||"ninguna"}</span></p>
+  </section>`;
+}
+function unlockStrat(k){ const d=STRATAGEMS[k]; if(!d||(GAME.unlocked||[]).includes(k))return; if((GAME.req||0)<d.cost)return; GAME.req-=d.cost; GAME.unlocked.push(k); if((GAME.equip||[]).length<4)GAME.equip.push(k); save(); render(); }
+function toggleEquip(k){ if(!(GAME.unlocked||[]).includes(k))return; const i=GAME.equip.indexOf(k); if(i>=0)GAME.equip.splice(i,1); else { if(GAME.equip.length>=4)return; GAME.equip.push(k); } save(); render(); }
+
 /* ----- Bestiario ----- */
 function viewBestiario(){
-  return `<section class="view"><div class="eyebrow">Códice de la Plaga</div><h2 class="title">El Bestiario</h2>
-    <p class="lede">Conoce a lo que quiere devorarte. Cada forma de la Plaga se mueve, ataca y muere distinto.</p><hr class="rule">
-    <div class="grid g2">${Object.values(ENEMIES).map(e=>`<div class="card pad">
-      <div style="display:flex;align-items:center;gap:12px">${enemyGlyph(e.col,e.nm)}
-        <div><div style="font-family:var(--display);font-weight:700;font-size:16px;color:${e.col}">${e.nm}</div>
-        <div class="label">${e.behavior==="chase"?"Persecución":e.behavior==="ranged"?"Bombardeo":"Hostigamiento"} · ${e.hp} PV</div></div></div>
-      <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 8px">${e.desc}</p>
-      <div class="chips"><span class="chip">Daño ${e.dmg}</span>${e.armor?`<span class="chip">Blindaje ${e.armor}</span>`:''}${e.explode?`<span class="chip" style="border-color:var(--crimson);color:var(--crimson-lit)">Explota</span>`:''}${e.range?`<span class="chip">Alcance ${e.range}</span>`:''}</div>
-    </div>`).join("")}
-    <div class="card pad" style="border-color:var(--crimson)">
-      <div style="display:flex;align-items:center;gap:12px"><div class="avatar" style="color:${BOSS.core};border-color:var(--crimson);font-size:26px">☠</div>
-      <div><div style="font-family:var(--display);font-weight:700;font-size:18px;color:var(--crimson-lit)">${BOSS.nm}</div><div class="label">Jefe · ${BOSS.hp} PV · 3 fases</div></div></div>
-      <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 0">El corazón del nido. Invoca crías, escupe salvas de esporas y carga cuando se enfurece. Matarla libera el sector.</p>
-    </div></div></section>`;
+  return `<section class="view"><div class="eyebrow">Códice de facciones</div><h2 class="title">El Bestiario</h2>
+    <p class="lede">Tres poderes disputan la galaxia a la Corona. Conoce a cada uno para sobrevivir a todos.</p><hr class="rule">
+    ${Object.entries(FACTIONS).map(([fk,F])=>{ const list=Object.values(ENEMIES).filter(e=>e.fac===fk), bd=BOSSES[F.boss];
+      return `<div class="eyebrow" style="color:${F.col};margin-top:6px">${F.nm}</div>
+        <p class="lede" style="margin-bottom:12px">${F.blurb}</p>
+        <div class="grid g2">${list.map(e=>`<div class="card pad">
+          <div style="display:flex;align-items:center;gap:12px">${enemyGlyph(e.col,e.nm)}
+            <div><div style="font-family:var(--display);font-weight:700;font-size:16px;color:${e.col}">${e.nm}</div>
+            <div class="label">${e.behavior==="chase"?"Persecución":e.behavior==="ranged"?"Bombardeo":"Hostigamiento"} · ${e.hp} PV</div></div></div>
+          <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 8px">${e.desc}</p>
+          <div class="chips"><span class="chip">Daño ${e.dmg}</span>${e.armor?`<span class="chip">Blindaje ${e.armor}</span>`:''}${e.explode?`<span class="chip" style="border-color:var(--crimson);color:var(--crimson-lit)">Explota</span>`:''}${e.range?`<span class="chip">Alcance ${e.range}</span>`:''}</div>
+        </div>`).join("")}
+        <div class="card pad" style="border-color:${F.col}">
+          <div style="display:flex;align-items:center;gap:12px"><div class="avatar" style="color:${bd.core};border-color:${F.col};font-size:26px">☠</div>
+          <div><div style="font-family:var(--display);font-weight:700;font-size:18px;color:${F.col}">${bd.nm}</div><div class="label">Jefe · ${bd.hp} PV · 3 fases</div></div></div>
+          <p style="font-size:13.5px;color:var(--parch-dim);margin:10px 0 0">Invoca crías, castiga en salvas y ${bd.ranged?"bombardea a distancia":"carga cuando se enfurece"}. Derribarlo asegura el sector.</p>
+        </div></div><hr class="rule">`;}).join("")}
+  </section>`;
 }
 function enemyGlyph(col,nm){return `<svg width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="12" fill="${col}" opacity=".85"/><circle cx="21" cy="21" r="12" fill="none" stroke="#0b0807" stroke-width="1.5"/><circle cx="17" cy="19" r="2" fill="#0b0807"/><circle cx="25" cy="19" r="2" fill="#0b0807"/></svg>`;}
 
@@ -662,12 +770,12 @@ function go(tab){
   if(tab==="intro"){ GAME.screen="intro"; render(); return; }
   if(tab==="frente" && GAME.character){ GAME.tab="frente"; GAME.screen="galaxy"; save(); Galaxy.mount(); return; }
   GAME.tab=tab;
-  if(GAME.character) GAME.screen="game"; else GAME.screen=(tab==="armeria"||tab==="bestiario")?"codex":"intro";
+  if(GAME.character) GAME.screen="game"; else GAME.screen=(tab==="armeria"||tab==="bestiario"||tab==="estratagemas")?"codex":"intro";
   save(); render();
 }
 function bodyForTab(){
-  if(!GAME.character){ if(GAME.tab==="armeria")return viewArmeria(); if(GAME.tab==="bestiario")return viewBestiario(); return viewIntro(); }
-  switch(GAME.tab){case"frente":return viewFrente();case"personaje":return viewPersonaje();case"armeria":return viewArmeria();case"bestiario":return viewBestiario();case"noticias":return viewNoticias();default:return viewFrente();}
+  if(!GAME.character){ if(GAME.tab==="armeria")return viewArmeria(); if(GAME.tab==="bestiario")return viewBestiario(); if(GAME.tab==="estratagemas")return viewEstratagemas(); return viewIntro(); }
+  switch(GAME.tab){case"frente":return viewFrente();case"personaje":return viewPersonaje();case"armeria":return viewArmeria();case"estratagemas":return viewEstratagemas();case"bestiario":return viewBestiario();case"noticias":return viewNoticias();default:return viewFrente();}
 }
 function shell(inner,noHud){return header()+tabs()+((GAME.character&&!noHud)?hud():'')+inner+`<footer class="foot"><span>CORONA ESTELAR · EL FRENTE ETERNO</span><span>Ciclo ${GAME.war.missions} · Plaga ${GAME.war.plaga}% · Caídos ${GAME.war.fallen.length}</span></footer>`;}
 
@@ -694,6 +802,24 @@ function awardMedals(){const c=GAME.character,has=n=>c.medals.includes(n);
   if(c.glory>=26&&!has("Corona de Hierro"))c.medals.push("Corona de Hierro");}
 const DECREES=["La duda es la primera espora de la Plaga.","El Trono no cuenta a sus caídos. Cuenta a sus héroes.","Ni un paso atrás. Nunca.","Cada bota en el barro sostiene la Corona."];
 
+/* Contraataque de facciones: los planetas pueden ser reclamados entre misiones */
+function galaxyTick(){
+  const w=GAME.war;
+  for(const s of w.sectors){
+    if(s.status==="liberado" || s.ctl>62){ if(Math.random()<.5){ s.ctl=clamp(s.ctl-Math.round((s.resistance||30)/100*rr(1,4))); updateSectorStatus(s); } }
+    else if(Math.random()<.3){ s.ctl=clamp(s.ctl-rr(0,2)); updateSectorStatus(s); }
+  }
+  if(Math.random()<.55){
+    const cands=w.sectors.filter(s=>s.status!=="caído" && s.ctl>45);
+    if(cands.length){ const s=pick(cands), F=facOf(s), hit=Math.round(rr(8,20)*(1+(s.resistance||30)/120));
+      const wasLib=s.status==="liberado"; s.ctl=clamp(s.ctl-hit); updateSectorStatus(s);
+      GAME.news.unshift({kind:"war",src:`FRENTE · ${s.co}`,time:`CICLO ${w.missions}`,hl:`${F.nm} ${wasLib?"reclama":"contraataca en"} ${s.nm}`,bd:`Una ofensiva de ${F.nm} recupera terreno. Control imperial al ${s.ctl}%. Se necesitan Vindicados en el sector.`});
+    }
+  }
+  recomputeLiberation();
+}
+function reqReward(mtype, subDone){ let r=18; if(mtype==="defensa")r+=8; if(mtype==="sabotaje")r+=6; if(mtype==="asalto")r+=4; if(subDone)r+=14; return Math.round(r*rr(0.9,1.2)); }
+
 /* ===================================================================== */
 /*  ARENA — motor de acción top-down                                     */
 /* ===================================================================== */
@@ -710,6 +836,7 @@ const Arena = (()=>{
   let stims, buffs, stimGcd, reinfCd, seafN, chatterT, lowWarn, radioMsgs, floats, prevBoss;
   let biome, props, ambient;
   let missionType, objective, nests, terminals, missionTimer, bossKilled;
+  let fac, bossDef, roster, strat, turrets, mines, fires, orbitals, samples, deposits, subObj, shieldT, reqEarned;
 
   function reset(sec){
     sector=sec;
@@ -720,7 +847,13 @@ const Arena = (()=>{
     allies=c.squad.filter(t=>t.alive).map((t,i)=>({name:t.name,ref:t,persona:t.persona||"Soldado",x:W/2+(i?60:-60),y:H/2+70,r:12,hp:78,hpMax:78,fireCd:rr(0,.4),alive:true,col:"#e0cf9a",label:t.name,
       barkCd:rr(4,10),supportCd:rr(6,12),stimCd:0,stims:1}));
     enemies=[];pbullets=[];ebullets=[];particles=[];pickups=[];floats=[];
-    biome=BIOMES[sec.id]||DEFBIOME; buildLayout(); props=buildProps(biome); ambient=[];
+    turrets=[];mines=[];fires=[];orbitals=[];samples=[];deposits=[];shieldT=0;reqEarned=0;
+    fac = sec.fac || planetMeta(sec.id).fac || "plaga";
+    bossDef = BOSSES[FACTIONS[fac].boss] || BOSSES.reina;
+    roster = rosterOf(fac); if(!roster.length) roster=rosterOf("plaga");
+    biome=BIOMES[planetMeta(sec.id).biome]||DEFBIOME; buildLayout(); props=buildProps(biome); ambient=[];
+    // estratagemas equipadas (runtime)
+    strat=(GAME.equip||[]).slice(0,4).map(k=>({key:k, cd:6, charges:(STRATAGEMS[k]||{charges:1}).charges}));
     // estims, buffs y refuerzos por despliegue
     stims={}; for(const k of STIM_ORDER) stims[k]=STIMS[k].charges;
     buffs={furia:0,vigor:0,coraza:0}; stimGcd=0; reinfCd=8; seafN=0; chatterT=rr(3,6); lowWarn=false; radioMsgs=[]; prevBoss=false;
@@ -745,9 +878,15 @@ const Arena = (()=>{
       for(let i=0;i<n;i++){ const p=spot(i,n,0.34); terminals.push({x:p.x,y:p.y,r:22,progress:0,active:false}); }
       toast("SABOTAJE · HACKEA LAS TERMINALES");
     }
+    // subobjetivo opcional
+    const subKey=pick(SUB_ORDER), SB=SUBOBJS[subKey];
+    if(subKey==="muestras"){ for(let i=0;i<SB.n;i++){ const p=spot(i+1,SB.n+2,rr(0.24,0.42)); samples.push({x:p.x,y:p.y,got:false}); } }
+    else { for(let i=0;i<SB.n;i++){ const p=spot(i+2,SB.n+3,rr(0.26,0.44)); deposits.push({x:p.x,y:p.y,hp:80,hpMax:80,r:18,hit:0}); } }
+    subObj={key:subKey, def:SB, done:false, count:0, total:SB.n};
     state="playing";
-    radio("MANDO", pick(RADIO.deploy), "#c9a24b");
-    radio("MANDO", M.how, M.col);
+    radio("MANDO", pick(RADIO.deploy), FACTIONS[fac].col);
+    radio("MANDO", `${FACTIONS[fac].nm} controla este sector. ${M.how}`, M.col);
+    radio("MANDO", `Objetivo extra: ${SB.nm.toLowerCase()}.`, SB.col);
   }
   function spot(i,n,radFrac){ const a=-Math.PI/2 + i/n*6.2832 + rr(-.25,.25); const rad=Math.min(W,H)*radFrac; return {x:clamp(W/2+Math.cos(a)*rad,130,W-130), y:clamp(H/2+Math.sin(a)*rad,130,H-130)}; }
   function buildLayout(){
@@ -771,8 +910,7 @@ const Arena = (()=>{
     const n=Math.round((6+i*3)*diff);
     for(let k=0;k<n;k++){
       const roll=Math.random();
-      let t = roll<.5?"esporling": roll<.68?"escupidor": roll<.82?"infectado": roll<.93?"reventon":"bruto";
-      list.push(t);
+      list.push(pickFromRoster());
     }
     return list;
   }
@@ -786,10 +924,12 @@ const Arena = (()=>{
   function spawnBoss(){
     if(bossActive) return;
     bossActive=true;
+    const bd=bossDef||BOSSES.reina;
     const a=Math.random()*6.28, R=Math.min(W,H)/2-140;
-    boss={x:W/2+Math.cos(a)*R,y:H/2+Math.sin(a)*R,r:BOSS.r,hp:BOSS.hp,hpMax:BOSS.hp,phase:1,atkCd:2,chargeT:0,vx:0,vy:0,summonCd:4};
-    toast("LA REINA DE LA PLAGA");
-    radio("MANDO", pick(RADIO.boss), "#e0554a");
+    boss={x:W/2+Math.cos(a)*R,y:H/2+Math.sin(a)*R,r:bd.r,hp:bd.hp,hpMax:bd.hp,phase:1,atkCd:2,chargeT:0,vx:0,vy:0,summonCd:4};
+    toast(bd.nm.toUpperCase());
+    radio("MANDO", pick(RADIO.boss), FACTIONS[bd.fac].accent);
+    if(hud.bossName) hud.bossName.textContent="☠ "+bd.nm;
     if(hud.boss) hud.boss.style.display="block";
   }
 
@@ -804,7 +944,8 @@ const Arena = (()=>{
     }while(dist(x,y,player.x,player.y)<420 && tries<8);
     enemies.push({type,x,y,r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0});
   }
-  function pickEnemyType(){ const r=Math.random(); return r<.5?"esporling":r<.68?"escupidor":r<.82?"infectado":r<.93?"reventon":"bruto"; }
+  function pickFromRoster(){ const rs=roster&&roster.length?roster:rosterOf("plaga"); let tot=0; const ws=rs.map(k=>{ const w=1/(0.6+ENEMIES[k].hp/45); tot+=w; return w; }); let r=Math.random()*tot; for(let i=0;i<rs.length;i++){ r-=ws[i]; if(r<=0)return rs[i]; } return rs[0]; }
+  function pickEnemyType(){ return pickFromRoster(); }
   function spawnFromNest(nst){ const t=pickEnemyType(),def=ENEMIES[t],a=Math.random()*6.28; enemies.push({type:t,x:nst.x+Math.cos(a)*(nst.r+14),y:nst.y+Math.sin(a)*(nst.r+14),r:def.r,hp:def.hp,hpMax:def.hp,fireCd:rr(.3,def.fireCd||1),col:def.col,hit:0}); }
   function contSpawn(dt){
     spawnTimer-=dt;
@@ -814,8 +955,13 @@ const Arena = (()=>{
   }
   function damageNest(nst,dmg){ if(GAME.character.base==="marcado")dmg*=1.25; nst.hp-=dmg; nst.hit=.09;
     if(nst.hp<=0){ nst.hp=0; boom(nst.x,nst.y,96,"#4fd6b8"); radio("MANDO","¡Nido destruido!","#4fd6b8"); toast("NIDO DESTRUIDO"); } }
+  function damageDepo(dp,dmg){ dp.hp-=dmg; dp.hit=.09; if(dp.hp<=0 && !dp._d){ dp._d=true; dp.hp=0; boom(dp.x,dp.y,70,"#e0554a"); floatText(dp.x,dp.y-18,"DEPÓSITO","#e0554a"); } }
   function updateMission(dt){
     if(state!=="playing")return;
+    // subobjetivo: recoger muestras
+    if(subObj && subObj.key==="muestras" && !subObj.done){ for(const sm of samples){ if(!sm.got && dist(player.x,player.y,sm.x,sm.y)<player.r+18){ sm.got=true; subObj.count++; floatText(sm.x,sm.y-16,"MUESTRA","#4fd6b8"); if(subObj.count>=subObj.total){ subObj.done=true; radio("MANDO","¡Todas las muestras recuperadas! Bonus asegurado.","#4fd6b8"); toast("OBJETIVO EXTRA ✓"); } } } }
+    // subobjetivo: destruir depósitos (se cumplen al destruirlos con balas)
+    if(subObj && subObj.key==="depositos" && !subObj.done && deposits.length){ const down=deposits.filter(d=>d.hp<=0).length; subObj.count=down; if(down>=subObj.total){ subObj.done=true; radio("MANDO","¡Depósitos destruidos! Bonus asegurado.","#e0554a"); toast("OBJETIVO EXTRA ✓"); } }
     if(missionType==="sabotaje" && terminals){ for(const tm of terminals){ if(tm.active)continue;
       if(dist(player.x,player.y,tm.x,tm.y)<tm.r+player.r+12){ tm.progress+=dt/5; if(tm.progress>=1){ tm.active=true; tm.progress=1; boom(tm.x,tm.y,60,"#8a6bd6"); floatText(tm.x,tm.y-26,"HACKEADA","#8a6bd6"); radio("MANDO","¡Terminal en línea!","#8a6bd6"); } }
       else tm.progress=Math.max(0,tm.progress-dt*.28); } }
@@ -848,6 +994,7 @@ const Arena = (()=>{
     if(k==="r") startReload();
     if(k===" ") tryDash();
     if("1234".includes(k)) useStim(STIM_ORDER[parseInt(k,10)-1]);
+    if("5678".includes(k)) useStratagem(parseInt(k,10)-5);
     if(k==="c") callReinforcements();
     if(k==="escape"||k==="p") togglePause();
   }
@@ -886,6 +1033,40 @@ const Arena = (()=>{
       allies.push({name:"SEAF-"+seafN, ref:null, seaf:true, persona:"SEAF", x,y, r:12, hp:SEAF.hp, hpMax:SEAF.hp,
         fireCd:rr(0,.3), alive:true, col:SEAF.col, label:"SEAF-"+seafN, life:SEAF.life, barkCd:rr(8,16), supportCd:99, stimCd:99, stims:0, dmgMult:SEAF.dmgMult});
     }
+  }
+  /* ---------- estratagemas ---------- */
+  function useStratagem(idx){
+    if(state!=="playing"||!strat) return;
+    const st=strat[idx]; if(!st)return; const def=STRATAGEMS[st.key];
+    if(st.cd>0){ toast(def.nm.toUpperCase()+` ${Math.ceil(st.cd)}s`); return; }
+    if(st.charges<=0){ toast("SIN CARGAS · "+def.nm.toUpperCase()); return; }
+    st.charges--; st.cd=def.cd; deployStratagem(st.key);
+  }
+  function deployStratagem(key){
+    const tx=clamp(player.x+aim.x*300,60,W-60), ty=clamp(player.y+aim.y*300,60,H-60);
+    if(key==="torreta"){ const x=clamp(player.x+aim.x*72,30,W-30),y=clamp(player.y+aim.y*72,30,H-30); boom(x,y,30,"#c9a24b"); turrets.push({x,y,life:22,fireCd:.5}); radio("MANDO","Torreta centinela desplegada.","#c9a24b"); toast("TORRETA"); }
+    else if(key==="resupply"){ for(const w of player.weapons)w.ammo=WEAPONS[w.key].mag; stims.combate=Math.min(9,(stims.combate||0)+1); floatText(player.x,player.y-22,"REABASTECIDO","#7fb069"); radio("MANDO","Cápsula de suministros en tierra.","#7fb069"); toast("REABASTECIMIENTO"); }
+    else if(key==="orbital"){ orbitals.push({x:tx,y:ty,t:1.4}); boom(tx,ty,20,"#e0554a"); radio("MANDO","¡Orbital entrante! Despejad la zona.","#e0554a"); toast("BOMBARDEO ORBITAL"); }
+    else if(key==="escudo"){ shieldT=6; floatText(player.x,player.y-22,"ESCUDO","#4fd6b8"); radio("MANDO","Búnker de escudo activo.","#4fd6b8"); toast("ESCUDO"); }
+    else if(key==="minas"){ for(let i=0;i<7;i++){ const a=rr(0,6.28),d=rr(42,124); mines.push({x:clamp(player.x+Math.cos(a)*d,20,W-20),y:clamp(player.y+Math.sin(a)*d,20,H-20),armT:.6}); } radio("MANDO","Campo de minas sembrado.","#d99a2b"); toast("MINAS"); }
+    else if(key==="napalm"){ fires.push({x:tx,y:ty,r:94,life:8}); boom(tx,ty,94,"#ff8c3c"); radio("MANDO","¡Lluvia de fuego!","#ff8c3c"); toast("LLUVIA DE FUEGO"); }
+  }
+  function turretShoot(t,target){ const a=Math.atan2(target.y-t.y,target.x-t.x)+rr(-.05,.05); pbullets.push({x:t.x+Math.cos(a)*14,y:t.y+Math.sin(a)*14,vx:Math.cos(a)*820,vy:Math.sin(a)*820,life:.9,r:3,dmg:16,col:"#ffe6a3"}); }
+  function updateStratagems(dt){
+    if(shieldT>0)shieldT-=dt;
+    if(strat)for(const st of strat){ if(st.cd>0)st.cd-=dt; }
+    // torretas
+    if(turrets)for(const t of turrets){ t.life-=dt; t.fireCd-=dt; const tg=nearestEnemy(t.x,t.y,560); if(tg&&t.fireCd<=0){ turretShoot(t,tg); t.fireCd=.28; } }
+    if(turrets)turrets=turrets.filter(t=>t.life>0);
+    // minas
+    if(mines)for(const mn of mines){ if(mn.armT>0){mn.armT-=dt;continue;} let hit=null; for(const e of enemies){ if(e.hp>0&&dist(mn.x,mn.y,e.x,e.y)<26+e.r){hit=e;break;} } if(hit){ mn.dead=true; boom(mn.x,mn.y,80,"#d99a2b"); splashDamage(mn.x,mn.y,88,64,1); } }
+    if(mines)mines=mines.filter(m=>!m.dead);
+    // fuego
+    if(fires)for(const f of fires){ f.life-=dt; for(const e of enemies){ if(e.hp>0&&dist(f.x,f.y,e.x,e.y)<f.r+e.r){ e.hp-=36*dt; e.hit=.05; if(e.hp<=0)killEnemy(e); } } if(bossActive&&boss&&dist(f.x,f.y,boss.x,boss.y)<f.r+boss.r)damageBoss(30*dt); if(nests)for(const n of nests){ if(n.hp>0&&dist(f.x,f.y,n.x,n.y)<f.r+n.r)damageNest(n,26*dt); } }
+    if(fires)fires=fires.filter(f=>f.life>0);
+    // orbital
+    if(orbitals)for(const o of orbitals){ o.t-=dt; if(o.t<=0){ o.dead=true; boom(o.x,o.y,150,"#ffb066"); splashDamage(o.x,o.y,150,200,1); if(bossActive&&boss&&dist(o.x,o.y,boss.x,boss.y)<170)damageBoss(240); } }
+    if(orbitals)orbitals=orbitals.filter(o=>!o.dead);
   }
   /* ---------- radio / mensajes ---------- */
   function radio(who,text,col){ if(!radioMsgs)return; radioMsgs.push({who,text,col:col||"#c9a24b",t:performance.now()}); if(radioMsgs.length>4)radioMsgs.shift(); renderRadio(); }
@@ -982,6 +1163,8 @@ const Arena = (()=>{
     enemies=enemies.filter(e=>e.hp>0);
     // ---- jefe ----
     if(bossActive && boss) updateBoss(dt);
+    // ---- estratagemas desplegadas ----
+    updateStratagems(dt);
     // ---- lógica de objetivo de misión ----
     updateMission(dt);
     if(state!=="playing")return;
@@ -993,8 +1176,9 @@ const Arena = (()=>{
       if(bossActive&&boss&&dist(b.x,b.y,boss.x,boss.y)<boss.r+b.r){ target={boss:true,x:boss.x,y:boss.y}; }
       else { for(const e of enemies){ if(e.hp>0&&dist(b.x,b.y,e.x,e.y)<e.r+b.r){ target=e; break; } } }
       if(!target && nests){ for(const nst of nests){ if(nst.hp>0&&dist(b.x,b.y,nst.x,nst.y)<nst.r+b.r){ target={nest:nst,x:nst.x,y:nst.y}; break; } } }
+      if(!target && deposits){ for(const dp of deposits){ if(dp.hp>0&&dist(b.x,b.y,dp.x,dp.y)<dp.r+b.r){ target={depo:dp,x:dp.x,y:dp.y}; break; } } }
       if(target){
-        if(target.boss){ damageBoss(b.dmg); } else if(target.nest){ damageNest(target.nest,b.dmg); } else { damageEnemy(target,b); }
+        if(target.boss){ damageBoss(b.dmg); } else if(target.nest){ damageNest(target.nest,b.dmg); } else if(target.depo){ damageDepo(target.depo,b.dmg); } else { damageEnemy(target,b); }
         hitFx(b.x,b.y,b.col);
         if(b.splash){ splashDamage(b.x,b.y,b.splash,b.splashDmg,b.plagueBonus); }
         if(!b.pierce) b.life=0; else { b.pierced=(b.pierced||0)+1; if(b.pierced>3)b.life=0; }
@@ -1072,6 +1256,7 @@ const Arena = (()=>{
     for(const e of enemies){ if(e.hp>0){ const d=dist(x,y,e.x,e.y); if(d<r){ let dd=dmg*(1-d/r); if(pb)dd*=pb; if(GAME.character.base==="marcado")dd*=1.25; e.hp-=dd; e.hit=.08; if(e.hp<=0)killEnemy(e);} } }
     if(bossActive&&boss){ const d=dist(x,y,boss.x,boss.y); if(d<r+boss.r) damageBoss(dmg*(pb||1)*.6); }
     if(nests)for(const nst of nests){ if(nst.hp>0){ const d=dist(x,y,nst.x,nst.y); if(d<r+nst.r) damageNest(nst,dmg*(pb||1)*.6); } }
+    if(deposits)for(const dp of deposits){ if(dp.hp>0){ const d=dist(x,y,dp.x,dp.y); if(d<r+dp.r) damageDepo(dp,dmg*(pb||1)*.6); } }
   }
   function killEnemy(e){
     if(e._dead)return; e._dead=true;
@@ -1132,25 +1317,26 @@ const Arena = (()=>{
       if(b.phase>=2 && Math.random()<.45){ // carga
         b.vx=dx* (b.phase===3?520:420); b.vy=dy*(b.phase===3?520:420); b.chargeT=.5; toastMini();
         b.atkCd=b.phase===3?1.6:2.2;
-      } else { // salva radial de esporas
+      } else { // salva radial
         const n=b.phase===3?16:b.phase===2?12:9;
         for(let i=0;i<n;i++){ const a=i/n*6.28; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*260,vy:Math.sin(a)*260,life:2.6,r:6,dmg:12}); }
+        if((bossDef||{}).ranged){ for(let i=-1;i<=1;i++){ const a=Math.atan2(dy,dx)+i*.16; ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*440,vy:Math.sin(a)*440,life:2.2,r:6,dmg:14}); } }
         b.atkCd=b.phase===3?1.9:2.6;
       }
     }
     if(b.summonCd<=0 && enemies.length<26){
-      const t=b.phase===3?"reventon":"esporling"; const cnt=b.phase===3?3:2;
-      for(let i=0;i<cnt;i++){ const a=Math.random()*6.28; enemies.push({type:t,x:b.x+Math.cos(a)*70,y:b.y+Math.sin(a)*70,r:ENEMIES[t].r,hp:ENEMIES[t].hp,hpMax:ENEMIES[t].hp,fireCd:1,col:ENEMIES[t].col,hit:0}); }
+      const bd=bossDef||BOSSES.reina; const t=b.phase===3?bd.summon3:bd.summon; const def=ENEMIES[t]; const cnt=b.phase===3?3:2;
+      for(let i=0;i<cnt;i++){ const a=Math.random()*6.28; enemies.push({type:t,x:b.x+Math.cos(a)*70,y:b.y+Math.sin(a)*70,r:def.r,hp:def.hp,hpMax:def.hp,fireCd:1,col:def.col,hit:0}); }
       b.summonCd=b.phase===3?3.5:5.5;
     }
   }
-  function damageBoss(dmg){ if(!boss)return; if(GAME.character.base==="marcado")dmg*=1.25; boss.hp-=dmg; boss.hit=.07;
-    if(boss.hp<=0){ boss.hp=0; bossActive=false; bossKilled=true; boom(boss.x,boss.y,140,BOSS.core); if(missionType==="purga"||missionType==="defensa")victory(); } }
+  function damageBoss(dmg){ if(!boss)return; if(GAME.character.base==="marcado"&&fac==="plaga")dmg*=1.25; boss.hp-=dmg; boss.hit=.07;
+    if(boss.hp<=0){ boss.hp=0; bossActive=false; bossKilled=true; boom(boss.x,boss.y,140,(bossDef||BOSSES.reina).core); if(missionType==="purga"||missionType==="defensa")victory(); } }
   function toastMini(){ /* señal visual de carga */ shake=Math.min(shake+3,10); }
 
   /* ---------- daño al jugador / aliados ---------- */
   function hurtPlayer(dmg){
-    if(player.iframe>0)return;
+    if(player.iframe>0 || shieldT>0)return;
     if(player.base==="rompemuros")dmg*=.7;
     if(buffs.coraza>0)dmg*=.5;
     player.hp-=dmg; shake=Math.min(shake+dmg*.25,10);
@@ -1171,28 +1357,31 @@ const Arena = (()=>{
   }
   function victory(){
     finishCommon(); const c=GAME.character, s=sector; if(bossKilled)c.bosses++;
-    const M=MISSIONS[missionType]||MISSIONS.purga;
-    const gain = s.threat==="crítica"?34:s.threat==="alta"?26:s.threat==="media"?20:14;
+    const M=MISSIONS[missionType]||MISSIONS.purga, F=FACTIONS[fac]||FACTIONS.plaga;
+    const subDone = subObj && subObj.done;
+    const gain = (s.threat==="crítica"?34:s.threat==="alta"?26:s.threat==="media"?20:14) + (subDone?8:0);
     s.ctl=clamp(s.ctl+gain); GAME.war.plaga=clamp(GAME.war.plaga-6); c.glory+=Math.round(gain/3)+5;
-    updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals(); recomputeLiberation();
+    // recompensa en Réditos
+    const req=reqReward(missionType, subDone); GAME.req=(GAME.req||0)+req; reqEarned=req;
+    updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals();
     const body = missionType==="defensa"?`${c.name} sostuvo el Reactor de la Corona hasta la evacuación.`
-      : missionType==="asalto"?`${c.name} arrasó los nidos de la Plaga en ${s.nm}.`
-      : missionType==="sabotaje"?`${c.name} colapsó la red de la Plaga desde dentro.`
-      : `${c.name} derribó a la Reina de la Plaga.`;
+      : missionType==="asalto"?`${c.name} arrasó los nidos de ${F.nm} en ${s.nm}.`
+      : missionType==="sabotaje"?`${c.name} colapsó la red de ${F.nm} desde dentro.`
+      : `${c.name} derribó a ${bossDef?bossDef.nm:"la Reina"}.`;
     GAME.news.unshift({kind:"win",src:`FRENTE · ${s.co}`,time:`CICLO ${GAME.war.missions}`,
       hl:s.status==="liberado"?`¡${s.nm} LIBERADO!`:`${M.nm} logrado en ${s.nm}`,
-      bd:`${body} Control imperial al ${s.ctl}%. La Plaga retrocede a ${GAME.war.plaga}%.`});
+      bd:`${body} Control imperial al ${s.ctl}%.${subDone?" Objetivo extra cumplido.":""} +${req} Réditos.`});
     if(Math.random()<.6)GAME.news.unshift({kind:"decree",src:"EDICTO DEL TRONO",time:`CICLO ${GAME.war.missions}`,hl:pick(DECREES),bd:"— Por orden de la Corona Eterna."});
-    outcome={win:true,gain,s,title:`${M.nm.toUpperCase()} LOGRADO`,body}; save(); showOverlay();
+    galaxyTick(); recomputeLiberation();
+    outcome={win:true,gain,s,title:`${M.nm.toUpperCase()} LOGRADO`,body,req,subDone}; save(); showOverlay();
   }
   function defeat(reason){
     if(state==="over")return;
     finishCommon(); const c=GAME.character, s=sector;
     s.ctl=clamp(s.ctl-10); GAME.war.plaga=clamp(GAME.war.plaga+4); updateSectorStatus(s);
-    // permadeath
     GAME.war.fallen.push({name:c.name,rank:c.rank,base:BASES[c.base].nm,glory:c.glory,missions:c.missionsDone});
     GAME.news.unshift({kind:"war",src:"LISTA DE HONOR",time:`CICLO ${GAME.war.missions}`,hl:`Cae ${c.name}, ${c.rank}`,bd:`Abatido en ${s.nm} tras ${c.missionsDone} misión(es). La galaxia continúa sin él; la Corona ya llama al siguiente.`});
-    recomputeLiberation(); outcome={win:false,s,reason}; const dead={...c}; GAME.character=null; save(); showOverlay(dead);
+    galaxyTick(); recomputeLiberation(); outcome={win:false,s,reason}; const dead={...c}; GAME.character=null; save(); showOverlay(dead);
   }
 
   /* ---------- overlay de resultado (DOM sobre el canvas) ---------- */
@@ -1204,7 +1393,7 @@ const Arena = (()=>{
     box.innerHTML = win
      ? `<div><div class="eyebrow" style="color:var(--gold-dim)">${outcome.title||"Objetivo logrado"} · ${s.nm}</div>
         <h2>VICTORIA</h2>
-        <p>${outcome.body||""} Control imperial al <b class="gold">${s.ctl}%</b> · Plaga <b class="crimson">${GAME.war.plaga}%</b> · Gloria <b class="gold">${GAME.character.glory}</b>.</p>
+        <p>${outcome.body||""} Control al <b class="gold">${s.ctl}%</b> · Gloria <b class="gold">${GAME.character.glory}</b> · <b class="plague">+${outcome.req||0} ◈ Réditos</b>${outcome.subDone?' · <b class="plague">Objetivo extra ✓</b>':''}.</p>
         <div class="btnrow" style="justify-content:center"><button class="btn" onclick="Arena.exit('noticias')">Leer los partes ▸</button><button class="btn primary" onclick="Arena.exit('hub')">Volver al puente ▸</button></div></div>`
      : `<div><div class="eyebrow" style="color:var(--crimson)">La lista de honor se alarga</div>
         <h2>${outcome.reason?"MISIÓN FALLIDA":"HÉROE CAÍDO"}</h2>
@@ -1313,12 +1502,39 @@ const Arena = (()=>{
       if(!tm.active && tm.progress>0){ ctx.strokeStyle=col;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,tm.r+6,-Math.PI/2,-Math.PI/2+6.2832*tm.progress);ctx.stroke(); }
       ctx.restore();
     }
+    // muestras (subobjetivo)
+    if(samples)for(const sm of samples){ if(sm.got)continue; ctx.save();ctx.translate(sm.x,sm.y);
+      ctx.globalAlpha=.3+(REDUCE?0:Math.abs(Math.sin(T*3+sm.x))*.22);ctx.fillStyle="#4fd6b8";ctx.beginPath();ctx.arc(0,0,12,0,6.28);ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle="#4fd6b8";ctx.beginPath();ctx.moveTo(0,-7);ctx.lineTo(6,0);ctx.lineTo(0,7);ctx.lineTo(-6,0);ctx.closePath();ctx.fill();ctx.strokeStyle="#0b0807";ctx.lineWidth=1.5;ctx.stroke();ctx.restore(); }
+    // depósitos (subobjetivo)
+    if(deposits)for(const dp of deposits){ if(dp.hp<=0)continue; ctx.save();ctx.translate(dp.x,dp.y);
+      ctx.fillStyle=dp.hit>0?"#fff":"#7a1f1a";ctx.beginPath();for(let i=0;i<6;i++){const a=i/6*6.28;const x=Math.cos(a)*dp.r,y=Math.sin(a)*dp.r;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.strokeStyle="#e0554a";ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle="#e0554a";ctx.beginPath();ctx.arc(0,0,dp.r*.35,0,6.28);ctx.fill();ctx.restore();
+      const w=dp.r*2; ctx.fillStyle="rgba(11,8,7,.8)";ctx.fillRect(dp.x-w/2,dp.y-dp.r-9,w,3);ctx.fillStyle="#e0554a";ctx.fillRect(dp.x-w/2,dp.y-dp.r-9,w*(dp.hp/dp.hpMax),3); }
+    // fuego (napalm)
+    if(fires)for(const f of fires){ ctx.save();ctx.globalAlpha=Math.min(.45,f.life*.14);ctx.fillStyle="#ff8c3c";ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.28);ctx.fill();ctx.globalAlpha=1;
+      if(!REDUCE)for(let i=0;i<8;i++){const a=rr(0,6.28),d=rr(0,f.r);ctx.fillStyle=Math.random()<.5?"#ffb066":"#ff6a2a";ctx.beginPath();ctx.arc(f.x+Math.cos(a)*d,f.y+Math.sin(a)*d,rr(2,5),0,6.28);ctx.fill();} ctx.restore(); }
+    // baliza orbital
+    if(orbitals)for(const o of orbitals){ ctx.save();ctx.strokeStyle="#e0554a";ctx.lineWidth=2;ctx.globalAlpha=.5+(REDUCE?0:Math.abs(Math.sin(T*20))*.4);
+      ctx.beginPath();ctx.arc(o.x,o.y,54*(o.t/1.4),0,6.28);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(o.x-16,o.y);ctx.lineTo(o.x+16,o.y);ctx.moveTo(o.x,o.y-16);ctx.lineTo(o.x,o.y+16);ctx.stroke();ctx.globalAlpha=1;ctx.restore(); }
+    // minas
+    if(mines)for(const mn of mines){ ctx.fillStyle=mn.armT>0?"#6a5a2a":"#d99a2b";ctx.beginPath();ctx.arc(mn.x,mn.y,5,0,6.28);ctx.fill();ctx.strokeStyle="#0b0807";ctx.lineWidth=1;ctx.stroke(); if(mn.armT<=0){ctx.fillStyle="#e0554a";ctx.beginPath();ctx.arc(mn.x,mn.y,1.7,0,6.28);ctx.fill();} }
+    // torretas
+    if(turrets)for(const tt of turrets){ ctx.save();ctx.translate(tt.x,tt.y);
+      ctx.fillStyle="rgba(201,162,75,.14)";ctx.beginPath();ctx.arc(0,0,14,0,6.28);ctx.fill();
+      ctx.fillStyle="#3a2c14";ctx.beginPath();ctx.arc(0,0,9,0,6.28);ctx.fill();ctx.strokeStyle="#c9a24b";ctx.lineWidth=2;ctx.stroke();
+      const tg=nearestEnemy(tt.x,tt.y,560); const a=tg?Math.atan2(tg.y-tt.y,tg.x-tt.x):0; ctx.rotate(a);
+      ctx.fillStyle="#c9a24b";ctx.fillRect(0,-2.5,16,5);ctx.restore();
+      const w=20; ctx.fillStyle="rgba(11,8,7,.7)";ctx.fillRect(tt.x-w/2,tt.y-18,w,3);ctx.fillStyle="#c9a24b";ctx.fillRect(tt.x-w/2,tt.y-18,w*(tt.life/22),3); }
   }
   function drawMarkers(){
     const targets=[];
     if(objective&&objective.hp>0)targets.push([objective.x,objective.y,"#c9a24b"]);
     if(nests)for(const n of nests){ if(n.hp>0)targets.push([n.x,n.y,"#4fd6b8"]); }
     if(terminals)for(const tm of terminals){ if(!tm.active)targets.push([tm.x,tm.y,"#8a6bd6"]); }
+    if(samples)for(const sm of samples){ if(!sm.got)targets.push([sm.x,sm.y,"#4fd6b8"]); }
+    if(deposits)for(const dp of deposits){ if(dp.hp>0)targets.push([dp.x,dp.y,"#e0554a"]); }
     if(bossActive&&boss)targets.push([boss.x,boss.y,"#e0554a"]);
     for(const [wx,wy,col] of targets){ const sxp=wx-cam.x, syp=wy-cam.y;
       if(sxp>18&&sxp<VW-18&&syp>18&&syp<VH-18)continue;
@@ -1329,9 +1545,36 @@ const Arena = (()=>{
     }
   }
   function drawEnemy(e){
-    const def=ENEMIES[e.type], col=e.hit>0?"#fff":e.col, T=performance.now()/1000, r=e.r;
+    const def=ENEMIES[e.type], col=e.hit>0?"#fff":e.col, T=performance.now()/1000, r=e.r, shape=def.shape||"bug";
     ctx.save(); ctx.translate(e.x,e.y); ctx.rotate(Math.atan2(player.y-e.y,player.x-e.x));
     ctx.lineWidth=2; ctx.strokeStyle="#0b0807";
+    if(shape==="bot"){ drawBot(e,def,col,r,T); }
+    else if(shape==="void"){ drawVoid(e,def,col,r,T); }
+    else drawBug(e,def,col,r,T);
+    ctx.restore();
+    if(e.hp<e.hpMax){ const w=r*2; ctx.fillStyle="rgba(11,8,7,.8)";ctx.fillRect(e.x-w/2,e.y-r-9,w,4); ctx.fillStyle=def.col;ctx.fillRect(e.x-w/2,e.y-r-9,w*(e.hp/e.hpMax),4); }
+  }
+  function drawBot(e,def,col,r,T){
+    const armored=(def.armor||0)>=6;
+    ctx.fillStyle="#0b0807"; ctx.fillRect(-r*.15,-r-4,r*.3,4);
+    ctx.fillStyle=col;
+    if(armored){ ctx.beginPath();for(let i=0;i<6;i++){const a=i/6*6.28;const x=Math.cos(a)*r,y=Math.sin(a)*r;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.lineWidth=2.5;ctx.stroke();
+      ctx.strokeStyle="rgba(0,0,0,.4)";ctx.lineWidth=2;ctx.strokeRect(-r*.5,-r*.5,r,r); }
+    else { ctx.beginPath();ctx.moveTo(-r*.8,-r*.7);ctx.lineTo(r*.9,-r*.5);ctx.lineTo(r*.9,r*.5);ctx.lineTo(-r*.8,r*.7);ctx.closePath();ctx.fill();ctx.stroke(); }
+    ctx.fillStyle=shade(col,-30);ctx.fillRect(-r*.3,-r*.35,r*.7,r*.7);
+    ctx.fillStyle="#ff6a3c";ctx.fillRect(r*.15,-r*.12,r*.75,r*.24);
+    ctx.strokeStyle="#0b0807";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(r*.3,0);ctx.lineTo(r+8,0);ctx.stroke();
+  }
+  function drawVoid(e,def,col,r,T){
+    const big=(def.armor||0)>=3 || r>=22;
+    ctx.globalAlpha=.28+(REDUCE?0:Math.abs(Math.sin(T*3+e.x*.05))*.12);ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,0,r+7,0,6.28);ctx.fill();ctx.globalAlpha=1;
+    ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(r+2,0);ctx.lineTo(0,-r);ctx.lineTo(-r,0);ctx.lineTo(0,r);ctx.closePath();ctx.fill();ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=shade(col,32);ctx.beginPath();ctx.moveTo(r*.5,0);ctx.lineTo(0,-r*.5);ctx.lineTo(-r*.5,0);ctx.lineTo(0,r*.5);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(r*.12,0,r*.22,0,6.28);ctx.fill();
+    ctx.fillStyle="#0b0807";ctx.beginPath();ctx.arc(r*.18,0,r*.1,0,6.28);ctx.fill();
+    if(big){ ctx.strokeStyle=shade(col,40);ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,r+4,0,6.28);ctx.stroke(); }
+  }
+  function drawBug(e,def,col,r,T){
     if(e.type==="esporling"){
       const wig=Math.sin(T*10+e.x*.1)*.35;
       ctx.strokeStyle=col;ctx.lineWidth=2.4;
@@ -1358,19 +1601,15 @@ const Arena = (()=>{
       ctx.fillStyle=shade(col,-40);ctx.beginPath();ctx.arc(r*.2,0,r*.5,0,6.28);ctx.fill();
       ctx.fillStyle="#e0554a";ctx.beginPath();ctx.arc(r*.35,0,r*.16,0,6.28);ctx.fill();
     }
-    ctx.restore();
-    if(e.hp<e.hpMax){ const w=r*2; ctx.fillStyle="rgba(11,8,7,.8)";ctx.fillRect(e.x-w/2,e.y-r-9,w,4); ctx.fillStyle=def.col;ctx.fillRect(e.x-w/2,e.y-r-9,w*(e.hp/e.hpMax),4); }
   }
   function drawBoss(){
-    const b=boss;
+    const b=boss, bd=bossDef||BOSSES.reina;
     ctx.save();
-    // aura
-    ctx.globalAlpha=.25; ctx.fillStyle=BOSS.core; ctx.beginPath();ctx.arc(b.x,b.y,b.r+14+Math.sin(performance.now()/200)*4,0,6.28);ctx.fill(); ctx.globalAlpha=1;
-    ctx.fillStyle=b.hit>0?"#fff":BOSS.col;
+    ctx.globalAlpha=.25; ctx.fillStyle=bd.core; ctx.beginPath();ctx.arc(b.x,b.y,b.r+14+(REDUCE?0:Math.sin(performance.now()/200)*4),0,6.28);ctx.fill(); ctx.globalAlpha=1;
+    ctx.fillStyle=b.hit>0?"#fff":bd.col;
     ctx.beginPath(); for(let i=0;i<8;i++){const a=i/8*6.28;const rr2=b.r*(i%2?.82:1);const px=b.x+Math.cos(a)*rr2,py=b.y+Math.sin(a)*rr2;i?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.closePath(); ctx.fill();
     ctx.strokeStyle="#0b0807";ctx.lineWidth=3;ctx.stroke();
-    // núcleo
-    ctx.fillStyle=BOSS.core; ctx.beginPath();ctx.arc(b.x,b.y,b.r*.4,0,6.28);ctx.fill();
+    ctx.fillStyle=bd.core; ctx.beginPath();ctx.arc(b.x,b.y,b.r*.4,0,6.28);ctx.fill();
     ctx.fillStyle="#0b0807"; ctx.beginPath();ctx.arc(b.x,b.y,b.r*.18,0,6.28);ctx.fill();
     ctx.restore();
   }
@@ -1409,6 +1648,8 @@ const Arena = (()=>{
     const bc = buffs.furia>0?"#e0554a": buffs.vigor>0?"#4fd6b8": buffs.coraza>0?"#c9a24b": null;
     if(bc){ ctx.globalAlpha=.55; ctx.strokeStyle=bc; ctx.lineWidth=2; ctx.beginPath();ctx.arc(p.x,p.y,p.r+6+(REDUCE?0:Math.sin(performance.now()/120)*1.5),0,6.28);ctx.stroke(); ctx.globalAlpha=1; }
     drawTrooper(p.x,p.y,p.r,p.col,Math.atan2(aim.y,aim.x),{isPlayer:true});
+    // cúpula de escudo (estratagema)
+    if(shieldT>0){ ctx.save(); ctx.globalAlpha=.18; ctx.fillStyle="#4fd6b8"; ctx.beginPath();ctx.arc(p.x,p.y,p.r+22,0,6.28);ctx.fill(); ctx.globalAlpha=.7; ctx.strokeStyle="#4fd6b8"; ctx.lineWidth=2; ctx.beginPath();ctx.arc(p.x,p.y,p.r+22,0,6.28);ctx.stroke(); ctx.restore(); }
   }
 
   /* ---------- HUD DOM ---------- */
@@ -1423,9 +1664,10 @@ const Arena = (()=>{
     if(missionType==="defensa"&&objective){ const hpP=Math.max(0,Math.round(objective.hp/objective.hpMax*100)); line=`⛨ Reactor <b style="color:${hpP<35?'#cf4b3f':'#c9a24b'}">${hpP}%</b> · Evac <b>${fmtTime(missionTimer)}</b>`; }
     else if(missionType==="asalto"&&nests){ const down=nests.filter(n=>n.hp<=0).length; line=`✷ Nidos <b>${down}/${nests.length}</b> · enemigos <b>${enemies.length}</b>`; }
     else if(missionType==="sabotaje"&&terminals){ const act=terminals.filter(t=>t.active).length; line=`⚡ Terminales <b>${act}/${terminals.length}</b> · enemigos <b>${enemies.length}</b>`; }
-    else { line = bossActive? `<b>OLEADA FINAL</b> · La Reina` : `Oleada <b>${Math.max(1,waveIdx+1)}/${waveDefs.length}</b> · enemigos <b>${Math.max(0,(spawnQueue?spawnQueue.length:0)+enemies.length)}</b>`; }
+    else { line = bossActive? `<b>OLEADA FINAL</b> · ${bossDef?bossDef.nm:"Jefe"}` : `Oleada <b>${Math.max(1,waveIdx+1)}/${waveDefs.length}</b> · enemigos <b>${Math.max(0,(spawnQueue?spawnQueue.length:0)+enemies.length)}</b>`; }
+    if(subObj){ line += ` · <span style="color:${subObj.def.col}">${subObj.def.ico} ${subObj.done?'✓':subObj.count+'/'+subObj.total}</span>`; }
     hud.wave.innerHTML=line;
-    hud.sector.innerHTML = `<span style="color:${M.col}">${M.ico} ${M.nm}</span> · ${sector.nm}`;
+    hud.sector.innerHTML = `<span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${M.ico} ${M.nm}</span> · ${sector.nm} · <span style="color:${(FACTIONS[fac]||FACTIONS.plaga).col}">${(FACTIONS[fac]||FACTIONS.plaga).nm}</span>`;
     hud.wn.textContent = def.ico+" "+def.nm;
     if(w.reloading>0){ hud.wa.textContent="RECARGANDO…"; hud.wa.classList.add("reloading"); }
     else { hud.wa.textContent=`Munición ${w.ammo}/${def.mag}`+(p.weapons.length>1?"  ·  Q cambia":""); hud.wa.classList.remove("reloading"); }
@@ -1433,6 +1675,8 @@ const Arena = (()=>{
     if(hud.stims){ hud.stims.innerHTML=STIM_ORDER.map(k=>{ const s=STIMS[k],n=stims?stims[k]:0,act=buffs&&buffs[k]>0;
       return `<div class="stim-pip ${n<=0&&!act?'empty':''}"><span class="ic" style="color:${(n>0||act)?s.col:'inherit'};${act?'text-shadow:0 0 8px '+s.col:''}">${s.ico}</span><span class="cg">${n}</span><span class="kb">${s.key}</span></div>`; }).join(""); }
     if(hud.reinf){ const ready=reinfCd<=0; hud.reinf.className="reinf-box"+(ready?" ready":""); hud.reinf.innerHTML=ready?`SEAF <b>LISTO·C</b>`:`SEAF <b>${Math.ceil(reinfCd)}s</b>`; }
+    if(hud.strat){ hud.strat.innerHTML=(strat||[]).map((st,i)=>{ const d=STRATAGEMS[st.key],rdy=st.cd<=0&&st.charges>0;
+      return `<div class="stim-pip ${rdy?'':'empty'}"><span class="ic" style="color:${rdy?d.col:'inherit'}">${d.ico}</span><span class="cg">${st.cd>0?Math.ceil(st.cd)+'s':'×'+st.charges}</span><span class="kb">${i+5}</span></div>`; }).join(""); }
   }
   function toast(txt){ if(!toastEl)return; toastEl.textContent=txt; toastEl.classList.remove("show"); void toastEl.offsetWidth; toastEl.classList.add("show"); }
 
@@ -1456,21 +1700,22 @@ const Arena = (()=>{
             <button class="btn pausebtn" style="margin-top:6px;padding:6px 10px" onclick="Arena.pause()">Pausa (P)</button>
           </div>
         </div>
-        <div class="boss-strip" id="hbBoss" style="display:none"><div class="bn">☠ ${BOSS.nm}</div><div class="bb"><i id="hbBossBar" style="width:100%"></i></div></div>
+        <div class="boss-strip" id="hbBoss" style="display:none"><div class="bn" id="hbBossName">☠ Jefe</div><div class="bb"><i id="hbBossBar" style="width:100%"></i></div></div>
         <div class="arena-toast" id="hbToast"></div>
         <div class="radio" id="hbRadio"></div>
         <div class="hud-mid">
           <div class="stim-tray" id="hbStims"></div>
+          <div class="stim-tray" id="hbStrat"></div>
           <div class="reinf-box" id="hbReinf">SEAF <b>…</b></div>
         </div>
         <div class="hud-bottom">
           <div class="weapon-box"><div class="wn" id="hbWn">…</div><div class="wa" id="hbWa">…</div></div>
-          <div class="keys-hint desktop-only">WASD mover · ratón apuntar · clic disparar<br>Q arma · R recargar · ESPACIO esquiva · 1-4 estims · C refuerzos · P pausa</div>
+          <div class="keys-hint desktop-only">WASD · ratón apuntar · clic disparar · Q arma · R recargar<br>ESPACIO esquiva · 1-4 estims · 5-8 estratagemas · C refuerzos · P pausa</div>
         </div>
-        ${isTouch?`<div class="joy" id="joy"><div class="stick" id="stick"></div></div><button class="fire" id="fireBtn">FUEGO</button><button class="swapbtn" id="swapBtn">⟳<br>ARMA</button><button class="stimbtn" id="stimBtn">✚<br>ESTIM</button><button class="reinfbtn" id="reinfBtn">SEAF</button>`:''}
+        ${isTouch?`<div class="joy" id="joy"><div class="stick" id="stick"></div></div><button class="fire" id="fireBtn">FUEGO</button><button class="swapbtn" id="swapBtn">⟳<br>ARMA</button><button class="stimbtn" id="stimBtn">✚<br>ESTIM</button><button class="reinfbtn" id="reinfBtn">SEAF</button><button class="stratbtn" id="stratBtn">⌖<br>STR</button>`:''}
       </div>`;
     cv=$("#game"); ctx=cv.getContext("2d");
-    hud={hp:$("#hbHp"),hpTxt:$("#hbHpTxt"),wave:$("#hbWave"),sector:$("#hbSector"),wn:$("#hbWn"),wa:$("#hbWa"),boss:$("#hbBoss"),bossBar:$("#hbBossBar"),stims:$("#hbStims"),reinf:$("#hbReinf")};
+    hud={hp:$("#hbHp"),hpTxt:$("#hbHpTxt"),wave:$("#hbWave"),sector:$("#hbSector"),wn:$("#hbWn"),wa:$("#hbWa"),boss:$("#hbBoss"),bossBar:$("#hbBossBar"),bossName:$("#hbBossName"),stims:$("#hbStims"),strat:$("#hbStrat"),reinf:$("#hbReinf")};
     toastEl=$("#hbToast"); radioEl=$("#hbRadio");
     reset(sec);
     bindInput();
@@ -1489,9 +1734,10 @@ const Arena = (()=>{
     fireBtn.addEventListener("touchstart",e=>{e.preventDefault();touchFire=true;},{passive:false});
     fireBtn.addEventListener("touchend",e=>{e.preventDefault();touchFire=false;},{passive:false});
     swapBtn.addEventListener("touchstart",e=>{e.preventDefault();swapWeapon();},{passive:false});
-    const stimBtn=$("#stimBtn"), reinfBtn=$("#reinfBtn");
+    const stimBtn=$("#stimBtn"), reinfBtn=$("#reinfBtn"), stratBtn=$("#stratBtn");
     if(stimBtn)stimBtn.addEventListener("touchstart",e=>{e.preventDefault();useStim("combate");},{passive:false});
     if(reinfBtn)reinfBtn.addEventListener("touchstart",e=>{e.preventDefault();callReinforcements();},{passive:false});
+    if(stratBtn){ let si=0; stratBtn.addEventListener("touchstart",e=>{e.preventDefault(); if(strat&&strat.length){ useStratagem(si%strat.length); si++; } },{passive:false}); }
   }
 
   return { mount, pause, exit,
@@ -1660,11 +1906,13 @@ const Galaxy = (()=>{
 
   function build(){
     const rng=mulberry(0xC0FFEE);
-    const secs=GAME.war.sectors;
-    const baseAng=[-1.15,-0.35,0.55,1.55,2.5,3.55], baseRf=[0.72,0.5,0.8,0.6,0.55,0.76];
-    sectorsF=secs.map((s,i)=>({id:s.id, af:baseAng[i%6]+rng()*0.12, rf:baseRf[i%6]}));
+    const secs=GAME.war.sectors, perRing=6;
+    sectorsF=secs.map((s,i)=>{ const ring=Math.floor(i/perRing), idx=i%perRing;
+      const af=(idx/perRing)*6.2832 + ring*0.62 + rng()*0.16;
+      const rf=Math.min(0.9, 0.4 + ring*0.25 + rng()*0.06);
+      return {id:s.id, af, rf}; });
     // planetas decorativos
-    planetsF=[]; for(let i=0;i<150;i++){ const af=rng()*6.2832, rf=Math.sqrt(rng())*0.98; planetsF.push({af,rf,sz:0.6+rng()*2.6,br:rng()<0.16}); }
+    planetsF=[]; for(let i=0;i<170;i++){ const af=rng()*6.2832, rf=Math.sqrt(rng())*0.98; planetsF.push({af,rf,sz:0.6+rng()*2.6,br:rng()<0.16}); }
     // líneas de suministro
     links=[]; for(let i=0;i<sectorsF.length;i++){ links.push(["cs",i,-1]); }
     for(let i=0;i<sectorsF.length;i++){ // conectar con el vecino angular
@@ -1687,13 +1935,13 @@ const Galaxy = (()=>{
           <div class="gx-title">Mapa Galáctico<small>Frente Eterno · Ciclo ${w.missions}</small></div>
           <div class="gx-legend">
             <span><i style="background:#c9a24b"></i>Corona</span>
-            <span><i style="background:#b3312b"></i>Plaga</span>
-            <span><i style="background:#4fd6b8"></i>Liberado</span>
-            <span><i style="background:#8fb0cf"></i>Neutral</span>
+            <span><i style="background:#4fd6b8"></i>Plaga</span>
+            <span><i style="background:#d6742b"></i>Legión</span>
+            <span><i style="background:#9a7be0"></i>Coro</span>
           </div>
         </div>
         <div class="gx-tip" id="gxTip"></div>
-        <div class="gx-foot">${isTouch?"Toca un planeta para desplegar":"Pasa el ratón por los planetas · clic para desplegar"} · Liberación ${w.liberationPct}% · Plaga ${w.plaga}%</div>
+        <div class="gx-foot">${isTouch?"Toca un planeta para desplegar":"Pasa el ratón por los planetas · clic para desplegar"} · Liberación ${w.liberationPct}% · Réditos ${GAME.req||0} ◈</div>
       </div>
       <footer class="foot"><span>CORONA ESTELAR · MAPA GALÁCTICO</span><span>Ciclo ${w.missions} · Sectores ${w.sectors.length} · Liberados ${w.liberated}</span></footer>`;
     cv=$("#galaxy"); ctx=cv.getContext("2d"); tipEl=$("#gxTip"); hover=null;
@@ -1704,13 +1952,13 @@ const Galaxy = (()=>{
 
   function computeNodes(){
     cx=VW/2; cy=VH*0.5; R=Math.min(VW/2,VH/2)-28;
-    nodes=sectorsF.map((sf,i)=>({ ...sf, sector:GAME.war.sectors[i], x:cx+Math.cos(sf.af)*R*sf.rf, y:cy+Math.sin(sf.af)*R*sf.rf, r:13 }));
+    nodes=sectorsF.map(sf=>{ const sector=GAME.war.sectors.find(x=>x.id===sf.id)||GAME.war.sectors[0]; return { ...sf, sector, x:cx+Math.cos(sf.af)*R*sf.rf, y:cy+Math.sin(sf.af)*R*sf.rf, r:11 }; });
   }
   function onMove(e){ const rect=cv.getBoundingClientRect(); const mx=(e.clientX-rect.left)/rect.width*VW, my=(e.clientY-rect.top)/rect.height*VH;
     hover=null; for(const n of nodes){ if(dist(mx,my,n.x,n.y)<n.r+9){ hover=n; break; } }
-    if(hover){ const s=hover.sector; tipEl.style.left=(hover.x/VW*100)+"%"; tipEl.style.top=(hover.y/VH*100)+"%";
+    if(hover){ const s=hover.sector, M=planetMeta(s.id), bm=BIOMES[M.biome]||DEFBIOME, F=facOf(s); tipEl.style.left=(hover.x/VW*100)+"%"; tipEl.style.top=(hover.y/VH*100)+"%";
       const tc=s.threat==="crítica"?"#cf4b3f":s.threat==="alta"?"#d99a2b":s.threat==="media"?"#c9a24b":"#7fb069";
-      tipEl.innerHTML=`<div class="tn">${s.nm}</div><div class="tc" style="color:${tc}">${s.co} · ${s.status==="liberado"?"LIBERADO":s.status==="caído"?"CAÍDO":"AMENAZA "+s.threat.toUpperCase()}</div><div class="tbar"><i style="width:${s.ctl}%"></i></div><div class="th">Control ${s.ctl}% · ${(BIOMES[s.id]||DEFBIOME).nm}</div>`;
+      tipEl.innerHTML=`<div class="tn">${s.nm}</div><div class="tc" style="color:${tc}">${s.co} · ${s.status==="liberado"?"LIBERADO":s.status==="caído"?"CAÍDO":"AMENAZA "+s.threat.toUpperCase()}</div><div class="tbar"><i style="width:${s.ctl}%"></i></div><div class="th">Control ${s.ctl}% · Resistencia ${s.resistance||0}%</div><div class="th" style="color:${F.col}">${F.nm} · ${bm.nm}</div>`;
       tipEl.classList.add("show"); cv.style.cursor="pointer";
     } else { tipEl.classList.remove("show"); cv.style.cursor="crosshair"; }
   }
@@ -1750,11 +1998,11 @@ const Galaxy = (()=>{
     for(const n of nodes){ drawSectorNode(n); }
   }
   function drawTerritory(n){
-    const s=n.sector, fac=(SECTOR_FX[s.id]||{fac:"#c9a24b"}).fac;
-    const col = s.status==="liberado"?"#4fd6b8": s.status==="caído"?"#b3312b": fac;
-    const frac = s.status==="liberado"?1: s.status==="caído"?1: s.ctl/100;
-    const rlo=Math.max(R*0.22, R*(n.rf-0.15)), rhi=Math.min(R, R*(n.rf+0.17));
-    const aw=0.5, nr=3, na=4, total=nr*na; let idx=0;
+    const s=n.sector;
+    const col = s.status==="liberado"?"#c9a24b": s.status==="caído"?facOf(s).col : facOf(s).col;
+    const frac = s.status==="liberado"?1: s.status==="caído"?1: (1 - s.ctl/100)*0.9 + 0.1;
+    const rlo=Math.max(R*0.2, R*(n.rf-0.1)), rhi=Math.min(R, R*(n.rf+0.11));
+    const aw=0.34, nr=2, na=3, total=nr*na; let idx=0;
     for(let ir=0;ir<nr;ir++){ for(let ia=0;ia<na;ia++){
       const r0=rlo+(rhi-rlo)*ir/nr, r1=rlo+(rhi-rlo)*(ir+1)/nr;
       const a0=n.af-aw+(aw*2)*ia/na, a1=n.af-aw+(aw*2)*(ia+1)/na;
@@ -1774,22 +2022,20 @@ const Galaxy = (()=>{
     ctx.fillStyle="rgba(201,162,75,.95)"; ctx.font="700 11px Cinzel, serif"; ctx.textAlign="center"; ctx.fillText("SOLMYR", cx, cy+30);
   }
   function drawSectorNode(n){
-    const s=n.sector, hot=hover===n;
-    const tc=s.threat==="crítica"?"#cf4b3f":s.threat==="alta"?"#d99a2b":s.threat==="media"?"#c9a24b":"#7fb069";
-    const ringCol=s.status==="liberado"?"#4fd6b8":s.status==="caído"?"#b3312b":tc;
-    // glow al pasar el ratón
+    const s=n.sector, hot=hover===n, F=facOf(s);
+    const ringCol=s.status==="liberado"?"#c9a24b":s.status==="caído"?"#b3312b":F.col;
     if(hot){ ctx.globalAlpha=.5; ctx.fillStyle=ringCol; ctx.beginPath();ctx.arc(n.x,n.y,n.r+8,0,6.2832);ctx.fill(); ctx.globalAlpha=1; }
-    // planeta
     const pg=ctx.createRadialGradient(n.x-3,n.y-3,1,n.x,n.y,n.r); pg.addColorStop(0,"#2a2620"); pg.addColorStop(1,"#0c0a09");
     ctx.fillStyle=pg; ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,6.2832);ctx.fill();
     // anillo de control
     ctx.lineWidth=3; ctx.strokeStyle="rgba(40,30,26,.9)"; ctx.beginPath();ctx.arc(n.x,n.y,n.r+3,0,6.2832);ctx.stroke();
     ctx.strokeStyle=ringCol; ctx.beginPath();ctx.arc(n.x,n.y,n.r+3,-Math.PI/2, -Math.PI/2 + 6.2832*(s.ctl/100)); ctx.stroke();
-    // núcleo
-    ctx.fillStyle=ringCol; ctx.globalAlpha=.9; ctx.beginPath();ctx.arc(n.x,n.y,3.5,0,6.2832);ctx.fill(); ctx.globalAlpha=1;
-    // etiqueta
-    ctx.fillStyle= hot?"#e8dcc4":"rgba(232,220,196,.82)"; ctx.font=(hot?"700 ":"")+"11px Cinzel, serif"; ctx.textAlign="center";
-    ctx.fillText(s.nm, n.x, n.y - n.r - 8);
+    // núcleo teñido por facción
+    ctx.fillStyle=s.status==="liberado"?"#c9a24b":F.col; ctx.globalAlpha=.9; ctx.beginPath();ctx.arc(n.x,n.y,3.2,0,6.2832);ctx.fill(); ctx.globalAlpha=1;
+    // estrella si es liberado
+    if(s.status==="liberado"){ ctx.fillStyle="#ffe9b0"; ctx.font="9px serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("★",n.x,n.y+.5); ctx.textBaseline="alphabetic"; }
+    // etiqueta solo al pasar el ratón (para no saturar)
+    if(hot){ ctx.fillStyle="#e8dcc4"; ctx.font="700 11px Cinzel, serif"; ctx.textAlign="center"; ctx.fillText(s.nm, n.x, n.y - n.r - 8); }
   }
   return { mount, stop };
 })();

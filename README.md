@@ -51,8 +51,20 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   Escopeta de Asedio, Rifle de Precisión, Cañón Pesado (explosivo), Repetidor de Latón y Lanzaesporas (área).
 - **Jefe de la Plaga** — la Reina, con **3 fases** (invoca crías, salvas radiales de esporas, cargas al
   enfurecerse). Derribarla libera el sector.
-- **Guerra galáctica compartida** — 6 sectores con control imperial; ganar sube el control y baja la Plaga,
-  perder la deja avanzar. **Permadeath** del héroe (entra en la lista de honor y la galaxia sigue sin él).
+- **Tres facciones enemigas** — **La Plaga** (enjambres bio), **La Legión de Hierro** (autómatas acorazados de
+  disparo) y **El Coro Pálido** (mentes del vacío), cada una con su propio elenco de enemigos, su jefe y su color
+  en el mapa. Cada planeta pertenece a una facción.
+- **Estratagemas y Réditos** — completa misiones para ganar **Réditos** y desbloocar apoyos orbitales en la
+  tienda: **Torreta Centinela**, **Bombardeo Orbital**, **Reabastecimiento**, **Búnker de Escudo**, **Campo de
+  Minas** y **Lluvia de Fuego**. Equipa hasta 4 y lánzalos en combate con las teclas 5-8.
+- **Subobjetivos opcionales** — cada misión incluye un objetivo extra (recuperar muestras o destruir depósitos)
+  que da Réditos y control adicional si lo cumples.
+- **Galaxia extensa y viva** — 18 planetas repartidos en anillos; y entre misiones las facciones **contraatacan**:
+  un planeta liberado puede volver a estar en disputa. Cada planeta tiene **resistencia** que marca cuánto empuja
+  el enemigo por recuperarlo.
+- **Guerra galáctica compartida** — control imperial por planeta; ganar sube el control, perder lo deja caer.
+  **Permadeath** del héroe (entra en la lista de honor y la galaxia sigue sin él); los Réditos y estratagemas
+  desbloqueadas persisten entre campeones.
 - **Códices y noticias** — Armería, Bestiario, partes de guerra, edictos del Trono y la lista de caídos.
 
 ## Estructura
