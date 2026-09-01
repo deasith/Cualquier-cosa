@@ -748,9 +748,23 @@
         <a href="#zonas">Zonas</a>
         <a href="#contacto">Contacto</a>
       </nav>
-      <small>© <span id="year"></span> Air Box. Proyecto escolar.</small>
+      <small>© <span id="year"></span> Air Box. Proyecto escolar. <span id="egg-trigger" class="egg-dot" aria-hidden="true">◦</span></small>
     </div>
   </footer>
+
+  <!-- ===== Juego secreto (easter egg): Corona Estelar ===== -->
+  <div class="egg" id="egg" hidden>
+    <div class="egg__bar">
+      <span class="egg__title">🎮 Corona Estelar <small>· juego secreto de la casa</small></span>
+      <div class="egg__actions">
+        <a class="egg__open" id="egg-open" href="corona-estelar.html" target="_blank" rel="noopener">Abrir en pestaña ↗</a>
+        <button class="egg__close" id="egg-close" type="button" aria-label="Cerrar juego">✕ Cerrar</button>
+      </div>
+    </div>
+    <iframe class="egg__frame" id="egg-frame" title="Corona Estelar — El Frente Eterno" src="about:blank"></iframe>
+  </div>
+
+  <div class="egg-toast" id="egg-toast" hidden>🎮 ¡Encontraste el juego secreto!</div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="script.js"></script>

@@ -500,3 +500,62 @@ sections.forEach((s) => observer.observe(s));
   );
   calc();
 })();
+
+// ===== Juego secreto (easter egg): Corona Estelar =====
+(function () {
+  const egg = document.getElementById("egg");
+  const frame = document.getElementById("egg-frame");
+  const closeBtn = document.getElementById("egg-close");
+  const dot = document.getElementById("egg-trigger");
+  const toast = document.getElementById("egg-toast");
+  if (!egg || !frame) return;
+  const SRC = "corona-estelar.html";
+  let toastTimer;
+
+  function showToast() {
+    if (!toast) return;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+  function openGame() {
+    if (frame.getAttribute("src") !== SRC) frame.setAttribute("src", SRC);
+    egg.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeGame() {
+    egg.hidden = true;
+    document.body.style.overflow = "";
+    frame.setAttribute("src", "about:blank"); // detiene el juego al cerrar
+  }
+  function unlock() { showToast(); openGame(); }
+
+  if (closeBtn) closeBtn.addEventListener("click", closeGame);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !egg.hidden) closeGame();
+  });
+
+  // Disparador táctil: tocar el punto del pie 5 veces seguidas
+  if (dot) {
+    let taps = 0, timer;
+    dot.addEventListener("click", () => {
+      taps++;
+      clearTimeout(timer);
+      timer = setTimeout(() => { taps = 0; }, 1500);
+      if (taps >= 5) { taps = 0; unlock(); }
+    });
+  }
+
+  // Disparador de escritorio: código Konami (↑ ↑ ↓ ↓ ← → ← → B A)
+  const KONAMI = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
+  let idx = 0;
+  document.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+    if (k === KONAMI[idx]) {
+      idx++;
+      if (idx === KONAMI.length) { idx = 0; unlock(); }
+    } else {
+      idx = (k === KONAMI[0]) ? 1 : 0;
+    }
+  });
+})();
