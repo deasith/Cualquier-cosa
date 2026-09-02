@@ -31,7 +31,12 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
   amontonarse, retroceden si los aprietan (kite), priorizan objetivos, y usan sus propios estims para curarse
   y cubrirte. Tienen personalidad y radio contextual.
 - **Niveles de dificultad** — de **Recluta** (relajado) a **Infierno**; escalan cantidad de enemigos, vida,
-  daño, vida del jefe y recompensas. Se elige en el informe de despliegue.
+  daño, vida del jefe y recompensas. Se elige en el informe de despliegue. El frente pega **más duro** en
+  todos los niveles: el enemigo muerde antes y los golpes cuentan.
+- **Rangos de honor estilo Helldivers** — más allá del nivel, ganas **Gloria** en combate para escalar una
+  **carrera militar** de 18 rangos con títulos como Sargento, Jefe de Escuadra, **Capitán de la Muerte**,
+  Almirante Calavera, Mariscal Estelar, Mano del Trono o la legendaria cima, Leyenda de Solmyr. Cada ascenso
+  se anuncia en el frente y una barra en tu ficha muestra cuánta Gloria falta para el siguiente título.
 - **Sectores de riesgo** — en planetas de amenaza alta/crítica, cada cierto tiempo **baja una nave SEAF con 5
   refuerzos**, y hay **otros Vindicados aliados** patrullando y combatiendo por su cuenta, para que el frente
   se sienta una guerra de verdad.
@@ -67,12 +72,15 @@ En el puente: `WASD` para caminar y `E` para hablar con la tripulación.
 - **Tres facciones enemigas** — **La Plaga** (enjambres bio), **La Legión de Hierro** (autómatas acorazados de
   disparo) y **El Coro Pálido** (mentes del vacío), cada una con su propio elenco de enemigos, su jefe y su color
   en el mapa. Cada planeta pertenece a una facción.
-- **Estratagemas y Réditos** — completa misiones para ganar **Réditos** y desbloocar apoyos orbitales en la
-  tienda: **Torreta Centinela**, **Bombardeo Orbital**, **Reabastecimiento**, **Búnker de Escudo**, **Campo de
-  Minas** y **Lluvia de Fuego**. Equipa hasta 4 y lánzalos en combate con las teclas 5-8.
+- **Estratagemas y Réditos** — completa misiones para ganar **Réditos** y desbloquear apoyos orbitales en la
+  tienda: **Torreta Centinela**, **Torreta Gatling** (cadencia brutal), **Reabastecimiento**, **Bombardeo
+  Orbital**, **Águila 500kg** (bomba que arrasa un área enorme), **Cañón de Riel** (perfora al enemigo más
+  letal o al jefe con un rayo orbital), **Búnker de Escudo**, **Campo de Minas**, **Lluvia de Fuego**,
+  **Bombardeo de Gas** (nube que envenena y ralentiza) y **Dron Guardián** (te escolta y dispara solo). Once
+  en total; equipa hasta 4 y lánzalos en combate con las teclas 5-8.
 - **Subobjetivos opcionales** — cada misión incluye un objetivo extra (recuperar muestras o destruir depósitos)
   que da Réditos y control adicional si lo cumples.
-- **Galaxia extensa y viva** — 18 planetas repartidos en anillos; y entre misiones las facciones **contraatacan**:
+- **Galaxia extensa y viva** — 27 planetas repartidos en anillos; y entre misiones las facciones **contraatacan**:
   un planeta liberado puede volver a estar en disputa. Cada planeta tiene **resistencia** que marca cuánto empuja
   el enemigo por recuperarlo.
 - **Guerra galáctica compartida** — control imperial por planeta; ganar sube el control, perder lo deja caer.
