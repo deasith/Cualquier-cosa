@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Air Box · Purificamos el aire de tu hogar o negocio. Vamos a tu ubicación con nuestra máquina purificadora y te ofrecemos nuestro producto." />
+  <title>Air Box · Aire limpio a domicilio</title>
+  <meta name="theme-color" content="#0f4c81" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+/* ===== Air Box · estilos ===== */
+:root {
+  --blue-900: #0b2a4a;
+  --blue-700: #0f4c81;
+  --blue-500: #1f8ecf;
+  --blue-400: #38b6ff;
+  --cyan: #6fe3e1;
+  --wa: #25d366;
+  --wa-dark: #1da851;
+  --ink: #12233a;
+  --muted: #5b6b7d;
+  --line: #e4ecf3;
+  --bg: #f5f9fc;
+  --white: #ffffff;
+  --radius: 18px;
+  --shadow: 0 18px 40px -18px rgba(15, 76, 129, .35);
+  --shadow-sm: 0 8px 24px -12px rgba(15, 76, 129, .3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .brand__name { font-family: "Poppins", system-ui, sans-serif; line-height: 1.15; }
+
+img { max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+.container { width: min(1120px, 92%); margin-inline: auto; }
+.container--narrow { width: min(760px, 92%); }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  padding: .7rem 1.3rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+  font-size: .95rem;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn--lg { padding: .9rem 1.7rem; font-size: 1rem; }
+.btn--wa { background: var(--wa); color: #fff; box-shadow: 0 10px 22px -10px rgba(37, 211, 102, .8); }
+.btn--wa:hover { background: var(--wa-dark); }
+.btn--primary { background: linear-gradient(120deg, var(--blue-500), var(--blue-700)); color: #fff; box-shadow: var(--shadow-sm); }
+.btn--ghost { background: transparent; color: var(--blue-700); border-color: var(--blue-500); }
+.btn--ghost:hover { background: rgba(31, 142, 207, .1); }
+
+/* ===== Pills ===== */
+.pill {
+  display: inline-block;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: .35rem .85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .18);
+  color: #eaf6ff;
+  margin-bottom: 1rem;
+}
+.pill--soft { background: rgba(31, 142, 207, .12); color: var(--blue-700); }
+
+/* ===== Nav ===== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__inner { display: flex; align-items: center; gap: 1.2rem; padding: .85rem 0; }
+.brand { display: inline-flex; align-items: center; gap: .55rem; font-weight: 700; }
+.brand__logo {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-700));
+  color: #fff;
+}
+.brand__name { font-size: 1.3rem; font-weight: 800; color: var(--blue-900); }
+.brand__name span { color: var(--blue-500); }
+.nav__links { display: flex; gap: 1.05rem; margin-left: auto; }
+.nav__links a { font-weight: 500; color: var(--muted); transition: color .2s; }
+.nav__links a:hover { color: var(--blue-700); }
+.nav__cta { margin-left: .4rem; }
+.nav__toggle {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: none; border: 0; cursor: pointer; padding: 6px;
+}
+.nav__toggle span { width: 24px; height: 2px; background: var(--blue-900); border-radius: 2px; transition: .3s; }
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  background: radial-gradient(1200px 500px at 80% -10%, rgba(56, 182, 255, .35), transparent 60%),
+              linear-gradient(160deg, var(--blue-900), var(--blue-700));
+  color: #eaf6ff;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+  overflow: hidden;
+}
+.hero__particles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; align-items: center; }
+.hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); font-weight: 800; margin-bottom: 1rem; }
+.hero h1 .accent { color: var(--cyan); }
+.lead { font-size: 1.1rem; color: #d5e8f7; max-width: 46ch; margin-bottom: 1.8rem; }
+.lead strong { color: #fff; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: .9rem; }
+.hero__actions .btn--ghost { color: #eaf6ff; border-color: rgba(234, 246, 255, .5); }
+.hero__actions .btn--ghost:hover { background: rgba(255, 255, 255, .12); }
+.hero__stats {
+  list-style: none; display: flex; gap: 2rem; flex-wrap: wrap;
+  margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, .15);
+}
+.hero__stats strong { display: block; font-family: "Poppins", sans-serif; font-size: 1.4rem; color: #fff; }
+.hero__stats span { font-size: .85rem; color: #b9d6ee; }
+
+/* Hero art / machine */
+.hero__art { display: grid; place-items: center; }
+.machine { position: relative; width: 260px; height: 320px; }
+.machine__glow {
+  position: absolute; inset: -30px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(111, 227, 225, .5), transparent 60%);
+  filter: blur(10px);
+}
+.machine__body {
+  position: absolute; inset: 20px 40px; border-radius: 26px;
+  background: linear-gradient(160deg, #eaf6ff, #bcdcf3);
+  box-shadow: inset 0 2px 8px rgba(255, 255, 255, .8), 0 30px 50px -20px rgba(0, 0, 0, .5);
+  display: flex; flex-direction: column; align-items: center; padding: 22px 0;
+}
+.machine__screen {
+  background: var(--blue-900); color: var(--cyan);
+  font-family: "Poppins", sans-serif; font-size: .8rem; letter-spacing: .05em;
+  padding: .5rem 1rem; border-radius: 10px; display: inline-flex; align-items: center; gap: .5rem;
+}
+.machine__screen .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: pulse 1.6s infinite; }
+.machine__vent { margin-top: auto; display: flex; flex-direction: column; gap: 8px; width: 60%; }
+.machine__vent i { height: 6px; border-radius: 6px; background: rgba(15, 76, 129, .25); }
+.machine__label { margin-top: 16px; font-family: "Poppins", sans-serif; font-weight: 800; color: var(--blue-700); letter-spacing: .12em; }
+.bubble {
+  position: absolute; border-radius: 50%;
+  background: rgba(111, 227, 225, .55); border: 1px solid rgba(255, 255, 255, .6);
+}
+.bubble--1 { width: 22px; height: 22px; top: 10px; right: 30px; animation: float 5s ease-in-out infinite; }
+.bubble--2 { width: 14px; height: 14px; top: 60px; right: 0;   animation: float 4s ease-in-out infinite .5s; }
+.bubble--3 { width: 30px; height: 30px; bottom: 30px; left: 0;  animation: float 6s ease-in-out infinite 1s; }
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+
+/* ===== Sections ===== */
+.section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
+.section--alt { background: var(--white); }
+.section__head { text-align: center; max-width: 640px; margin: 0 auto 3rem; }
+.section__head h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); color: var(--blue-900); margin-bottom: .8rem; }
+.section__head p { color: var(--muted); }
+
+/* Cards */
+.cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
+.card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.8rem 1.5rem; box-shadow: var(--shadow-sm); transition: transform .2s, box-shadow .2s;
+}
+.section--alt .card { background: var(--bg); }
+.card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.card__icon {
+  width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(56, 182, 255, .18), rgba(31, 142, 207, .18));
+  color: var(--blue-700); margin-bottom: 1.1rem;
+}
+.card__icon svg { width: 26px; height: 26px; }
+.card h3 { font-size: 1.15rem; color: var(--blue-900); margin-bottom: .5rem; }
+.card p { color: var(--muted); font-size: .95rem; }
+
+/* Timeline */
+.timeline { list-style: none; max-width: 760px; margin: 0 auto; display: grid; gap: 1.2rem; }
+.timeline__item {
+  display: flex; gap: 1.3rem; align-items: flex-start;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.5rem 1.7rem;
+}
+.section--alt .timeline__item { background: var(--bg); }
+.timeline__num {
+  flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center; font-family: "Poppins", sans-serif; font-weight: 800;
+  color: #fff; background: linear-gradient(135deg, var(--blue-500), var(--blue-700));
+}
+.timeline__item h3 { color: var(--blue-900); margin-bottom: .3rem; }
+.timeline__item p { color: var(--muted); font-size: .95rem; }
+
+/* Product */
+.product { display: grid; grid-template-columns: .9fr 1.1fr; gap: 3rem; align-items: center; }
+.product__art { position: relative; display: grid; place-items: center; min-height: 300px; }
+.box {
+  position: relative; width: 210px; height: 170px; transform: rotate(-6deg);
+  filter: drop-shadow(0 22px 30px rgba(15, 76, 129, .3));
+}
+.box__lid {
+  height: 34px; border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, var(--blue-500), var(--blue-700));
+}
+.box__front {
+  height: 136px; border-radius: 0 0 12px 12px;
+  background: linear-gradient(160deg, #eaf6ff, #cfe6f7);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem;
+  border: 2px solid #fff;
+}
+.box__brand { font-family: "Poppins", sans-serif; font-weight: 800; color: var(--blue-700); letter-spacing: .12em; font-size: 1.2rem; }
+.box__tag { font-size: .8rem; color: var(--muted); }
+.manual {
+  position: absolute; right: 6%; bottom: 8%; width: 130px; height: 160px; transform: rotate(8deg);
+  background: #fff; border-radius: 10px; box-shadow: var(--shadow); padding: 16px 14px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.manual__title { margin-top: auto; font-family: "Poppins", sans-serif; font-weight: 700; font-size: .85rem; color: var(--blue-700); }
+.manual__line { height: 7px; border-radius: 6px; background: var(--line); }
+.manual__line.short { width: 60%; }
+.product__text h2 { color: var(--blue-900); margin: .6rem 0 1rem; font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+.product__text > p { color: var(--muted); margin-bottom: 1.3rem; }
+
+/* Checklist */
+.checklist { list-style: none; display: grid; gap: .7rem; margin-bottom: 1.6rem; }
+.checklist li { position: relative; padding-left: 1.9rem; color: var(--ink); }
+.checklist li::before {
+  content: ""; position: absolute; left: 0; top: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--wa) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat;
+}
+
+/* Plans */
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: start; }
+.plan {
+  position: relative; background: var(--bg); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 2rem 1.7rem; box-shadow: var(--shadow-sm);
+  transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease;
+}
+.plan.is-highlight { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgba(31, 142, 207, .4), var(--shadow); transform: translateY(-4px); }
+.plan--featured.is-highlight { box-shadow: 0 0 0 3px rgba(111, 227, 225, .7), var(--shadow); }
+.section--alt .plan:not(.plan--featured) { background: var(--bg); }
+.plan--featured {
+  background: linear-gradient(160deg, var(--blue-700), var(--blue-900));
+  color: #eaf6ff; border-color: transparent; transform: translateY(-8px);
+}
+.plan.plan--featured h3, .plan.plan--featured .plan__price { color: #fff; }
+.plan--featured .plan__desc { color: #cfe6f7; }
+.plan--featured .checklist li { color: #eaf6ff; }
+.plan__badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--cyan); color: var(--blue-900); font-size: .75rem; font-weight: 700;
+  padding: .3rem .9rem; border-radius: 999px;
+}
+.plan h3 { color: var(--blue-900); font-size: 1.25rem; margin-bottom: .3rem; }
+.plan__price { font-family: "Poppins", sans-serif; font-weight: 700; color: var(--blue-500); margin-bottom: .8rem; }
+.plan--featured .plan__price { color: var(--cyan); }
+.plan__desc { color: var(--muted); font-size: .93rem; margin-bottom: 1.2rem; }
+.note { text-align: center; color: var(--muted); font-size: .88rem; margin-top: 1.8rem; }
+
+/* Contact */
+.contact { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.contact__info h2 { color: var(--blue-900); margin: .6rem 0 1rem; font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+.contact__info > p { color: var(--muted); margin-bottom: 1.6rem; }
+.contact__wa {
+  display: inline-flex; align-items: center; gap: 1rem;
+  background: var(--wa); color: #fff; padding: 1rem 1.4rem; border-radius: 16px;
+  box-shadow: 0 14px 26px -14px rgba(37, 211, 102, .9); margin-bottom: 1.6rem;
+  transition: transform .15s;
+}
+.contact__wa:hover { transform: translateY(-2px); }
+.contact__wa strong { display: block; font-family: "Poppins", sans-serif; }
+.contact__wa em { font-style: normal; opacity: .9; font-size: .9rem; }
+.contact__list { list-style: none; display: grid; gap: .6rem; color: var(--muted); }
+.contact__list strong { color: var(--ink); }
+
+.contact__form {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.8rem; box-shadow: var(--shadow-sm); display: grid; gap: 1rem;
+}
+.contact__form label { display: grid; gap: .4rem; font-size: .9rem; font-weight: 600; color: var(--ink); }
+.contact__form input, .contact__form textarea {
+  font-family: inherit; font-size: .95rem; padding: .75rem .9rem;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink);
+  transition: border .2s, box-shadow .2s;
+}
+.contact__form input:focus, .contact__form textarea:focus {
+  outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 3px rgba(31, 142, 207, .15);
+}
+.form__hint { font-size: .9rem; color: var(--wa-dark); font-weight: 600; min-height: 1.2em; text-align: center; }
+
+/* Footer */
+.footer { background: var(--blue-900); color: #cfe0ef; padding: 3rem 0 2rem; }
+.footer__inner { display: grid; place-items: center; gap: .9rem; text-align: center; }
+.brand--light .brand__name { color: #fff; }
+.brand--light .brand__name span { color: var(--cyan); }
+.footer__links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+.footer__links a { color: #cfe0ef; transition: color .2s; }
+.footer__links a:hover { color: #fff; }
+.footer small { color: #7fa3c4; }
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .hero__inner { grid-template-columns: 1fr; text-align: center; }
+  .hero__art { order: -1; }
+  .lead { margin-inline: auto; }
+  .hero__actions, .hero__stats { justify-content: center; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .plans { grid-template-columns: 1fr; }
+  .plan--featured { transform: none; }
+  .product, .contact { grid-template-columns: 1fr; }
+  .product__art { order: -1; }
+}
+
+@media (max-width: 720px) {
+  .nav__links {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; background: #fff; border-bottom: 1px solid var(--line);
+    max-height: 0; overflow: hidden; transition: max-height .3s ease; margin-left: 0;
+  }
+  .nav__links.open { max-height: 320px; }
+  .nav__links a { padding: .9rem 6%; border-top: 1px solid var(--line); }
+  .nav__cta { display: none; }
+  .nav__toggle { display: flex; margin-left: auto; }
+}
+
+@media (max-width: 480px) {
+  .cards { grid-template-columns: 1fr; }
+  .hero__stats { gap: 1.2rem; }
+}
+
+/* ===== Ilustración detallada del purificador ===== */
+.product__art { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.purifier { width: 100%; max-width: 440px; height: auto; margin: 0 auto; display: block; }
+.purifier .comp { cursor: pointer; transition: opacity .25s ease, filter .25s ease; }
+.purifier .comp:focus { outline: none; }
+.purifier.has-active .comp { opacity: .28; }
+.purifier .comp.is-on, .purifier .comp.is-selected { opacity: 1; filter: drop-shadow(0 0 6px rgba(56, 182, 255, .95)); }
+.purifier .comp:focus-visible { filter: drop-shadow(0 0 6px rgba(56, 182, 255, 1)); }
+
+/* Encendido: ventilador girando, flujo de aire y UV pulsando */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes drift { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@keyframes uvpulse { 0%, 100% { opacity: .35; } 50% { opacity: .85; } }
+.purifier .fan-blades { transform-origin: 277px 160px; }
+.purifier.running .fan-blades { animation: spin 1s linear infinite; }
+.purifier.running .flow path { animation: drift 1.3s ease-in-out infinite; }
+.purifier.running .flow--out path { animation-delay: .4s; }
+.purifier.running .comp[data-comp="uv"] ellipse { animation: uvpulse 1.4s ease-in-out infinite; }
+
+/* Botón de encendido */
+.power-btn {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-family: "Poppins", sans-serif; font-weight: 600; font-size: .9rem;
+  padding: .55rem 1.2rem; border-radius: 999px; cursor: pointer;
+  background: var(--white); border: 1.5px solid var(--line); color: var(--blue-900);
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.power-btn__dot { width: 11px; height: 11px; border-radius: 50%; background: #c3d0dc; transition: background .2s, box-shadow .2s; }
+.power-btn.is-on { border-color: var(--wa); color: var(--wa-dark); }
+.power-btn.is-on .power-btn__dot { background: var(--wa); box-shadow: 0 0 0 4px rgba(37, 211, 102, .25); }
+
+.comp-explorer { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; margin: .3rem 0 1rem; padding: 0; }
+.comp-item {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: "Poppins", sans-serif; font-weight: 600; font-size: .85rem;
+  padding: .45rem .8rem; border-radius: 999px; cursor: pointer;
+  background: var(--white); border: 1px solid var(--line); color: var(--blue-900);
+  transition: border-color .2s, background .2s, transform .15s;
+}
+.comp-item:hover, .comp-item.is-on { border-color: var(--blue-500); background: rgba(31, 142, 207, .08); transform: translateY(-1px); }
+.comp-item.is-selected { border-color: var(--blue-700); background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); color: #fff; }
+.comp-item.is-selected .comp-item__n { background: #fff; color: var(--blue-700); }
+.comp-item__n {
+  display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); color: #fff; font-size: .75rem;
+}
+.comp-flow { color: var(--muted); font-size: .82rem; margin: -.2rem 0 1.1rem; }
+
+/* Ficha detallada del componente */
+.comp-detail { min-height: 150px; margin-bottom: 1.4rem; }
+.comp-detail__empty {
+  display: flex; align-items: center; gap: .8rem; height: 100%;
+  background: var(--bg); border: 1px dashed var(--line); border-radius: 14px;
+  padding: 1rem 1.2rem; color: var(--muted); font-size: .95rem;
+}
+.comp-detail__empty span { font-size: 1.6rem; }
+.comp-card {
+  background: var(--white); border: 1px solid var(--line); border-radius: 16px;
+  padding: 1.3rem; box-shadow: var(--shadow-sm); animation: fadeUp .35s ease;
+}
+.comp-card__head { display: flex; align-items: center; gap: .9rem; margin-bottom: .9rem; }
+.comp-card__n {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+  font-family: "Poppins", sans-serif; font-weight: 800; font-size: 1.2rem; color: #fff;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-700));
+}
+.comp-card__head h3 { color: var(--blue-900); font-size: 1.2rem; line-height: 1.2; }
+.comp-card__tag { font-size: .82rem; color: var(--blue-500); font-weight: 600; }
+.comp-card__desc { color: var(--muted); font-size: .95rem; margin-bottom: 1rem; }
+.comp-card__label { font-family: "Poppins", sans-serif; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--blue-700); margin-bottom: .5rem; }
+.comp-card__list { list-style: none; display: grid; gap: .4rem; margin-bottom: 1.1rem; padding: 0; }
+.comp-card__list li { position: relative; padding-left: 1.6rem; font-size: .92rem; color: var(--ink); }
+.comp-card__list li::before {
+  content: ""; position: absolute; left: 0; top: 2px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--wa) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/11px no-repeat;
+}
+.comp-card__stats { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.comp-stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .9rem; }
+.comp-stat span { display: block; font-size: .74rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); margin-bottom: .2rem; }
+.comp-stat strong { font-family: "Poppins", sans-serif; font-size: .88rem; color: var(--blue-900); line-height: 1.25; }
+
+/* ===== Mapa interactivo ===== */
+.mapwrap { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.5rem; align-items: stretch; }
+.map {
+  height: 440px; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); box-shadow: var(--shadow-sm); z-index: 1;
+}
+.mapinfo {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 1.6rem; display: flex; flex-direction: column; gap: 1rem;
+}
+.section--alt .mapinfo { background: var(--bg); }
+.mapinfo__empty { display: grid; place-items: center; text-align: center; gap: .8rem; margin: auto 0; color: var(--muted); }
+.mapinfo__pin {
+  width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(56,182,255,.18), rgba(31,142,207,.18)); color: var(--blue-700);
+}
+.mapinfo__pin svg { width: 30px; height: 30px; }
+.mapinfo__result { display: flex; flex-direction: column; gap: .9rem; animation: fadeUp .4s ease; }
+.mapinfo__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: .7rem; border-bottom: 1px dashed var(--line); }
+.mapinfo__row--plan { border-bottom: 0; }
+.mapinfo__label { color: var(--muted); font-size: .9rem; }
+.mapinfo__row strong { font-family: "Poppins", sans-serif; font-size: 1.25rem; color: var(--blue-900); }
+.planbadge {
+  font-family: "Poppins", sans-serif; font-weight: 700; font-size: .9rem;
+  padding: .4rem .9rem; border-radius: 999px; color: #fff; background: var(--blue-500);
+}
+.planbadge[data-tier="estandar"]  { background: var(--wa); }
+.planbadge[data-tier="intermedia"] { background: var(--blue-500); }
+.planbadge[data-tier="dificil"]   { background: #f0803c; }
+.mapinfo__desc { color: var(--muted); font-size: .92rem; }
+.mapinfo__cta { justify-content: center; }
+.mapinfo__hint { margin-top: auto; font-size: .8rem; color: var(--muted); line-height: 1.4; }
+
+@media (max-width: 900px) {
+  .mapwrap { grid-template-columns: 1fr; }
+  .map { height: 340px; }
+}
+
+.map-actions { display: flex; justify-content: center; margin-top: 1.4rem; }
+.map-actions .btn:disabled { opacity: .6; cursor: progress; }
+
+/* ===== Preguntas frecuentes ===== */
+.faq { display: grid; gap: .8rem; }
+.faq__item {
+  background: var(--white); border: 1px solid var(--line); border-radius: 14px;
+  padding: .2rem 1.2rem; box-shadow: var(--shadow-sm);
+}
+.faq__item summary {
+  cursor: pointer; list-style: none; padding: 1rem 0;
+  font-family: "Poppins", sans-serif; font-weight: 600; color: var(--blue-900);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+.faq__item summary::after {
+  content: "+"; font-size: 1.4rem; color: var(--blue-500); transition: transform .2s; line-height: 1;
+}
+.faq__item[open] summary::after { transform: rotate(45deg); }
+.faq__item p { color: var(--muted); padding: 0 0 1.1rem; margin: 0; }
+
+/* ===== Comparación (con vs sin) ===== */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.2rem; align-items: center; }
+.vs__card { border-radius: var(--radius); padding: 1.8rem 1.6rem; box-shadow: var(--shadow-sm); border: 1px solid var(--line); }
+.vs__card--bad { background: #fff5f3; border-color: #f6d5cc; }
+.vs__card--good { background: #eefaf1; border-color: #c7ecd3; }
+.vs__card h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--blue-900); }
+.vs__list { list-style: none; display: grid; gap: .6rem; padding: 0; }
+.vs__list li { position: relative; padding-left: 1.9rem; color: var(--ink); font-size: .95rem; }
+.vs__list li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
+.vs__list--bad li::before { content: "✕"; color: #e5533c; }
+.vs__list--good li::before { content: "✓"; color: var(--wa-dark); }
+.vs__mid {
+  font-family: "Poppins", sans-serif; font-weight: 800; color: var(--blue-500);
+  background: var(--white); border: 2px solid var(--blue-500); border-radius: 50%;
+  width: 52px; height: 52px; display: grid; place-items: center; font-size: 1rem;
+}
+@media (max-width: 760px) {
+  .vs { grid-template-columns: 1fr; }
+  .vs__mid { margin: -.4rem auto; }
+}
+
+/* ===== Antes y después ===== */
+.ba {
+  position: relative; height: 320px; border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--line); user-select: none; touch-action: none;
+}
+.ba__scene { position: absolute; inset: 0; }
+.ba__after { background: #eaeff4; }
+.ba__room { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* Lado contaminado: misma sala vista a través de aire turbio */
+.ba__before {
+  width: 50%; overflow: hidden;
+  background: linear-gradient(160deg, rgba(120, 108, 74, .5), rgba(84, 74, 52, .42));
+  -webkit-backdrop-filter: blur(2.5px) saturate(.5) brightness(.88) sepia(.25);
+  backdrop-filter: blur(2.5px) saturate(.5) brightness(.88) sepia(.25);
+}
+.ba__dust {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 32%, rgba(45, 40, 30, .55) 0 2px, transparent 3px),
+    radial-gradient(circle at 62% 22%, rgba(45, 40, 30, .45) 0 2px, transparent 3px),
+    radial-gradient(circle at 44% 78%, rgba(45, 40, 30, .4) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 82% 66%, rgba(45, 40, 30, .45) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 60%, rgba(45, 40, 30, .4) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 72% 88%, rgba(45, 40, 30, .4) 0 1.5px, transparent 2.5px);
+  background-size: 150px 150px;
+  animation: bahaze 4.5s ease-in-out infinite;
+}
+@keyframes bahaze { 0%, 100% { opacity: .5; } 50% { opacity: .85; } }
+.ba__label {
+  position: absolute; top: 14px; font-family: "Poppins", sans-serif; font-weight: 600; font-size: .8rem;
+  padding: .3rem .7rem; border-radius: 999px; color: #fff; white-space: nowrap;
+}
+.ba__label--after { right: 14px; background: rgba(15,76,129,.75); }
+.ba__label--before { left: 14px; background: rgba(60,54,44,.8); }
+.ba__divider {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px;
+  background: #fff; box-shadow: 0 0 6px rgba(0,0,0,.3); pointer-events: none;
+}
+.ba__grip {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 40px; height: 40px; border-radius: 50%; background: #fff; color: var(--blue-700);
+  display: grid; place-items: center; font-size: 1.1rem; box-shadow: 0 3px 10px rgba(0,0,0,.25);
+}
+.ba__range {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
+}
+
+/* ===== Simulador ===== */
+.sim {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.8rem; box-shadow: var(--shadow-sm);
+}
+.sim__controls { display: grid; gap: 1.4rem; margin-bottom: 1.6rem; }
+.sim__field span { display: block; margin-bottom: .6rem; font-weight: 600; color: var(--ink); }
+.sim__field strong { color: var(--blue-700); }
+.sim__field input[type="range"] { width: 100%; accent-color: var(--blue-500); }
+.sim__speed { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.sim__speed-label { font-weight: 600; color: var(--ink); }
+.sim__spd {
+  font-family: "Poppins", sans-serif; font-weight: 600; font-size: .88rem; cursor: pointer;
+  padding: .45rem 1rem; border-radius: 999px; border: 1.5px solid var(--line); background: var(--bg); color: var(--blue-900);
+  transition: border-color .2s, background .2s, color .2s;
+}
+.sim__spd.is-active { background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); color: #fff; border-color: transparent; }
+.sim__result { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
+.sim__stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; text-align: center; }
+.sim__stat span { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); margin-bottom: .3rem; }
+.sim__stat strong { font-family: "Poppins", sans-serif; font-size: 1.15rem; color: var(--blue-900); }
+.sim__stat--main { background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); border-color: transparent; }
+.sim__stat--main span { color: #d5e8f7; }
+.sim__stat--main strong { color: #fff; }
+@media (max-width: 620px) { .sim__result { grid-template-columns: 1fr; } }
+
+/* ===== Juego secreto (easter egg) ===== */
+.egg-dot {
+  display: inline-block; cursor: pointer; user-select: none; -webkit-user-select: none;
+  font-size: 1.5rem; line-height: 1; vertical-align: middle; margin-left: .2rem;
+  color: var(--cyan); opacity: .8; transition: transform .15s, opacity .15s;
+}
+.egg-dot:hover { transform: scale(1.25); opacity: 1; }
+.egg {
+  position: fixed; inset: 0; z-index: 9999; background: #0d0a0b;
+  display: flex; flex-direction: column; animation: fadeUp .25s ease;
+}
+.egg[hidden] { display: none; }
+.egg__bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  padding: .6rem 1rem; background: #16110f; border-bottom: 1px solid #3a2c22; color: #e8dcc4;
+}
+.egg__title { font-family: "Poppins", sans-serif; font-weight: 700; color: #c9a24b; font-size: .95rem; }
+.egg__title small { color: #b6a888; font-weight: 400; }
+.egg__actions { display: flex; align-items: center; gap: .6rem; }
+.egg__open, .egg__close {
+  font-family: "Poppins", sans-serif; font-weight: 600; font-size: .85rem; cursor: pointer;
+  padding: .45rem .9rem; border-radius: 999px; border: 1px solid #c9a24b; background: transparent; color: #c9a24b;
+}
+.egg__close { border-color: #b3312b; color: #e0554a; }
+.egg__frame { flex: 1; width: 100%; border: 0; background: #0d0a0b; }
+.egg-toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 10000;
+  background: #16110f; color: #c9a24b; border: 1px solid #c9a24b; border-radius: 999px;
+  padding: .7rem 1.3rem; font-family: "Poppins", sans-serif; font-weight: 600; font-size: .9rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5); animation: fadeUp .3s ease;
+}
+
+/* ===== Animaciones de aparición al hacer scroll ===== */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <header class="nav" id="inicio">
+    <div class="container nav__inner">
+      <a href="#inicio" class="brand" aria-label="Air Box inicio">
+        <span class="brand__logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8a2 2 0 0 1 2-2h5l4-2 4 2v2" />
+            <path d="M2 12h9a2 2 0 1 0-2-2" />
+            <path d="M2 17h13a2 2 0 1 1-2 2" />
+          </svg>
+        </span>
+        <span class="brand__name">Air<span>Box</span></span>
+      </a>
+
+      <nav class="nav__links" aria-label="Navegación principal">
+        <a href="#servicio">Servicio</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#producto">Producto</a>
+        <a href="#mapa">Mapa</a>
+        <a href="#zonas">Zonas</a>
+        <a href="#simulador">Simulador</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <a href="#contacto" class="btn btn--wa nav__cta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.3-.9-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.2.2-.3.4-.1.6.5.8 1 1.3 1.7 1.8.6.4.9.5 1.1.6.2 0 .3 0 .5-.2l.6-.7c.2-.3.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.2.1.6-.1 1.1Z"/></svg>
+        WhatsApp
+      </a>
+
+      <button class="nav__toggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <canvas class="hero__particles" aria-hidden="true"></canvas>
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <span class="pill">Aire limpio a domicilio</span>
+        <h1>Respira aire <span class="accent">puro</span> en tu casa o negocio</h1>
+        <p class="lead">
+          En <strong>Air Box</strong> vamos hasta tu ubicación con nuestra máquina
+          purificadora, realizamos el proceso de limpieza del aire y, si quieres,
+          te ofrecemos nuestro producto (se vende aparte) para seguir cuidando tu aire.
+        </p>
+        <div class="hero__actions">
+          <a href="#contacto" class="btn btn--wa btn--lg">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.3-.9-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.2.2-.3.4-.1.6.5.8 1 1.3 1.7 1.8.6.4.9.5 1.1.6.2 0 .3 0 .5-.2l.6-.7c.2-.3.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.2.1.6-.1 1.1Z"/></svg>
+            Solicitar por WhatsApp
+          </a>
+          <a href="#proceso" class="btn btn--ghost btn--lg">Ver cómo funciona</a>
+        </div>
+
+        <ul class="hero__stats">
+          <li><strong>100%</strong><span>Aire más limpio</span></li>
+          <li><strong>A domicilio</strong><span>Vamos a tu zona</span></li>
+          <li><strong>+ Producto</strong><span>Se vende aparte</span></li>
+        </ul>
+      </div>
+
+      <div class="hero__art" aria-hidden="true">
+        <div class="machine">
+          <div class="machine__glow"></div>
+          <div class="machine__body">
+            <div class="machine__screen">
+              <span class="dot"></span> AIR&nbsp;PURE
+            </div>
+            <div class="machine__vent"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="machine__label">AIR BOX</div>
+          </div>
+          <span class="bubble bubble--1"></span>
+          <span class="bubble bubble--2"></span>
+          <span class="bubble bubble--3"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICIO ===== -->
+  <section class="section" id="servicio">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Nuestro servicio</span>
+        <h2>Llevamos el aire limpio hasta donde estés</h2>
+        <p>Nos contactas, coordinamos y vamos a tu ubicación con nuestro invento: la máquina purificadora de aire.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Z"/></svg>
+          </div>
+          <h3>1. Contáctanos</h3>
+          <p>Escríbenos por WhatsApp o desde el formulario de la página. Nos cuentas dónde estás y qué necesitas.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <h3>2. Vamos a tu ubicación</h3>
+          <p>Llegamos a cualquier zona. Si es una zona de difícil acceso, el costo se ajusta de forma transparente antes de ir.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 8-8"/><path d="M20 12a8 8 0 0 1-8 8"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <h3>3. Purificamos el aire</h3>
+          <p>Realizamos todo el proceso de purificación en el lugar con nuestra máquina, dejando el ambiente fresco y limpio.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 12 3l9 5v8l-9 5-9-5Z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>
+          </div>
+          <h3>4. Te ofrecemos el producto</h3>
+          <p>Después del proceso te presentamos el producto Air Box con sus instrucciones para que sigas cuidando tu aire.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROCESO ===== -->
+  <section class="section section--alt" id="proceso">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Cómo funciona</span>
+        <h2>El proceso paso a paso</h2>
+        <p>Simple, rápido y en tu propio espacio. Así trabajamos en cada visita.</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline__item">
+          <span class="timeline__num">1</span>
+          <div>
+            <h3>Coordinación</h3>
+            <p>Confirmamos tu dirección, el tamaño del espacio y el horario. Te damos el costo final según la zona.</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__num">2</span>
+          <div>
+            <h3>Visita a domicilio</h3>
+            <p>Nuestro equipo llega puntual con la máquina purificadora Air Box, lista para trabajar.</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__num">3</span>
+          <div>
+            <h3>Purificación del aire</h3>
+            <p>Encendemos la máquina y ejecutamos el proceso completo hasta dejar el ambiente limpio.</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__num">4</span>
+          <div>
+            <h3>Entrega del producto</h3>
+            <p>Te explicamos y entregamos el producto con su instructivo para mantener el aire puro por tu cuenta.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== BENEFICIOS ===== -->
+  <section class="section" id="beneficios">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Beneficios</span>
+        <h2>Un aire limpio se nota en tu salud</h2>
+        <p>Respirar aire purificado todos los días trae ventajas reales para ti y tu familia.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 8a4 4 0 0 0-4 4M12 8a4 4 0 0 1 4 4M8 12H4M20 12h-4M12 12v10"/><circle cx="12" cy="12" r="1.5"/></svg></div>
+          <h3>Menos alergias</h3>
+          <p>Reduce el polen, el polvo y los ácaros que provocan estornudos y picazón.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></div>
+          <h3>Mejor sueño</h3>
+          <p>Un ambiente limpio ayuda a dormir más profundo y descansar mejor.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Menos gérmenes</h3>
+          <p>La lámpara UV-C ayuda a inactivar bacterias, virus y hongos del aire.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2 2 0 1 0-2-2M3 12h15a2 2 0 1 1-2 2M3 16h9a2 2 0 1 1-2 2"/></svg></div>
+          <h3>Sin malos olores</h3>
+          <p>El carbón activado elimina olores de cocina, humo y mascotas.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8Z"/></svg></div>
+          <h3>Ideal para niños y mayores</h3>
+          <p>Cuida a quienes son más sensibles a la contaminación del aire.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14a5 5 0 1 0-6 0 3 3 0 0 1 1 2v1h4v-1a3 3 0 0 1 1-2Z"/><path d="M10 21h4"/></svg></div>
+          <h3>Más concentración</h3>
+          <p>Un aire más puro mejora la energía y el rendimiento en casa o el trabajo.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCTO ===== -->
+  <section class="section" id="producto">
+    <div class="container product">
+      <div class="product__art">
+        <svg class="purifier" viewBox="0 0 480 300" role="img" aria-label="Purificador de aire Air Box horizontal con vista de corte de sus componentes internos">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#d9e6f1"/>
+            </linearGradient>
+            <linearGradient id="legGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#c2d1de"/>
+              <stop offset="1" stop-color="#8ba0b2"/>
+            </linearGradient>
+            <radialGradient id="uvGrad" cx="0.5" cy="0.5" r="0.6">
+              <stop offset="0" stop-color="#d7b6ff"/>
+              <stop offset="1" stop-color="#8a4be0"/>
+            </radialGradient>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="mesh" width="8" height="8" patternUnits="userSpaceOnUse">
+              <rect width="8" height="8" fill="#e6edf3"/>
+              <path d="M0 8 L8 0 M-2 2 L2 -2 M6 10 L10 6" stroke="#9fb6c8" stroke-width="1"/>
+            </pattern>
+            <pattern id="pleat" width="9" height="9" patternUnits="userSpaceOnUse">
+              <rect width="9" height="9" fill="#d6ebfa"/>
+              <line x1="4" y1="0" x2="4" y2="9" stroke="#2a93cf" stroke-width="1.6"/>
+            </pattern>
+            <pattern id="granule" width="12" height="12" patternUnits="userSpaceOnUse">
+              <rect width="12" height="12" fill="#26384c"/>
+              <circle cx="3" cy="4" r="1.7" fill="#4a637c"/>
+              <circle cx="9" cy="9" r="1.7" fill="#5b7690"/>
+              <circle cx="9" cy="3" r="1.4" fill="#3d566e"/>
+              <circle cx="4" cy="10" r="1.4" fill="#54708a"/>
+            </pattern>
+          </defs>
+
+          <!-- Sombra -->
+          <ellipse cx="240" cy="272" rx="185" ry="14" fill="rgba(11,42,74,.12)"/>
+
+          <!-- Patas -->
+          <g>
+            <rect x="118" y="240" width="30" height="24" rx="7" fill="url(#legGrad)" transform="rotate(-6 133 252)"/>
+            <rect x="332" y="240" width="30" height="24" rx="7" fill="url(#legGrad)" transform="rotate(6 347 252)"/>
+          </g>
+
+          <!-- Cuerpo (horizontal) -->
+          <rect x="40" y="56" width="400" height="192" rx="42" fill="url(#bodyGrad)" stroke="#d3e2ef" stroke-width="2"/>
+
+          <!-- Panel de control superior -->
+          <rect x="70" y="66" width="340" height="22" rx="11" fill="#eef5fb" stroke="#dbe8f2"/>
+          <text x="82" y="81" font-family="Poppins, sans-serif" font-size="7" letter-spacing="1" fill="#7c93a8">POWER · UV-C · I II III · 2H 4H 8H</text>
+          <g fill="none" stroke="#8aa2b6" stroke-width="1.4" stroke-linecap="round">
+            <rect x="350" y="70" width="14" height="14" rx="4"/>
+            <path d="M357 73 v4 M354.5 74 a4 4 0 1 0 5 0" stroke-width="1.2"/>
+            <rect x="370" y="70" width="14" height="14" rx="4"/>
+            <circle cx="377" cy="77" r="3"/><path d="M377 72 v1 M377 81 v1 M372 77 h1 M381 77 h1"/>
+            <rect x="390" y="70" width="14" height="14" rx="4"/>
+            <circle cx="397" cy="77" r="3.5"/><path d="M397 75 v2 l1.5 1.5"/>
+          </g>
+
+          <!-- Logo -->
+          <text x="185" y="240" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="#0b2a4a">AIR<tspan fill="#1f8ecf">BOX</tspan></text>
+
+          <!-- Rejilla lateral de salida (derecha) -->
+          <rect x="350" y="118" width="14" height="100" rx="7" fill="#c6d5e2"/>
+          <g stroke="#aec1d1" stroke-width="1.3">
+            <line x1="354" y1="128" x2="360" y2="128"/><line x1="354" y1="142" x2="360" y2="142"/>
+            <line x1="354" y1="156" x2="360" y2="156"/><line x1="354" y1="170" x2="360" y2="170"/>
+            <line x1="354" y1="184" x2="360" y2="184"/><line x1="354" y1="198" x2="360" y2="198"/>
+            <line x1="354" y1="212" x2="360" y2="212"/>
+          </g>
+          <text x="357" y="232" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" fill="#7c93a8">aire limpio</text>
+
+          <!-- ===== Ventana de corte (vista interior) ===== -->
+          <rect x="60" y="100" width="250" height="120" rx="16" fill="#0b2a4a"/>
+          <rect x="60" y="100" width="250" height="120" rx="16" fill="none" stroke="#38b6ff" stroke-width="2" stroke-dasharray="5 5"/>
+
+          <!-- Flujo: aire sucio entra por la izquierda -->
+          <g class="flow flow--in" stroke="#8aa0b3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".9">
+            <path d="M40 148 h16"/><path d="M50 143 l6 5 l-6 5"/>
+            <path d="M40 176 h16"/><path d="M50 171 l6 5 l-6 5"/>
+          </g>
+
+          <!-- 1 · Pre-filtro -->
+          <g class="comp" data-comp="prefiltro" tabindex="0" role="button" aria-label="Pre-filtro">
+            <rect x="72" y="110" width="40" height="100" rx="6" fill="url(#mesh)" stroke="#b7cadb"/>
+            <circle cx="92" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
+            <text x="92" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">1</text>
+          </g>
+
+          <!-- 2 · HEPA -->
+          <g class="comp" data-comp="hepa" tabindex="0" role="button" aria-label="Filtro HEPA">
+            <rect x="118" y="110" width="48" height="100" rx="6" fill="url(#pleat)" stroke="#8ec3e8"/>
+            <circle cx="142" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
+            <text x="142" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">2</text>
+          </g>
+
+          <!-- 3 · Carbón activado -->
+          <g class="comp" data-comp="carbon" tabindex="0" role="button" aria-label="Carbón activado">
+            <rect x="172" y="110" width="40" height="100" rx="6" fill="url(#granule)" stroke="#3a4f63"/>
+            <circle cx="192" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
+            <text x="192" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">3</text>
+          </g>
+
+          <!-- 4 · Lámpara UV-C -->
+          <g class="comp" data-comp="uv" tabindex="0" role="button" aria-label="Lámpara UV-C">
+            <ellipse cx="234" cy="160" rx="16" ry="52" fill="#7b46c9" opacity=".45" filter="url(#glow)"/>
+            <rect x="228" y="112" width="12" height="96" rx="6" fill="url(#uvGrad)"/>
+            <text x="234" y="163" text-anchor="middle" transform="rotate(-90 234 160)" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="#fff" letter-spacing="1">UV-C</text>
+            <circle cx="234" cy="122" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
+            <text x="234" y="126" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">4</text>
+          </g>
+
+          <!-- 5 · Ventilador -->
+          <g class="comp" data-comp="fan" tabindex="0" role="button" aria-label="Ventilador">
+            <circle cx="277" cy="160" r="28" fill="#12405f" stroke="#2f6f96" stroke-width="2"/>
+            <g class="fan-blades" fill="#6fe3e1">
+              <path d="M277 160 q14 -20 20 -6 q-8 10 -20 6Z"/>
+              <path d="M277 160 q20 14 6 20 q-10 -8 -6 -20Z"/>
+              <path d="M277 160 q-14 20 -20 6 q8 -10 20 -6Z"/>
+              <path d="M277 160 q-20 -14 -6 -20 q10 8 6 20Z"/>
+            </g>
+            <circle cx="277" cy="160" r="5" fill="#eaf6ff"/>
+            <circle cx="277" cy="135" r="9" fill="#eaf6ff" stroke="#1f8ecf" stroke-width="1.5"/>
+            <text x="277" y="139" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="700" fill="#0b2a4a">5</text>
+          </g>
+
+          <!-- Flujo: aire limpio sale por la derecha -->
+          <g class="flow flow--out" stroke="#38b6ff" stroke-width="3" stroke-linecap="round" fill="none">
+            <path d="M314 150 h20"/><path d="M328 145 l6 5 l-6 5"/>
+            <path d="M314 172 h20"/><path d="M328 167 l6 5 l-6 5"/>
+          </g>
+        </svg>
+        <button type="button" class="power-btn" id="power-btn" aria-pressed="false">
+          <span class="power-btn__dot"></span> <span class="power-btn__txt">Encender</span>
+        </button>
+      </div>
+
+      <div class="product__text">
+        <span class="pill pill--soft">El producto</span>
+        <h2>Conoce por dentro tu purificador Air Box</h2>
+        <p>
+          El equipo purificador se vende por separado (no viene incluido en el
+          servicio) e incluye su instructivo. Toca cada componente para ver cómo el
+          aire pasa por todos los filtros hasta salir limpio.
+        </p>
+
+        <ul class="comp-explorer">
+          <li><button type="button" class="comp-item" data-comp="prefiltro"><span class="comp-item__n">1</span> Pre-filtro</button></li>
+          <li><button type="button" class="comp-item" data-comp="hepa"><span class="comp-item__n">2</span> Filtro HEPA</button></li>
+          <li><button type="button" class="comp-item" data-comp="carbon"><span class="comp-item__n">3</span> Carbón activado</button></li>
+          <li><button type="button" class="comp-item" data-comp="uv"><span class="comp-item__n">4</span> Lámpara UV-C</button></li>
+          <li><button type="button" class="comp-item" data-comp="fan"><span class="comp-item__n">5</span> Ventilador</button></li>
+        </ul>
+        <p class="comp-flow">Flujo del aire: entra por la izquierda → 1 → 2 → 3 → 4 → 5 → sale limpio por la derecha.</p>
+
+        <div class="comp-detail" id="comp-detail" aria-live="polite">
+          <div class="comp-detail__empty">
+            <span aria-hidden="true">👆</span>
+            <p>Haz clic en un componente del purificador (o en un botón de arriba) para ver su información en detalle.</p>
+          </div>
+        </div>
+
+        <ul class="checklist">
+          <li>Equipo purificador de aire Air Box con patas.</li>
+          <li>Instrucciones fáciles de cómo funciona el producto.</li>
+          <li>Guía de mantenimiento y cambio de filtros.</li>
+          <li>Soporte por WhatsApp ante cualquier duda.</li>
+        </ul>
+        <a href="#contacto" class="btn btn--primary btn--lg">Quiero mi kit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZONAS Y PRECIOS ===== -->
+  <section class="section section--alt" id="zonas">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Zonas y precios</span>
+        <h2>Llegamos a cualquier zona</h2>
+        <p>El precio del servicio depende de la zona. En lugares de difícil acceso el costo aumenta, siempre acordado antes de la visita.</p>
+      </div>
+
+      <div class="plans">
+        <article class="plan" data-tier="estandar">
+          <h3>Zona estándar</h3>
+          <p class="plan__price">Precio base</p>
+          <p class="plan__desc">Hasta ~12 km de una sucursal. Zonas urbanas de fácil acceso.</p>
+          <ul class="checklist">
+            <li>Visita a domicilio</li>
+            <li>Proceso de purificación</li>
+            <li>Producto disponible aparte</li>
+          </ul>
+          <a href="#contacto" class="btn btn--ghost">Solicitar</a>
+        </article>
+
+        <article class="plan plan--featured" data-tier="intermedia">
+          <span class="plan__badge">Más solicitado</span>
+          <h3>Zona intermedia</h3>
+          <p class="plan__price">Precio base + traslado</p>
+          <p class="plan__desc">Entre ~12 y ~40 km de una sucursal, o con acceso limitado.</p>
+          <ul class="checklist">
+            <li>Todo lo de la zona estándar</li>
+            <li>Ajuste por distancia</li>
+            <li>Coordinación de horario</li>
+          </ul>
+          <a href="#contacto" class="btn btn--primary">Solicitar</a>
+        </article>
+
+        <article class="plan" data-tier="dificil">
+          <h3>Zona de difícil acceso</h3>
+          <p class="plan__price">Cotización especial</p>
+          <p class="plan__desc">A más de ~40 km de toda sucursal o de acceso complicado.</p>
+          <ul class="checklist">
+            <li>Todo lo anterior</li>
+            <li>Costo ajustado por acceso</li>
+            <li>Precio acordado antes de ir</li>
+          </ul>
+          <a href="#contacto" class="btn btn--ghost">Cotizar</a>
+        </article>
+      </div>
+      <p class="note">* Los precios exactos se confirman por WhatsApp según tu ubicación y el tamaño del espacio.</p>
+    </div>
+  </section>
+
+  <!-- ===== ANTES Y DESPUÉS ===== -->
+  <section class="section section--alt" id="antes-despues">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <span class="pill pill--soft">Antes y después</span>
+        <h2>Mira la diferencia</h2>
+        <p>Desliza el control para comparar el aire de un ambiente antes y después de Air Box.</p>
+      </div>
+
+      <div class="ba" id="ba">
+        <!-- Escena base (aire limpio) -->
+        <div class="ba__scene ba__after">
+          <svg class="ba__room" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Sala de estar con aire limpio">
+            <defs>
+              <linearGradient id="baFloor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#d6b17e"/><stop offset="1" stop-color="#b98f57"/>
+              </linearGradient>
+              <linearGradient id="baSky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#cfeafe"/><stop offset="1" stop-color="#eaf7ff"/>
+              </linearGradient>
+            </defs>
+            <!-- Pared y piso -->
+            <rect x="0" y="0" width="400" height="212" fill="#eaeff4"/>
+            <rect x="0" y="205" width="400" height="8" fill="#dfe5ec"/>
+            <rect x="0" y="212" width="400" height="88" fill="url(#baFloor)"/>
+            <g stroke="#a9834f" stroke-width="1.5" opacity=".5">
+              <line x1="70" y1="212" x2="55" y2="300"/><line x1="150" y1="212" x2="145" y2="300"/>
+              <line x1="235" y1="212" x2="245" y2="300"/><line x1="320" y1="212" x2="340" y2="300"/>
+            </g>
+            <ellipse cx="205" cy="272" rx="150" ry="24" fill="#e7dcc8" stroke="#d6c7ab" stroke-width="2"/>
+            <!-- Ventana -->
+            <rect x="36" y="50" width="120" height="116" rx="5" fill="#ffffff"/>
+            <rect x="44" y="58" width="104" height="100" fill="url(#baSky)"/>
+            <circle cx="128" cy="86" r="13" fill="#ffe08a"/>
+            <g fill="#ffffff" opacity=".92">
+              <ellipse cx="72" cy="104" rx="18" ry="9"/><ellipse cx="86" cy="99" rx="13" ry="8"/><ellipse cx="60" cy="99" rx="11" ry="7"/>
+            </g>
+            <rect x="94" y="58" width="4" height="100" fill="#ffffff"/>
+            <rect x="44" y="106" width="104" height="4" fill="#ffffff"/>
+            <rect x="30" y="166" width="132" height="8" rx="2" fill="#e1e7ee"/>
+            <!-- Cuadro -->
+            <rect x="250" y="62" width="78" height="56" rx="3" fill="#ffffff"/>
+            <rect x="256" y="68" width="66" height="44" fill="#d6effb"/>
+            <path d="M256 112 L280 88 L296 104 L312 84 L322 112 Z" fill="#8fd0a0"/>
+            <circle cx="308" cy="80" r="6" fill="#ffd66b"/>
+            <!-- Planta -->
+            <path d="M170 178 h30 l-4 30 h-22 Z" fill="#c9743f"/>
+            <g fill="#4f9d5d">
+              <path d="M185 178 C170 150 176 140 186 132 C190 150 192 164 185 178 Z"/>
+              <path d="M185 178 C200 150 196 138 188 130 C182 150 180 164 185 178 Z"/>
+              <path d="M185 178 C168 168 160 158 158 148 C176 152 184 162 185 178 Z"/>
+            </g>
+            <!-- Sofá -->
+            <rect x="206" y="150" width="152" height="42" rx="12" fill="#88abc2"/>
+            <rect x="200" y="160" width="22" height="58" rx="10" fill="#7c9db4"/>
+            <rect x="340" y="160" width="22" height="58" rx="10" fill="#7c9db4"/>
+            <rect x="204" y="176" width="156" height="42" rx="12" fill="#96b5ca"/>
+            <rect x="216" y="170" width="64" height="20" rx="8" fill="#a9c4d6"/>
+            <rect x="284" y="170" width="64" height="20" rx="8" fill="#a9c4d6"/>
+            <rect x="224" y="150" width="26" height="26" rx="6" fill="#f0a97c" transform="rotate(-8 237 163)"/>
+            <rect x="316" y="150" width="26" height="26" rx="6" fill="#6fe3e1" transform="rotate(8 329 163)"/>
+          </svg>
+          <span class="ba__label ba__label--after">☀️ Después · aire limpio</span>
+        </div>
+
+        <!-- Capa "antes": neblina + polvo sobre la misma sala -->
+        <div class="ba__scene ba__before" id="ba-before">
+          <div class="ba__dust" aria-hidden="true"></div>
+          <span class="ba__label ba__label--before">🌫️ Antes · aire contaminado</span>
+        </div>
+
+        <div class="ba__divider" id="ba-divider"><span class="ba__grip" aria-hidden="true">⇔</span></div>
+        <input type="range" class="ba__range" id="ba-range" min="0" max="100" value="50" aria-label="Comparar antes y después" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPARACIÓN ===== -->
+  <section class="section" id="comparacion">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Comparación</span>
+        <h2>Con Air Box vs. sin Air Box</h2>
+        <p>Esta es la diferencia en el día a día de tu hogar o negocio.</p>
+      </div>
+
+      <div class="vs">
+        <article class="vs__card vs__card--bad">
+          <h3>😕 Sin Air Box</h3>
+          <ul class="vs__list vs__list--bad">
+            <li>Polvo y ácaros en el ambiente</li>
+            <li>Malos olores que se quedan</li>
+            <li>Más estornudos y alergias</li>
+            <li>Bacterias y virus en el aire</li>
+            <li>Sensación de aire pesado</li>
+          </ul>
+        </article>
+
+        <div class="vs__mid" aria-hidden="true">VS</div>
+
+        <article class="vs__card vs__card--good">
+          <h3>😃 Con Air Box</h3>
+          <ul class="vs__list vs__list--good">
+            <li>Aire filtrado y libre de polvo</li>
+            <li>Ambiente con olor a limpio</li>
+            <li>Menos alergias y estornudos</li>
+            <li>Gérmenes reducidos con UV-C</li>
+            <li>Aire fresco y ligero</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAPA INTERACTIVO ===== -->
+  <section class="section section--alt" id="mapa">
+    <div class="container">
+      <div class="section__head">
+        <span class="pill pill--soft">Calcula tu visita</span>
+        <h2>Haz clic en tu ubicación en el mapa</h2>
+        <p>Toca el punto donde estás y te decimos al instante cuánto nos demoramos y qué plan te corresponde.</p>
+        <div class="map-actions">
+          <button type="button" id="geo-btn" class="btn btn--ghost">📍 Usar mi ubicación</button>
+        </div>
+      </div>
+
+      <div class="mapwrap">
+        <div id="map" class="map" role="application" aria-label="Mapa interactivo para elegir tu ubicación"></div>
+
+        <aside class="mapinfo" aria-live="polite">
+          <div class="mapinfo__empty" id="map-empty">
+            <div class="mapinfo__pin" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </div>
+            <p>Haz clic en el mapa para calcular tu visita.</p>
+          </div>
+
+          <div class="mapinfo__result" id="map-result" hidden>
+            <div class="mapinfo__row">
+              <span class="mapinfo__label">Distancia aprox.</span>
+              <strong id="r-distance">—</strong>
+            </div>
+            <div class="mapinfo__row">
+              <span class="mapinfo__label">Tiempo estimado</span>
+              <strong id="r-time">—</strong>
+            </div>
+            <div class="mapinfo__row mapinfo__row--plan">
+              <span class="mapinfo__label">Plan sugerido</span>
+              <span class="planbadge" id="r-plan">—</span>
+            </div>
+            <p class="mapinfo__desc" id="r-desc"></p>
+            <a class="btn btn--wa btn--lg mapinfo__cta" id="r-wa" href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.3-.9-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.2.2-.3.4-.1.6.5.8 1 1.3 1.7 1.8.6.4.9.5 1.1.6.2 0 .3 0 .5-.2l.6-.7c.2-.3.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.2.1.6-.1 1.1Z"/></svg>
+              Solicitar esta visita
+            </a>
+          </div>
+
+          <p class="mapinfo__hint">📍 El punto azul grande es la casa matriz (Penco). Los puntos celestes son sucursales. La estimación es referencial; el precio final se confirma por WhatsApp.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SIMULADOR ===== -->
+  <section class="section section--alt" id="simulador">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <span class="pill pill--soft">Simulador</span>
+        <h2>¿Cuánto demora en purificar tu sala?</h2>
+        <p>Elige el tamaño de tu espacio y la velocidad del equipo para estimar el tiempo.</p>
+      </div>
+
+      <div class="sim">
+        <div class="sim__controls">
+          <label class="sim__field">
+            <span>Tamaño de la sala: <strong id="sim-m2out">25 m²</strong></span>
+            <input type="range" id="sim-m2" min="6" max="80" value="25" />
+          </label>
+
+          <div class="sim__speed" role="group" aria-label="Velocidad del equipo">
+            <span class="sim__speed-label">Velocidad:</span>
+            <button type="button" class="sim__spd" data-cadr="120">Baja</button>
+            <button type="button" class="sim__spd is-active" data-cadr="220">Media</button>
+            <button type="button" class="sim__spd" data-cadr="320">Alta</button>
+          </div>
+        </div>
+
+        <div class="sim__result">
+          <div class="sim__stat"><span>Volumen de aire</span><strong id="sim-vol">—</strong></div>
+          <div class="sim__stat"><span>Renovaciones por hora</span><strong id="sim-ach">—</strong></div>
+          <div class="sim__stat sim__stat--main"><span>Purificación completa</span><strong id="sim-time">—</strong></div>
+        </div>
+        <p class="note">Estimación referencial (altura de sala: 2,5 m; “purificación completa” ≈ 3 renovaciones de aire).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section" id="faq">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <span class="pill pill--soft">Preguntas frecuentes</span>
+        <h2>Resolvemos tus dudas</h2>
+      </div>
+
+      <div class="faq">
+        <details class="faq__item">
+          <summary>¿A qué zonas llegan?</summary>
+          <p>Llegamos a cualquier zona de Chile a través de nuestras sucursales (Antofagasta, La Serena, Valparaíso, Santiago, Penco/Concepción, Temuco y Puerto Montt). En zonas de difícil acceso el costo se ajusta y se acuerda antes de la visita.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Cuánto cuesta el servicio?</summary>
+          <p>Depende de la distancia a la sucursal más cercana y del tamaño del espacio. Puedes estimarlo con el mapa de esta página y confirmamos el valor final por WhatsApp.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Cuánto se demora el proceso?</summary>
+          <p>La purificación en el lugar toma poco tiempo. El tiempo total depende del traslado hasta tu ubicación, que también puedes estimar en el mapa.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿El producto queda conmigo?</summary>
+          <p>Sí. Después del proceso te ofrecemos el kit Air Box con el equipo purificador y sus instrucciones para que sigas cuidando tu aire por tu cuenta.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Cómo agendo una visita?</summary>
+          <p>Escríbenos por WhatsApp o completa el formulario de contacto con tu zona. Te respondemos con el costo y coordinamos día y hora.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACTO ===== -->
+  <section class="section" id="contacto">
+    <div class="container contact">
+      <div class="contact__info">
+        <span class="pill pill--soft">Contacto</span>
+        <h2>Agenda tu purificación de aire</h2>
+        <p>Escríbenos por WhatsApp o déjanos tus datos y te respondemos con el costo según tu zona.</p>
+
+        <a class="contact__wa" href="https://wa.me/000000000000?text=Hola%20Air%20Box%2C%20quiero%20solicitar%20el%20servicio%20de%20purificaci%C3%B3n%20de%20aire" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.3-.9-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.2.2-.3.4-.1.6.5.8 1 1.3 1.7 1.8.6.4.9.5 1.1.6.2 0 .3 0 .5-.2l.6-.7c.2-.3.4-.2.6-.1l1.9.9c.2.1.4.2.4.3.1.2.1.6-.1 1.1Z"/></svg>
+          <span>
+            <strong>WhatsApp</strong>
+            <em>+00 000 000 000</em>
+          </span>
+        </a>
+
+        <ul class="contact__list">
+          <li><strong>Horario:</strong> Lunes a sábado, 8:00 – 20:00</li>
+          <li><strong>Cobertura:</strong> Todas las zonas (costo según acceso)</li>
+          <li><strong>Correo:</strong> contacto@airbox.com</li>
+        </ul>
+      </div>
+
+      <form class="contact__form" id="form">
+        <label>
+          Nombre
+          <input type="text" name="nombre" placeholder="Tu nombre" required />
+        </label>
+        <label>
+          Teléfono / WhatsApp
+          <input type="tel" name="telefono" placeholder="Tu número" required />
+        </label>
+        <label>
+          Zona o dirección
+          <input type="text" name="zona" placeholder="¿Dónde estás?" required />
+        </label>
+        <label>
+          Mensaje
+          <textarea name="mensaje" rows="4" placeholder="Cuéntanos qué necesitas"></textarea>
+        </label>
+        <button type="submit" class="btn btn--wa btn--lg">Enviar solicitud</button>
+        <p class="form__hint" id="form-hint" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="#inicio" class="brand brand--light">
+        <span class="brand__logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h5l4-2 4 2v2"/><path d="M2 12h9a2 2 0 1 0-2-2"/><path d="M2 17h13a2 2 0 1 1-2 2"/></svg>
+        </span>
+        <span class="brand__name">Air<span>Box</span></span>
+      </a>
+      <p>Aire limpio a domicilio, en cualquier zona.</p>
+      <nav class="footer__links" aria-label="Enlaces del pie">
+        <a href="#servicio">Servicio</a>
+        <a href="#producto">Producto</a>
+        <a href="#zonas">Zonas</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <small>© <span id="year"></span> Air Box. Proyecto escolar. <span id="egg-trigger" class="egg-dot" role="button" tabindex="0" title="🔒">◉</span></small>
+    </div>
+  </footer>
+
+  <!-- ===== Juego secreto (easter egg): Corona Estelar ===== -->
+  <div class="egg" id="egg" hidden>
+    <div class="egg__bar">
+      <span class="egg__title">🎮 Corona Estelar <small>· juego secreto de la casa</small></span>
+      <div class="egg__actions">
+        <a class="egg__open" id="egg-open" href="corona-estelar.html" target="_blank" rel="noopener">Abrir en pestaña ↗</a>
+        <button class="egg__close" id="egg-close" type="button" aria-label="Cerrar juego">✕ Cerrar</button>
+      </div>
+    </div>
+    <iframe class="egg__frame" id="egg-frame" title="Corona Estelar — El Frente Eterno" src="about:blank"></iframe>
+  </div>
+
+  <div class="egg-toast" id="egg-toast" hidden>🎮 ¡Encontraste el juego secreto!</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+// ===== Air Box · interacciones =====
+
+// Año actual en el footer
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// Menú móvil
+const toggle = document.querySelector(".nav__toggle");
+const links = document.querySelector(".nav__links");
+
+toggle.addEventListener("click", () => {
+  const open = links.classList.toggle("open");
+  toggle.setAttribute("aria-expanded", String(open));
+});
+
+// Cerrar el menú al hacer clic en un enlace
+links.querySelectorAll("a").forEach((a) => {
+  a.addEventListener("click", () => {
+    links.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+});
+
+// Formulario de contacto -> abre WhatsApp con el mensaje
+const form = document.getElementById("form");
+const hint = document.getElementById("form-hint");
+
+// Cambia este número por el WhatsApp real de Air Box (formato internacional, solo dígitos)
+const WHATSAPP_NUMBER = "000000000000";
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = new FormData(form);
+  const nombre = (data.get("nombre") || "").toString().trim();
+  const telefono = (data.get("telefono") || "").toString().trim();
+  const zona = (data.get("zona") || "").toString().trim();
+  const mensaje = (data.get("mensaje") || "").toString().trim();
+
+  const texto =
+    `Hola Air Box, quiero solicitar el servicio de purificación de aire.%0A` +
+    `Nombre: ${encodeURIComponent(nombre)}%0A` +
+    `Teléfono: ${encodeURIComponent(telefono)}%0A` +
+    `Zona: ${encodeURIComponent(zona)}` +
+    (mensaje ? `%0AMensaje: ${encodeURIComponent(mensaje)}` : "");
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${texto}`;
+  window.open(url, "_blank", "noopener");
+
+  hint.textContent = "¡Gracias! Te redirigimos a WhatsApp para completar tu solicitud.";
+  form.reset();
+});
+
+// ===== Mapa interactivo (Leaflet) =====
+// Sucursales de Air Box en zonas estratégicas de Chile.
+// La casa matriz está en Penco (Concepción, Región del Biobío).
+const SUCURSALES = [
+  { nombre: "Antofagasta", lat: -23.6509, lng: -70.3975 },
+  { nombre: "La Serena", lat: -29.9027, lng: -71.2519 },
+  { nombre: "Valparaíso", lat: -33.0472, lng: -71.6127 },
+  { nombre: "Santiago", lat: -33.4489, lng: -70.6693 },
+  { nombre: "Penco · Casa matriz", lat: -36.7402, lng: -72.9954, base: true },
+  { nombre: "Temuco", lat: -38.7359, lng: -72.5904 },
+  { nombre: "Puerto Montt", lat: -41.4693, lng: -72.9424 },
+];
+
+if (window.L && document.getElementById("map")) {
+  const map = L.map("map", { scrollWheelZoom: false });
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap",
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Marcadores de las sucursales
+  const puntosMapa = [];
+  SUCURSALES.forEach((s) => {
+    puntosMapa.push([s.lat, s.lng]);
+    L.circleMarker([s.lat, s.lng], {
+      radius: s.base ? 10 : 7,
+      color: s.base ? "#0b2a4a" : "#0f4c81",
+      fillColor: s.base ? "#38b6ff" : "#6fe3e1",
+      fillOpacity: 1,
+      weight: 3,
+    })
+      .addTo(map)
+      .bindPopup("<b>Air Box " + s.nombre + "</b>");
+  });
+  map.fitBounds(L.latLngBounds(puntosMapa).pad(0.12));
+
+  let clienteMarker = null;
+  let lineaRuta = null;
+
+  const empty = document.getElementById("map-empty");
+  const result = document.getElementById("map-result");
+  const rDistance = document.getElementById("r-distance");
+  const rTime = document.getElementById("r-time");
+  const rPlan = document.getElementById("r-plan");
+  const rDesc = document.getElementById("r-desc");
+  const rWa = document.getElementById("r-wa");
+
+  // Distancia en km entre dos puntos (fórmula de Haversine)
+  function distanciaKm(a, b) {
+    const R = 6371;
+    const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+    const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+    const s =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((a.lat * Math.PI) / 180) *
+        Math.cos((b.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+  }
+
+  // Encuentra la sucursal más cercana al punto
+  function sucursalMasCercana(punto) {
+    let best = SUCURSALES[0];
+    let min = Infinity;
+    SUCURSALES.forEach((s) => {
+      const d = distanciaKm(s, punto);
+      if (d < min) { min = d; best = s; }
+    });
+    return { sucursal: best, km: min };
+  }
+
+  // Define plan según la distancia a la sucursal más cercana
+  function calcularPlan(km) {
+    if (km <= 12) {
+      return {
+        tier: "estandar",
+        nombre: "Zona estándar",
+        desc: "Estás cerca de una sucursal. Se aplica el precio base.",
+      };
+    }
+    if (km <= 40) {
+      return {
+        tier: "intermedia",
+        nombre: "Zona intermedia",
+        desc: "Un poco más lejos de la sucursal: precio base + un ajuste por traslado.",
+      };
+    }
+    return {
+      tier: "dificil",
+      nombre: "Zona de difícil acceso",
+      desc: "Zona apartada de toda sucursal. El costo se ajusta por el acceso (cotización especial).",
+    };
+  }
+
+  function evaluarPunto(punto, centrar) {
+    const { sucursal, km } = sucursalMasCercana(punto);
+
+    // Tiempo estimado: 15 min de preparación + trayecto a ~40 km/h
+    const minutos = Math.round(15 + (km / 40) * 60);
+    const plan = calcularPlan(km);
+
+    // Marcador del cliente
+    if (clienteMarker) map.removeLayer(clienteMarker);
+    clienteMarker = L.marker([punto.lat, punto.lng]).addTo(map).bindPopup("Tu ubicación").openPopup();
+
+    // Línea entre la sucursal más cercana y el cliente
+    if (lineaRuta) map.removeLayer(lineaRuta);
+    lineaRuta = L.polyline(
+      [[sucursal.lat, sucursal.lng], [punto.lat, punto.lng]],
+      { color: "#1f8ecf", weight: 3, dashArray: "6 8" }
+    ).addTo(map);
+
+    // Mostrar resultados
+    empty.hidden = true;
+    result.hidden = false;
+    rDistance.textContent = km.toFixed(1) + " km";
+    rTime.textContent = "~" + minutos + " min";
+    rPlan.textContent = plan.nombre;
+    rPlan.setAttribute("data-tier", plan.tier);
+    rDesc.textContent = plan.desc + " Te atiende la sucursal de " + sucursal.nombre + ".";
+
+    // Resalta la tarjeta de plan correspondiente en "Zonas y precios"
+    document.querySelectorAll(".plan").forEach((p) =>
+      p.classList.toggle("is-highlight", p.dataset.tier === plan.tier)
+    );
+
+    // Botón de WhatsApp con los datos
+    const texto =
+      `Hola Air Box, quiero solicitar una visita.%0A` +
+      `Sucursal más cercana: ${encodeURIComponent(sucursal.nombre)}%0A` +
+      `Distancia aprox.: ${km.toFixed(1)} km%0A` +
+      `Tiempo estimado: ~${minutos} min%0A` +
+      `Plan: ${encodeURIComponent(plan.nombre)}%0A` +
+      `Ubicación: https://maps.google.com/?q=${punto.lat.toFixed(5)},${punto.lng.toFixed(5)}`;
+    rWa.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${texto}`;
+
+    if (centrar) map.setView([punto.lat, punto.lng], Math.max(map.getZoom(), 11));
+  }
+
+  // Clic en el mapa
+  map.on("click", (e) => evaluarPunto({ lat: e.latlng.lat, lng: e.latlng.lng }, false));
+
+  // Botón "usar mi ubicación"
+  const geoBtn = document.getElementById("geo-btn");
+  if (geoBtn) {
+    geoBtn.addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        alert("Tu navegador no permite geolocalización. Toca el mapa manualmente.");
+        return;
+      }
+      const original = geoBtn.textContent;
+      geoBtn.textContent = "📍 Buscando…";
+      geoBtn.disabled = true;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          evaluarPunto({ lat: pos.coords.latitude, lng: pos.coords.longitude }, true);
+          geoBtn.textContent = original;
+          geoBtn.disabled = false;
+        },
+        () => {
+          alert("No pudimos obtener tu ubicación. Puedes tocar el mapa manualmente.");
+          geoBtn.textContent = original;
+          geoBtn.disabled = false;
+        }
+      );
+    });
+  }
+
+  // Recalcula el tamaño del mapa cuando entra en pantalla (evita el gris)
+  const mapObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) map.invalidateSize();
+    });
+  });
+  mapObserver.observe(document.getElementById("map"));
+}
+
+// ===== Explorador de componentes del purificador =====
+(function () {
+  const svg = document.querySelector(".purifier");
+  const detail = document.getElementById("comp-detail");
+  if (!svg || !detail) return;
+
+  const items = Array.from(document.querySelectorAll(".comp-item"));
+  const groups = Array.from(svg.querySelectorAll(".comp"));
+  const powerBtn = document.getElementById("power-btn");
+
+  // Información detallada de cada componente
+  const DATOS = {
+    prefiltro: {
+      n: 1, nombre: "Pre-filtro", tag: "Primera barrera",
+      desc: "Es la primera malla por la que pasa el aire. Detiene las partículas más grandes para que los filtros finos no se saturen y duren más.",
+      hace: ["Atrapa polvo grueso y tierra", "Retiene pelos y pelusas", "Protege al filtro HEPA"],
+      eficiencia: "Partículas mayores a 10 micras",
+      mantenimiento: "Lavable: enjuágalo cada 2 semanas",
+    },
+    hepa: {
+      n: 2, nombre: "Filtro HEPA", tag: "El corazón del equipo",
+      desc: "Filtro plegado de alta eficiencia. Sus miles de fibras retienen las partículas finas que flotan en el aire y que no se ven a simple vista.",
+      hace: ["Polvo fino y polen", "Ácaros y caspa de mascotas", "Esporas de moho y humo fino"],
+      eficiencia: "Hasta 99,97% de partículas de 0,3 micras",
+      mantenimiento: "Reemplazar cada 6 a 12 meses",
+    },
+    carbon: {
+      n: 3, nombre: "Carbón activado", tag: "Adiós a los olores",
+      desc: "Capa de carbón con millones de poros microscópicos que absorben los gases y olores. Es lo que deja el ambiente con sensación de limpio.",
+      hace: ["Olores de cocina y mascotas", "Humo de cigarro", "Gases y compuestos (VOC)"],
+      eficiencia: "Absorbe gases y malos olores",
+      mantenimiento: "Reemplazar cada 6 meses aprox.",
+    },
+    uv: {
+      n: 4, nombre: "Lámpara UV-C", tag: "Desinfección",
+      desc: "Luz ultravioleta germicida que actúa sobre los microorganismos que pasan por el equipo, inactivándolos para que no se reproduzcan.",
+      hace: ["Bacterias", "Virus", "Hongos y moho"],
+      eficiencia: "Luz UV-C germicida (254 nm)",
+      mantenimiento: "Cambiar la lámpara cada ~1 año",
+    },
+    fan: {
+      n: 5, nombre: "Ventilador", tag: "El motor del aire",
+      desc: "Aspira el aire de la sala y lo empuja a través de todas las capas de filtros. Su velocidad define cuánto aire se limpia por hora.",
+      hace: ["Hace circular el aire de la sala", "Varias velocidades", "Distribuye el aire ya limpio"],
+      eficiencia: "Hasta ~3 renovaciones de aire por hora",
+      mantenimiento: "Sin mantenimiento; solo mantener limpio",
+    },
+  };
+
+  let selected = null;
+
+  function highlight(comp) {
+    svg.classList.toggle("has-active", !!comp);
+    groups.forEach((g) => g.classList.toggle("is-on", g.dataset.comp === comp));
+    items.forEach((it) => it.classList.toggle("is-on", it.dataset.comp === comp));
+  }
+
+  function renderDetail(comp) {
+    const d = DATOS[comp];
+    const lista = d.hace.map((t) => `<li>${t}</li>`).join("");
+    detail.innerHTML =
+      '<div class="comp-card">' +
+        '<div class="comp-card__head">' +
+          '<span class="comp-card__n">' + d.n + "</span>" +
+          "<div><h3>" + d.nombre + '</h3><span class="comp-card__tag">' + d.tag + "</span></div>" +
+        "</div>" +
+        '<p class="comp-card__desc">' + d.desc + "</p>" +
+        '<p class="comp-card__label">Qué elimina / hace</p>' +
+        '<ul class="comp-card__list">' + lista + "</ul>" +
+        '<div class="comp-card__stats">' +
+          '<div class="comp-stat"><span>Eficiencia</span><strong>' + d.eficiencia + "</strong></div>" +
+          '<div class="comp-stat"><span>Mantenimiento</span><strong>' + d.mantenimiento + "</strong></div>" +
+        "</div>" +
+      "</div>";
+  }
+
+  function select(comp) {
+    selected = comp;
+    highlight(comp);
+    renderDetail(comp);
+    items.forEach((it) => it.classList.toggle("is-selected", it.dataset.comp === comp));
+    groups.forEach((g) => g.classList.toggle("is-selected", g.dataset.comp === comp));
+  }
+
+  function bind(el) {
+    const comp = el.dataset.comp;
+    el.addEventListener("mouseenter", () => highlight(comp));
+    el.addEventListener("click", () => select(comp));
+    el.addEventListener("focus", () => highlight(comp));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(comp); }
+    });
+  }
+  items.forEach(bind);
+  groups.forEach(bind);
+  svg.addEventListener("mouseleave", () => highlight(selected));
+
+  // Botón encender / apagar (anima ventilador y flujo de aire)
+  if (powerBtn) {
+    const txt = powerBtn.querySelector(".power-btn__txt");
+    powerBtn.addEventListener("click", () => {
+      const on = svg.classList.toggle("running");
+      powerBtn.setAttribute("aria-pressed", String(on));
+      powerBtn.classList.toggle("is-on", on);
+      if (txt) txt.textContent = on ? "Apagar" : "Encender";
+    });
+  }
+})();
+
+// ===== Animaciones de aparición al hacer scroll =====
+const revealEls = document.querySelectorAll(
+  ".card, .timeline__item, .plan, .section__head, .product__text, .product__art, .contact__form, .mapinfo, .vs__card, .sim, .ba"
+);
+revealEls.forEach((el) => el.classList.add("reveal"));
+
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (entry.target.dataset.delay || 0) + "ms";
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+revealEls.forEach((el) => revealObserver.observe(el));
+
+// Pequeño retardo escalonado dentro de cada grupo de tarjetas
+document.querySelectorAll(".cards, .plans, .timeline").forEach((group) => {
+  [...group.children].forEach((child, i) => {
+    child.dataset.delay = i * 90;
+  });
+});
+
+// Resaltar el enlace de navegación de la sección visible
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll(".nav__links a");
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute("id");
+        navLinks.forEach((link) => {
+          link.style.color =
+            link.getAttribute("href") === `#${id}` ? "var(--blue-700)" : "";
+        });
+      }
+    });
+  },
+  { rootMargin: "-40% 0px -55% 0px" }
+);
+
+sections.forEach((s) => observer.observe(s));
+
+// ===== Partículas del hero =====
+(function () {
+  const canvas = document.querySelector(".hero__particles");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w = 0, h = 0, particles = [];
+  const mouse = { x: -9999, y: -9999 };
+
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+    const count = Math.min(70, Math.floor(w / 16));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2.5 + 1,
+      vy: -(Math.random() * 0.4 + 0.1),
+      vx: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.5 + 0.2,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach((p) => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(180, 230, 255," + p.a + ")";
+      ctx.fill();
+    });
+  }
+
+  function tick() {
+    particles.forEach((p) => {
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 6400) {
+        const dist = Math.sqrt(d2) + 1;
+        const f = ((6400 - d2) / 6400) * 0.8;
+        p.x += (dx / dist) * f;
+        p.y += (dy / dist) * f;
+      }
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+    });
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  const hero = canvas.closest(".hero");
+  if (hero) {
+    hero.addEventListener("pointermove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener("pointerleave", () => { mouse.x = -9999; mouse.y = -9999; });
+  }
+  if (reduce) draw();
+  else tick();
+})();
+
+// ===== Antes y después (comparador) =====
+(function () {
+  const range = document.getElementById("ba-range");
+  const before = document.getElementById("ba-before");
+  const divider = document.getElementById("ba-divider");
+  if (!range || !before || !divider) return;
+  function update() {
+    const v = range.value;
+    before.style.width = v + "%";
+    divider.style.left = v + "%";
+  }
+  range.addEventListener("input", update);
+  update();
+})();
+
+// ===== Simulador de purificación =====
+(function () {
+  const m2 = document.getElementById("sim-m2");
+  if (!m2) return;
+  const m2out = document.getElementById("sim-m2out");
+  const spds = Array.from(document.querySelectorAll(".sim__spd"));
+  const outVol = document.getElementById("sim-vol");
+  const outAch = document.getElementById("sim-ach");
+  const outTime = document.getElementById("sim-time");
+  let cadr = 220; // capacidad del equipo en m³/h
+
+  function calc() {
+    const area = Number(m2.value);
+    const vol = area * 2.5;                       // volumen de aire (altura 2,5 m)
+    const ach = cadr / vol;                       // renovaciones de aire por hora
+    const minutos = Math.round((3 / ach) * 60);   // 3 renovaciones = purificación completa
+    m2out.textContent = area + " m²";
+    outVol.textContent = Math.round(vol) + " m³";
+    outAch.textContent = ach.toFixed(1) + " /h";
+    outTime.textContent = "≈ " + minutos + " min";
+  }
+
+  m2.addEventListener("input", calc);
+  spds.forEach((b) =>
+    b.addEventListener("click", () => {
+      spds.forEach((x) => x.classList.remove("is-active"));
+      b.classList.add("is-active");
+      cadr = Number(b.dataset.cadr);
+      calc();
+    })
+  );
+  calc();
+})();
+
+// ===== Juego secreto (easter egg): Corona Estelar =====
+(function () {
+  const egg = document.getElementById("egg");
+  const frame = document.getElementById("egg-frame");
+  const closeBtn = document.getElementById("egg-close");
+  const dot = document.getElementById("egg-trigger");
+  const toast = document.getElementById("egg-toast");
+  if (!egg || !frame) return;
+  const SRC = "corona-estelar.html";
+  let toastTimer;
+
+  function showToast() {
+    if (!toast) return;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+  function openGame() {
+    if (frame.getAttribute("src") !== SRC) frame.setAttribute("src", SRC);
+    egg.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeGame() {
+    egg.hidden = true;
+    document.body.style.overflow = "";
+    frame.setAttribute("src", "about:blank"); // detiene el juego al cerrar
+  }
+  function unlock() { showToast(); openGame(); }
+
+  if (closeBtn) closeBtn.addEventListener("click", closeGame);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !egg.hidden) closeGame();
+  });
+
+  // Disparador: al tocar el punto pide una contraseña
+  const PASSWORD = "bruno";
+  function pedirClave() {
+    const clave = window.prompt("🔒 Ingresa la contraseña para el juego secreto:");
+    if (clave === null) return; // canceló
+    if (clave.trim().toLowerCase() === PASSWORD) {
+      unlock();
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
+  if (dot) {
+    dot.addEventListener("click", pedirClave);
+    dot.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pedirClave(); }
+    });
+  }
+
+  // Disparador de escritorio: código Konami (↑ ↑ ↓ ↓ ← → ← → B A)
+  const KONAMI = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
+  let idx = 0;
+  document.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+    if (k === KONAMI[idx]) {
+      idx++;
+      if (idx === KONAMI.length) { idx = 0; unlock(); }
+    } else {
+      idx = (k === KONAMI[0]) ? 1 : 0;
+    }
+  });
+})();
+
+</script>
+</body>
+</html>

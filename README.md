@@ -20,7 +20,14 @@ Página web para **Air Box**, un servicio de purificación de aire a domicilio.
 
 ## Cómo verla
 
-Abre `index.html` en cualquier navegador (doble clic). No necesita instalación.
+- **En línea (recomendado):** https://deasith.github.io/Cualquier-cosa/ — carga
+  todo junto y funciona al 100%.
+- **Descargando:** si guardas la web, descarga la carpeta completa (o el ZIP) para
+  que `index.html`, `styles.css` y `script.js` queden juntos. Si descargas solo
+  `index.html`, se ve enorme y sin interacción porque faltan el CSS y el JS.
+- **Un solo archivo (offline):** `airbox-completo.html` trae el CSS y el JS
+  incrustados, así funciona descargando ese único archivo. Nota: el mapa y las
+  tipografías necesitan internet; sin conexión, el resto igual funciona.
 
 ## Personalizar antes de entregar
 
