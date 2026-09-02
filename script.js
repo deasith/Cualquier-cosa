@@ -535,14 +535,21 @@ sections.forEach((s) => observer.observe(s));
     if (e.key === "Escape" && !egg.hidden) closeGame();
   });
 
-  // Disparador táctil: tocar el punto del pie 5 veces seguidas
+  // Disparador: al tocar el punto pide una contraseña
+  const PASSWORD = "bruno";
+  function pedirClave() {
+    const clave = window.prompt("🔒 Ingresa la contraseña para el juego secreto:");
+    if (clave === null) return; // canceló
+    if (clave.trim().toLowerCase() === PASSWORD) {
+      unlock();
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
   if (dot) {
-    let taps = 0, timer;
-    dot.addEventListener("click", () => {
-      taps++;
-      clearTimeout(timer);
-      timer = setTimeout(() => { taps = 0; }, 1500);
-      if (taps >= 5) { taps = 0; unlock(); }
+    dot.addEventListener("click", pedirClave);
+    dot.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pedirClave(); }
     });
   }
 

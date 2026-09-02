@@ -342,7 +342,7 @@ const MISSIONS={
 function missionsFor(id){ const all=["purga","defensa","asalto","sabotaje"]; let h=0; for(const ch of id)h=(h*31+ch.charCodeAt(0))>>>0; const start=h%all.length,out=[]; for(let i=0;i<3;i++)out.push(all[(start+i)%all.length]); return out; }
 
 /* ---------- Planetas de la galaxia ---------- */
-const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"];
+const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV","XXV","XXVI","XXVII","XXVIII","XXIX","XXX"];
 const PLANETS=[
   {id:"velo",   nm:"El Velo Carmesí",   fac:"plaga",  biome:"velo"},
   {id:"osario", nm:"Osario de Vhal",    fac:"plaga",  biome:"osario"},
@@ -361,6 +361,15 @@ const PLANETS=[
   {id:"prisma", nm:"Prisma de Nael",    fac:"coro",   biome:"cristal"},
   {id:"vigilia",nm:"La Vigilia",        fac:"coro",   biome:"vacio"},
   {id:"abismo", nm:"El Abismo Menor",   fac:"coro",   biome:"cristal"},
+  {id:"pantano",nm:"Cieno de Ghorr",    fac:"plaga",  biome:"selva"},
+  {id:"nido",   nm:"El Nido Rojo",      fac:"plaga",  biome:"velo"},
+  {id:"carne",  nm:"Fosa de Carne",     fac:"plaga",  biome:"osario"},
+  {id:"engrane",nm:"Cita del Engranaje",fac:"legion", biome:"forja"},
+  {id:"crisol", nm:"Crisol de Vorn",    fac:"legion", biome:"grieta"},
+  {id:"baluarte",nm:"Baluarte Gélido",  fac:"legion", biome:"tundra"},
+  {id:"eco",    nm:"El Eco Vacío",      fac:"coro",   biome:"vacio"},
+  {id:"halo",   nm:"Halo de Ish",       fac:"coro",   biome:"cristal"},
+  {id:"umbral", nm:"El Umbral Pálido",  fac:"coro",   biome:"vacio"},
   {id:"solmyr", nm:"Bastión de Solmyr", fac:"legion", biome:"trono"},
 ];
 const PLANET_BY_ID={}; PLANETS.forEach((p,i)=>{ p.co="SECTOR "+ROMAN[i]; PLANET_BY_ID[p.id]=p; });
@@ -374,8 +383,13 @@ const STRATAGEMS={
   escudo:  {nm:"Búnker de Escudo",   ico:"⛨", col:"#4fd6b8", cost:150, cd:44, charges:2, desc:"Cúpula que te vuelve inmune al daño durante 6 s."},
   minas:   {nm:"Campo de Minas",     ico:"◈", col:"#d99a2b", cost:130, cd:34, charges:2, desc:"Siembra minas de proximidad a tu alrededor."},
   napalm:  {nm:"Lluvia de Fuego",    ico:"♨", col:"#ff8c3c", cost:180, cd:40, charges:2, desc:"Prende un área en llamas que abrasa a la Plaga que la pise."},
+  gatling: {nm:"Torreta Gatling",    ico:"⛭", col:"#e8b84b", cost:90,  cd:34, charges:2, desc:"Torreta de cadencia brutal: barre la zona a fuego rápido durante 16 s."},
+  gas:     {nm:"Bombardeo de Gas",   ico:"☣", col:"#9bd64f", cost:110, cd:36, charges:2, desc:"Nube de gas corrosivo: envenena y ralentiza a todo lo que entre durante 10 s."},
+  dron:    {nm:"Dron Guardián",      ico:"◇", col:"#4fd6b8", cost:160, cd:42, charges:2, desc:"Un dron de combate te escolta 18 s y dispara solo a lo que se acerque."},
+  railcannon:{nm:"Cañón de Riel",    ico:"➹", col:"#7fd0ff", cost:200, cd:46, charges:2, desc:"Marca al enemigo más letal (o al jefe) y lo perfora con un rayo orbital devastador."},
+  eagle:   {nm:"Águila 500kg",       ico:"✹", col:"#ff8c3c", cost:220, cd:44, charges:2, desc:"Llama a un caza Águila: suelta una bomba de 500kg que arrasa un área enorme."},
 };
-const STRAT_ORDER=["torreta","resupply","orbital","escudo","minas","napalm"];
+const STRAT_ORDER=["torreta","gatling","resupply","orbital","eagle","railcannon","escudo","minas","napalm","gas","dron"];
 
 /* ---------- Subobjetivos opcionales ---------- */
 const SUBOBJS={
@@ -412,11 +426,11 @@ const STIM_ORDER=["combate","furia","vigor","coraza"];
 
 /* ---------- Niveles de dificultad ---------- */
 const DIFFS=[
-  {nm:"Recluta",  ico:"○", cnt:.6, hp:.7, dmg:.58, boss:.7, rew:.8,  desc:"Para foguearse. El enemigo apenas muerde."},
-  {nm:"Soldado",  ico:"◔", cnt:.8, hp:.86,dmg:.78, boss:.88,rew:1,   desc:"Un reto justo. Recomendado para empezar."},
-  {nm:"Vindicado",ico:"◑", cnt:1,  hp:1,  dmg:1,   boss:1,  rew:1.3, desc:"El frente real. Sin concesiones."},
-  {nm:"Élite",    ico:"◕", cnt:1.28,hp:1.2,dmg:1.2, boss:1.28,rew:1.7,desc:"Oleadas densas y golpes duros."},
-  {nm:"Infierno", ico:"●", cnt:1.55,hp:1.45,dmg:1.4,boss:1.55,rew:2.2,desc:"Solo para leyendas. No se esperan supervivientes."},
+  {nm:"Recluta",  ico:"○", cnt:.68, hp:.78, dmg:.66, boss:.78, rew:.8,  desc:"Para foguearse. El enemigo muerde, pero poco."},
+  {nm:"Soldado",  ico:"◔", cnt:.92, hp:.95, dmg:.9,  boss:.98, rew:1,   desc:"Un reto justo. Recomendado para empezar."},
+  {nm:"Vindicado",ico:"◑", cnt:1.15,hp:1.12,dmg:1.15,boss:1.15,rew:1.35,desc:"El frente real. Sin concesiones."},
+  {nm:"Élite",    ico:"◕", cnt:1.45,hp:1.34,dmg:1.36,boss:1.45,rew:1.8, desc:"Oleadas densas y golpes que duelen de verdad."},
+  {nm:"Infierno", ico:"●", cnt:1.8, hp:1.65,dmg:1.62,boss:1.8, rew:2.4, desc:"Solo para leyendas. No se esperan supervivientes."},
 ];
 function curDiff(){ return DIFFS[Math.max(0,Math.min(DIFFS.length-1, (GAME.difficulty==null?1:GAME.difficulty)))]; }
 
@@ -505,8 +519,31 @@ function finalizeCharacter(baseKey,name,secondary){
     glory:0, rank:"Recluta", medals:[], squad:makeSquad(3), missionsDone:0, kills:0, bosses:0, alive:true,
     level:1, xp:0, attrs:{...(BASE_ATTR[baseKey]||BASE_ATTR.centinela)}, points:0, senda:null };
 }
-const RANKS=[[0,"Recluta"],[4,"Soldado del Trono"],[9,"Vindicado"],[16,"Portador de la Llama"],[26,"Paladín de la Corona"],[40,"Mano del Trono"]];
-function rankFor(g){let r="Recluta";for(const[t,n]of RANKS)if(g>=t)r=n;return r;}
+/* Escala de rangos estilo Helldivers: se sube con Gloria y da un título de honor */
+const RANKS=[
+  [0,"Recluta","○"],
+  [10,"Cadete del Trono","◔"],
+  [25,"Soldado Raso","◔"],
+  [45,"Sargento","◑"],
+  [70,"Sargento Mayor","◑"],
+  [100,"Jefe de Escuadra","◕"],
+  [140,"Jefe Supremo","◕"],
+  [190,"Capitán de la Muerte","☠"],
+  [250,"Mariscal de Campo","✠"],
+  [330,"Coronel de Hierro","✠"],
+  [430,"Brigadier del Trono","✦"],
+  [560,"Comandante Estelar","✦"],
+  [720,"Almirante Calavera","☠"],
+  [920,"Almirante de Flota","✷"],
+  [1160,"Mariscal Estelar","✷"],
+  [1450,"Portador de la Llama","♛"],
+  [1800,"Mano del Trono","♛"],
+  [2300,"Leyenda de Solmyr","★"],
+];
+function rankFor(g){let r=RANKS[0][1];for(const[t,n]of RANKS)if(g>=t)r=n;return r;}
+function rankInfo(g){ g=g||0; let i=0; for(let k=0;k<RANKS.length;k++){ if(g>=RANKS[k][0])i=k; } const cur=RANKS[i], nxt=RANKS[i+1]||null;
+  const base=cur[0], top=nxt?nxt[0]:base; const prog=nxt?Math.max(0,Math.min(1,(g-base)/(top-base))):1;
+  return {idx:i, name:cur[1], ico:cur[2]||"○", next:nxt?nxt[1]:null, need:nxt?top-g:0, prog}; }
 
 /* ---------- Sistema de rol (D&D): atributos, nivel y sendas ---------- */
 const ATTRS=[["fue","Fuerza","+% daño"],["des","Destreza","+% velocidad"],["con","Constitución","+ Vida"],["vol","Voluntad","+ recarga y estims"],["pun","Puntería","+ crítico y precisión"]];
@@ -706,10 +743,12 @@ function viewPersonaje(){const c=GAME.character;if(!c)return viewIntro();const b
     <div class="eyebrow">Expediente del Vindicado</div><h2 class="title">${esc(c.name)}</h2>
     <p class="lede">${b.nm} · ${b.tag}</p><hr class="rule">
     <div class="grid g2">
-      ${(function(){ ensureRPG(c); const d=rpgDerived(c), xn=xpNext(c.level); return `<div class="card pad">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="label">Nivel ${c.level} · ${c.rank}</div><div class="label">Gloria ${c.glory}</div></div>
+      ${(function(){ ensureRPG(c); const d=rpgDerived(c), xn=xpNext(c.level), ri=rankInfo(c.glory); return `<div class="card pad">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="label">Nivel ${c.level}</div><div class="label">Gloria ${c.glory}</div></div>
         <div class="bar" style="height:9px;margin-top:6px"><i style="display:block;height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));width:${Math.min(100,Math.round(c.xp/xn*100))}%"></i></div>
         <div class="label" style="margin-top:4px">Experiencia ${c.xp} / ${xn}</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px"><div class="label" style="color:var(--crimson-lit)">${ri.ico} Rango · ${esc(ri.name)}</div><div class="label">${ri.next?`${ri.need} gloria → ${esc(ri.next)}`:'RANGO MÁXIMO'}</div></div>
+        <div class="bar" style="height:9px;margin-top:6px"><i style="display:block;height:100%;background:linear-gradient(90deg,var(--crimson),var(--crimson-lit));width:${Math.round(ri.prog*100)}%"></i></div>
         <div class="label" style="margin:16px 0 8px">Atributos ${c.points>0?`· <span class="gold">${c.points} punto(s) por repartir</span>`:''}</div>
         ${ATTRS.map(([k,nm,eff])=>{const v=c.attrs[k],m=amod(v);return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft)">
           <div><span class="mono" style="letter-spacing:.06em;color:var(--parch)">${nm}</span> <span class="label" style="text-transform:none;letter-spacing:.04em">${eff}</span></div>
@@ -910,6 +949,7 @@ const Arena = (()=>{
   let biome, props, ambient;
   let missionType, objective, nests, terminals, missionTimer, bossKilled;
   let fac, bossDef, roster, strat, turrets, mines, fires, orbitals, samples, deposits, subObj, shieldT, reqEarned;
+  let gasClouds, drones, beams;
   let diff, edmgMul, risky, seafDropCd, dropships, vindCd;
 
   function reset(sec){
@@ -936,6 +976,7 @@ const Arena = (()=>{
       slot:i,slots:nsq,barkCd:rr(4,10),supportCd:rr(6,12),stimCd:0,stims:2}));
     enemies=[];pbullets=[];ebullets=[];particles=[];pickups=[];floats=[];
     turrets=[];mines=[];fires=[];orbitals=[];samples=[];deposits=[];shieldT=0;reqEarned=0;
+    gasClouds=[];drones=[];beams=[];
     fac = sec.fac || planetMeta(sec.id).fac || "plaga";
     bossDef = BOSSES[FACTIONS[fac].boss] || BOSSES.reina;
     roster = rosterOf(fac); if(!roster.length) roster=rosterOf("plaga");
@@ -1164,19 +1205,35 @@ const Arena = (()=>{
   function deployStratagem(key){
     const tx=clamp(player.x+aim.x*300,60,W-60), ty=clamp(player.y+aim.y*300,60,H-60);
     if(key==="torreta"){ const x=clamp(player.x+aim.x*72,30,W-30),y=clamp(player.y+aim.y*72,30,H-30); boom(x,y,30,"#c9a24b"); turrets.push({x,y,life:22,fireCd:.5}); radio("MANDO","Torreta centinela desplegada.","#c9a24b"); toast("TORRETA"); }
+    else if(key==="gatling"){ const x=clamp(player.x+aim.x*72,30,W-30),y=clamp(player.y+aim.y*72,30,H-30); boom(x,y,34,"#e8b84b"); turrets.push({x,y,life:16,fireCd:.4,gat:true}); radio("MANDO","Torreta Gatling en línea. ¡A cubierto!","#e8b84b"); toast("TORRETA GATLING"); }
+    else if(key==="gas"){ gasClouds.push({x:tx,y:ty,r:96,life:10}); boom(tx,ty,60,"#9bd64f"); radio("MANDO","Gas corrosivo desplegado. No respiréis eso.","#9bd64f"); toast("BOMBARDEO DE GAS"); }
+    else if(key==="dron"){ drones.push({x:player.x,y:player.y-30,ang:0,life:18,fireCd:.3}); floatText(player.x,player.y-22,"DRON","#4fd6b8"); radio("MANDO","Dron guardián enlazado a tu señal.","#4fd6b8"); toast("DRON GUARDIÁN"); }
+    else if(key==="railcannon"){ let tgt=null; if(bossActive&&boss){tgt=boss;} else { let best=-1; for(const e of enemies){ if(e.hp>0 && e.hp>best){best=e.hp;tgt=e;} } }
+      if(tgt){ beams.push({x1:player.x,y1:player.y-8,x2:tgt.x,y2:tgt.y,life:.35}); boom(tgt.x,tgt.y,54,"#7fd0ff"); if(tgt===boss){ damageBoss(560); } else { splashDamage(tgt.x,tgt.y,64,640,1); } radio("MANDO","Cañón de riel: blanco perforado.","#7fd0ff"); toast("CAÑÓN DE RIEL"); }
+      else { toast("SIN BLANCO"); } }
+    else if(key==="eagle"){ orbitals.push({x:tx,y:ty,t:1.1,big:true}); boom(tx,ty,26,"#ff8c3c"); radio("MANDO","¡Águila-1 en aproximación! Bomba de 500kg soltada.","#ff8c3c"); toast("ÁGUILA 500KG"); }
     else if(key==="resupply"){ for(const w of player.weapons)w.ammo=WEAPONS[w.key].mag; stims.combate=Math.min(9,(stims.combate||0)+1); floatText(player.x,player.y-22,"REABASTECIDO","#7fb069"); radio("MANDO","Cápsula de suministros en tierra.","#7fb069"); toast("REABASTECIMIENTO"); }
     else if(key==="orbital"){ orbitals.push({x:tx,y:ty,t:1.4}); boom(tx,ty,20,"#e0554a"); radio("MANDO","¡Orbital entrante! Despejad la zona.","#e0554a"); toast("BOMBARDEO ORBITAL"); }
     else if(key==="escudo"){ shieldT=6; floatText(player.x,player.y-22,"ESCUDO","#4fd6b8"); radio("MANDO","Búnker de escudo activo.","#4fd6b8"); toast("ESCUDO"); }
     else if(key==="minas"){ for(let i=0;i<7;i++){ const a=rr(0,6.28),d=rr(42,124); mines.push({x:clamp(player.x+Math.cos(a)*d,20,W-20),y:clamp(player.y+Math.sin(a)*d,20,H-20),armT:.6}); } radio("MANDO","Campo de minas sembrado.","#d99a2b"); toast("MINAS"); }
     else if(key==="napalm"){ fires.push({x:tx,y:ty,r:94,life:8}); boom(tx,ty,94,"#ff8c3c"); radio("MANDO","¡Lluvia de fuego!","#ff8c3c"); toast("LLUVIA DE FUEGO"); }
   }
-  function turretShoot(t,target){ const a=Math.atan2(target.y-t.y,target.x-t.x)+rr(-.05,.05); pbullets.push({x:t.x+Math.cos(a)*14,y:t.y+Math.sin(a)*14,vx:Math.cos(a)*820,vy:Math.sin(a)*820,life:.9,r:3,dmg:16,col:"#ffe6a3"}); }
+  function turretShoot(t,target){ const spr=t.gat?rr(-.11,.11):rr(-.05,.05); const a=Math.atan2(target.y-t.y,target.x-t.x)+spr; pbullets.push({x:t.x+Math.cos(a)*14,y:t.y+Math.sin(a)*14,vx:Math.cos(a)*840,vy:Math.sin(a)*840,life:.9,r:3,dmg:t.gat?11:16,col:t.gat?"#ffd24b":"#ffe6a3"}); }
   function updateStratagems(dt){
     if(shieldT>0)shieldT-=dt;
     if(strat)for(const st of strat){ if(st.cd>0)st.cd-=dt; }
     // torretas
-    if(turrets)for(const t of turrets){ t.life-=dt; t.fireCd-=dt; const tg=nearestEnemy(t.x,t.y,560); if(tg&&t.fireCd<=0){ turretShoot(t,tg); t.fireCd=.28; } }
+    if(turrets)for(const t of turrets){ t.life-=dt; t.fireCd-=dt; const tg=nearestEnemy(t.x,t.y,t.gat?620:560); if(tg&&t.fireCd<=0){ turretShoot(t,tg); t.fireCd=t.gat?.09:.28; } }
     if(turrets)turrets=turrets.filter(t=>t.life>0);
+    // nubes de gas: DoT + ralentización
+    if(gasClouds)for(const g of gasClouds){ g.life-=dt; for(const e of enemies){ if(e.hp>0&&dist(g.x,g.y,e.x,e.y)<g.r+e.r){ e.hp-=22*dt; e.hit=.05; e.slowT=Math.max(e.slowT||0,.4); if(e.hp<=0)killEnemy(e); } } if(bossActive&&boss&&dist(g.x,g.y,boss.x,boss.y)<g.r+boss.r)damageBoss(16*dt); if(nests)for(const n of nests){ if(n.hp>0&&dist(g.x,g.y,n.x,n.y)<g.r+n.r)damageNest(n,16*dt); } }
+    if(gasClouds)gasClouds=gasClouds.filter(g=>g.life>0);
+    // dron guardián: escolta al jugador y dispara
+    if(drones)for(const d of drones){ d.life-=dt; d.fireCd-=dt; d.ang+=dt*1.6; const ox=player.x+Math.cos(d.ang)*46, oy=player.y+Math.sin(d.ang)*46-6; d.x+=(ox-d.x)*Math.min(1,dt*6); d.y+=(oy-d.y)*Math.min(1,dt*6); const tg=nearestEnemy(d.x,d.y,420); if(tg&&d.fireCd<=0){ const a=Math.atan2(tg.y-d.y,tg.x-d.x)+rr(-.04,.04); pbullets.push({x:d.x,y:d.y,vx:Math.cos(a)*900,vy:Math.sin(a)*900,life:.7,r:3,dmg:14,col:"#7fe6d2"}); d.fireCd=.16; } }
+    if(drones)drones=drones.filter(d=>d.life>0);
+    // rayos del cañón de riel (visual)
+    if(beams)for(const bm of beams){ bm.life-=dt; }
+    if(beams)beams=beams.filter(bm=>bm.life>0);
     // minas
     if(mines)for(const mn of mines){ if(mn.armT>0){mn.armT-=dt;continue;} let hit=null; for(const e of enemies){ if(e.hp>0&&dist(mn.x,mn.y,e.x,e.y)<26+e.r){hit=e;break;} } if(hit){ mn.dead=true; boom(mn.x,mn.y,80,"#d99a2b"); splashDamage(mn.x,mn.y,88,64,1); } }
     if(mines)mines=mines.filter(m=>!m.dead);
@@ -1184,7 +1241,7 @@ const Arena = (()=>{
     if(fires)for(const f of fires){ f.life-=dt; for(const e of enemies){ if(e.hp>0&&dist(f.x,f.y,e.x,e.y)<f.r+e.r){ e.hp-=36*dt; e.hit=.05; if(e.hp<=0)killEnemy(e); } } if(bossActive&&boss&&dist(f.x,f.y,boss.x,boss.y)<f.r+boss.r)damageBoss(30*dt); if(nests)for(const n of nests){ if(n.hp>0&&dist(f.x,f.y,n.x,n.y)<f.r+n.r)damageNest(n,26*dt); } }
     if(fires)fires=fires.filter(f=>f.life>0);
     // orbital
-    if(orbitals)for(const o of orbitals){ o.t-=dt; if(o.t<=0){ o.dead=true; boom(o.x,o.y,150,"#ffb066"); splashDamage(o.x,o.y,150,200,1); if(bossActive&&boss&&dist(o.x,o.y,boss.x,boss.y)<170)damageBoss(240); } }
+    if(orbitals)for(const o of orbitals){ o.t-=dt; if(o.t<=0){ o.dead=true; const R=o.big?250:150, D=o.big?420:200, bd=o.big?520:240; boom(o.x,o.y,R,"#ffb066"); splashDamage(o.x,o.y,R,D,1); if(o.big){shake=Math.max(shake,14);} if(bossActive&&boss&&dist(o.x,o.y,boss.x,boss.y)<R+20)damageBoss(bd); } }
     if(orbitals)orbitals=orbitals.filter(o=>!o.dead);
   }
   /* ---------- radio / mensajes ---------- */
@@ -1413,21 +1470,23 @@ const Arena = (()=>{
     if(e.hp<=0)return;
     const def=ENEMIES[e.type];
     if(e.hit>0)e.hit-=dt;
+    if(e.slowT>0)e.slowT-=dt;
+    const spd = def.speed*(e.slowT>0?.5:1);
     const objT=(missionType==="defensa" && objective && objective.hp>0 && def.behavior==="chase");
     const tx=objT?objective.x:player.x, ty=objT?objective.y:player.y;
     const d=dist(e.x,e.y,tx,ty);
     let dx=tx-e.x, dy=ty-e.y, m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
     if(def.behavior==="chase"){
-      e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt;
+      e.x+=dx*spd*dt; e.y+=dy*spd*dt;
       if(objT){ if(d<e.r+objective.r+2){ objective.hp-=def.dmg*(edmgMul||1)*dt*3; objective.hit=.1; e.x-=dx*12*dt; e.y-=dy*12*dt; } }
       else if(d<e.r+player.r+2){ if(player.iframe<=0)hurtPlayer(def.dmg*(edmgMul||1)*dt*1.9); if(GAME.character.base==="coloso"){ e.x-=dx*60*dt;e.y-=dy*60*dt; } }
     } else if(def.behavior==="ranged"){
-      if(d>def.range){ e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt; }
-      else if(d<def.range*.6){ e.x-=dx*def.speed*dt; e.y-=dy*def.speed*dt; }
+      if(d>def.range){ e.x+=dx*spd*dt; e.y+=dy*spd*dt; }
+      else if(d<def.range*.6){ e.x-=dx*spd*dt; e.y-=dy*spd*dt; }
       e.fireCd-=dt; if(e.fireCd<=0 && d<def.range*1.2){ enemyShoot(e,dx,dy,def); e.fireCd=def.fireCd; }
     } else if(def.behavior==="kite"){
-      if(d>def.range){ e.x+=dx*def.speed*dt; e.y+=dy*def.speed*dt; }
-      else if(d<def.range*.7){ e.x-=dx*def.speed*.8*dt; e.y-=dy*def.speed*.8*dt; }
+      if(d>def.range){ e.x+=dx*spd*dt; e.y+=dy*spd*dt; }
+      else if(d<def.range*.7){ e.x-=dx*spd*.8*dt; e.y-=dy*spd*.8*dt; }
       e.fireCd-=dt; if(e.fireCd<=0 && d<def.range*1.3){ for(let i=0;i<(def.burst||1);i++)setTimeout(()=>{ if(e.hp>0)enemyShoot(e,(player.x-e.x),(player.y-e.y),def);},i*110); e.fireCd=def.fireCd; }
     }
     // separación simple entre enemigos
@@ -1505,7 +1564,9 @@ const Arena = (()=>{
     s.ctl=clamp(s.ctl+gain); GAME.war.plaga=clamp(GAME.war.plaga-6); c.glory+=Math.round((Math.round(gain/3)+5)*rew);
     // recompensa en Réditos (escalada por dificultad)
     const req=Math.round(reqReward(missionType, subDone)*rew); GAME.req=(GAME.req||0)+req; reqEarned=req;
-    updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals();
+    const prevRank=c.rank; updateSectorStatus(s); c.rank=rankFor(c.glory); awardMedals();
+    const promoted = c.rank!==prevRank;
+    if(promoted){ const ri=rankInfo(c.glory); GAME.news.unshift({kind:"decree",src:"ALTO MANDO · ASCENSO",time:`CICLO ${GAME.war.missions}`,hl:`${c.name} asciende a ${c.rank}`,bd:`Por servicio ejemplar a la Corona, el frente reconoce un nuevo ${ri.ico} ${c.rank}.`}); }
     const body = missionType==="defensa"?`${c.name} sostuvo el Reactor de la Corona hasta la evacuación.`
       : missionType==="asalto"?`${c.name} arrasó los nidos de ${F.nm} en ${s.nm}.`
       : missionType==="sabotaje"?`${c.name} colapsó la red de ${F.nm} desde dentro.`
@@ -1519,7 +1580,7 @@ const Arena = (()=>{
     const leveled=gainXP(c,mxp);
     if(leveled){ GAME.news.unshift({kind:"win",src:"REGISTRO DEL TRONO",time:`CICLO ${GAME.war.missions}`,hl:`${c.name} asciende a Nivel ${c.level}`,bd:`Nuevo nivel alcanzado. ${c.points} punto(s) de atributo por repartir en la ficha del Escuadrón.`}); }
     galaxyTick(); recomputeLiberation();
-    outcome={win:true,gain,s,title:`${M.nm.toUpperCase()} LOGRADO`,body,req,subDone,mxp,leveled,level:c.level}; save(); showOverlay();
+    outcome={win:true,gain,s,title:`${M.nm.toUpperCase()} LOGRADO`,body,req,subDone,mxp,leveled,level:c.level,promoted,rank:c.rank}; save(); showOverlay();
   }
   function defeat(reason){
     if(state==="over")return;
@@ -1541,6 +1602,7 @@ const Arena = (()=>{
         <h2>VICTORIA</h2>
         <p>${outcome.body||""} Control al <b class="gold">${s.ctl}%</b> · <b class="plague">+${outcome.req||0} ◈</b> · <b class="gold">+${outcome.mxp||0} XP</b>${outcome.subDone?' · <b class="plague">Extra ✓</b>':''}.</p>
         ${outcome.leveled?`<p style="color:var(--gold);font-family:var(--display);font-weight:700">▲ ¡NIVEL ${outcome.level}! ${GAME.character.points} punto(s) de atributo para repartir en la ficha.</p>`:''}
+        ${outcome.promoted?`<p style="color:var(--crimson-lit);font-family:var(--display);font-weight:700">✠ ASCENSO · ahora eres <b>${esc(outcome.rank)}</b></p>`:''}
         <div class="btnrow" style="justify-content:center"><button class="btn" onclick="Arena.exit('personaje')">Ver ficha ▸</button><button class="btn primary" onclick="Arena.exit('hub')">Volver al puente ▸</button></div></div>`
      : `<div><div class="eyebrow" style="color:var(--crimson)">La lista de honor se alarga</div>
         <h2>${outcome.reason?"MISIÓN FALLIDA":"HÉROE CAÍDO"}</h2>
@@ -1673,19 +1735,28 @@ const Arena = (()=>{
     // fuego (napalm)
     if(fires)for(const f of fires){ ctx.save();ctx.globalAlpha=Math.min(.45,f.life*.14);ctx.fillStyle="#ff8c3c";ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.28);ctx.fill();ctx.globalAlpha=1;
       if(!REDUCE)for(let i=0;i<8;i++){const a=rr(0,6.28),d=rr(0,f.r);ctx.fillStyle=Math.random()<.5?"#ffb066":"#ff6a2a";ctx.beginPath();ctx.arc(f.x+Math.cos(a)*d,f.y+Math.sin(a)*d,rr(2,5),0,6.28);ctx.fill();} ctx.restore(); }
-    // baliza orbital
-    if(orbitals)for(const o of orbitals){ ctx.save();ctx.strokeStyle="#e0554a";ctx.lineWidth=2;ctx.globalAlpha=.5+(REDUCE?0:Math.abs(Math.sin(T*20))*.4);
-      ctx.beginPath();ctx.arc(o.x,o.y,54*(o.t/1.4),0,6.28);ctx.stroke();
+    // baliza orbital (roja) / águila 500kg (naranja, radio mayor)
+    if(orbitals)for(const o of orbitals){ const col=o.big?"#ff8c3c":"#e0554a", rad=o.big?96:54, t0=o.big?1.1:1.4; ctx.save();ctx.strokeStyle=col;ctx.lineWidth=o.big?3:2;ctx.globalAlpha=.5+(REDUCE?0:Math.abs(Math.sin(T*20))*.4);
+      ctx.beginPath();ctx.arc(o.x,o.y,rad*(o.t/t0),0,6.28);ctx.stroke();
       ctx.beginPath();ctx.moveTo(o.x-16,o.y);ctx.lineTo(o.x+16,o.y);ctx.moveTo(o.x,o.y-16);ctx.lineTo(o.x,o.y+16);ctx.stroke();ctx.globalAlpha=1;ctx.restore(); }
+    // nubes de gas
+    if(gasClouds)for(const g of gasClouds){ ctx.save(); ctx.globalAlpha=Math.min(.4,g.life*.06); ctx.fillStyle="#9bd64f"; ctx.beginPath();ctx.arc(g.x,g.y,g.r,0,6.28);ctx.fill();
+      if(!REDUCE)for(let i=0;i<10;i++){const a=rr(0,6.28),d=rr(0,g.r);ctx.globalAlpha=Math.min(.5,g.life*.05);ctx.fillStyle=Math.random()<.5?"#b6e86a":"#7fb83c";ctx.beginPath();ctx.arc(g.x+Math.cos(a)*d,g.y+Math.sin(a)*d,rr(4,10),0,6.28);ctx.fill();} ctx.globalAlpha=1; ctx.restore(); }
+    // rayo del cañón de riel
+    if(beams)for(const bm of beams){ ctx.save(); ctx.globalAlpha=Math.max(0,bm.life/0.35); ctx.strokeStyle="#7fd0ff"; ctx.lineWidth=5; ctx.shadowColor="#7fd0ff"; ctx.shadowBlur=12; ctx.beginPath();ctx.moveTo(bm.x1,bm.y1);ctx.lineTo(bm.x2,bm.y2);ctx.stroke(); ctx.lineWidth=1.5;ctx.strokeStyle="#eaffff";ctx.beginPath();ctx.moveTo(bm.x1,bm.y1);ctx.lineTo(bm.x2,bm.y2);ctx.stroke(); ctx.globalAlpha=1;ctx.shadowBlur=0; ctx.restore(); }
+    // drones guardianes
+    if(drones)for(const d of drones){ ctx.save();ctx.translate(d.x,d.y); ctx.globalAlpha=.25;ctx.fillStyle="#4fd6b8";ctx.beginPath();ctx.arc(0,0,10,0,6.28);ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle="#153a34";ctx.strokeStyle="#4fd6b8";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,-6);ctx.lineTo(6,0);ctx.lineTo(0,6);ctx.lineTo(-6,0);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle="#7fe6d2";ctx.beginPath();ctx.arc(0,0,2,0,6.28);ctx.fill(); ctx.restore(); }
     // minas
     if(mines)for(const mn of mines){ ctx.fillStyle=mn.armT>0?"#6a5a2a":"#d99a2b";ctx.beginPath();ctx.arc(mn.x,mn.y,5,0,6.28);ctx.fill();ctx.strokeStyle="#0b0807";ctx.lineWidth=1;ctx.stroke(); if(mn.armT<=0){ctx.fillStyle="#e0554a";ctx.beginPath();ctx.arc(mn.x,mn.y,1.7,0,6.28);ctx.fill();} }
     // torretas
-    if(turrets)for(const tt of turrets){ ctx.save();ctx.translate(tt.x,tt.y);
-      ctx.fillStyle="rgba(201,162,75,.14)";ctx.beginPath();ctx.arc(0,0,14,0,6.28);ctx.fill();
-      ctx.fillStyle="#3a2c14";ctx.beginPath();ctx.arc(0,0,9,0,6.28);ctx.fill();ctx.strokeStyle="#c9a24b";ctx.lineWidth=2;ctx.stroke();
-      const tg=nearestEnemy(tt.x,tt.y,560); const a=tg?Math.atan2(tg.y-tt.y,tg.x-tt.x):0; ctx.rotate(a);
-      ctx.fillStyle="#c9a24b";ctx.fillRect(0,-2.5,16,5);ctx.restore();
-      const w=20; ctx.fillStyle="rgba(11,8,7,.7)";ctx.fillRect(tt.x-w/2,tt.y-18,w,3);ctx.fillStyle="#c9a24b";ctx.fillRect(tt.x-w/2,tt.y-18,w*(tt.life/22),3); }
+    if(turrets)for(const tt of turrets){ const tc=tt.gat?"#e8b84b":"#c9a24b", tlife=tt.gat?16:22; ctx.save();ctx.translate(tt.x,tt.y);
+      ctx.fillStyle=tt.gat?"rgba(232,184,75,.16)":"rgba(201,162,75,.14)";ctx.beginPath();ctx.arc(0,0,14,0,6.28);ctx.fill();
+      ctx.fillStyle=tt.gat?"#4a3a12":"#3a2c14";ctx.beginPath();ctx.arc(0,0,9,0,6.28);ctx.fill();ctx.strokeStyle=tc;ctx.lineWidth=2;ctx.stroke();
+      const tg=nearestEnemy(tt.x,tt.y,tt.gat?620:560); const a=tg?Math.atan2(tg.y-tt.y,tg.x-tt.x):0; ctx.rotate(a);
+      ctx.fillStyle=tc;ctx.fillRect(0,-2.5,tt.gat?18:16,5); if(tt.gat){ctx.fillRect(0,-4.5,13,2);ctx.fillRect(0,2.5,13,2);} ctx.restore();
+      const w=20; ctx.fillStyle="rgba(11,8,7,.7)";ctx.fillRect(tt.x-w/2,tt.y-18,w,3);ctx.fillStyle=tc;ctx.fillRect(tt.x-w/2,tt.y-18,w*(tt.life/tlife),3); }
   }
   function drawMarkers(){
     const targets=[];
@@ -2159,7 +2230,7 @@ const Galaxy = (()=>{
     const secs=GAME.war.sectors, perRing=6;
     sectorsF=secs.map((s,i)=>{ const ring=Math.floor(i/perRing), idx=i%perRing;
       const af=(idx/perRing)*6.2832 + ring*0.62 + rng()*0.16;
-      const rf=Math.min(0.9, 0.4 + ring*0.25 + rng()*0.06);
+      const rf=Math.min(0.92, 0.3 + ring*0.15 + rng()*0.05);
       return {id:s.id, af, rf}; });
     // planetas decorativos
     planetsF=[]; for(let i=0;i<170;i++){ const af=rng()*6.2832, rf=Math.sqrt(rng())*0.98; planetsF.push({af,rf,sz:0.6+rng()*2.6,br:rng()<0.16}); }

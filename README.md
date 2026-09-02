@@ -76,9 +76,9 @@ La página esconde un guiño al juego **Corona Estelar — El Frente Eterno**
 (`corona-estelar.html`), un shooter táctico top-down. Se abre dentro de la
 misma página, en una capa a pantalla completa. Para desbloquearlo:
 
-- **Celular:** toca 5 veces seguidas el puntito `◦` que está al final del pie de
-  página (junto a “Proyecto escolar”).
-- **Computador:** ingresa el código Konami: ↑ ↑ ↓ ↓ ← → ← → B A.
+- Toca el punto `◉` que está al final del pie de página (junto a “Proyecto
+  escolar”) e ingresa la **contraseña**: `bruno`.
+- **Computador (alternativa):** código Konami ↑ ↑ ↓ ↓ ← → ← → B A.
 
 Cierra el juego con el botón **✕ Cerrar** o la tecla `Esc`.
 
